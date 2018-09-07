@@ -1,0 +1,46 @@
+.btn {
+    cursor: pointer;
+    border: 1px solid transparent;
+    padding: 1rem 1rem;
+    font-size: 2rem;
+    border-radius: .25rem;
+    background: $primary-background;
+    color: $primary-text;
+
+    &:hover {
+      background: darken($primary-background, 10%);
+      color: lighten($primary-text,10%);
+    }
+
+}
+
+.btn__cart--remove {
+	background: $remove;
+
+	&:hover{
+		background: darken($remove ,20%);
+	}
+}
+
+.btn__cart--add {
+	background: $add;
+
+	&:hover{
+		background: darken($add ,20%);
+	}
+}
+
+.btn__checkout {
+	margin: 10px 0;
+}
+
+.btn__clear {
+	background: $remove;
+	height: 47px; 
+	
+	&:hover {
+      background: darken($remove, 10%);
+    }
+}
+
+

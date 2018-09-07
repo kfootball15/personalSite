@@ -1,0 +1,61 @@
+To Implement:
+
+[] Initial Projects to complete and add
+    [] Weather/Shrooms
+    [] Train/Commute
+        [] Use the hand-drawn comic (with some digital color)
+        [] Redo the final frame with animated SVG
+    [] 
+    [] Bad Soosh
+
+[] Long Term:   
+    [] Host Website
+    [] Node/Express server to handle project routes
+
+[] TODOS (in order of priority):
+    [] Projects/Doodles should be folders with potential for images and javascript and all sorts of custom set ups
+    [] "404" page.
+    [] favicon
+    [] HTML Prefetching
+    [] Custom Lazy Loading (with something colorful and well designed)
+
+[] Today
+
+
+[] How I want this to work:
+    []  I want to have the 'Shell' personal project folder be completely seperate from
+        the 'projects' folder.
+        []  The 'shell' should just have components resposible for managing the different pages (
+            if there are more then one)
+                []  Homepage, etc
+    
+    [] Then I want a seperate folder that contains each project with a structure like so:
+            <Project>
+                index.js
+                <assets>
+                    xxx.svg
+                    xxx.js
+                    xxx.scss
+                
+            [] Each project has an index.js folder that imports all the neccessary image and
+                styling assets needed for that specific project, COMPLETELY self contained not
+                a drop of code for this project should be outside this Projects folder
+            [] The index.js file has to EXPORT a final component in some way so that
+                our 'Shell' application can cycle through ALL the projects and render
+                them as a big project for the mainProject, and as thumbnails for the 
+                rest.
+            
+    [] How we design the homePage should be easily changeable.
+    [] We should be able to SAVE previous versions of the site so that other people
+        can still see past iterations
+    
+    [] Build
+        [] Builds shell application
+        [****]  Doodles folder should be OUTSIDE of /public PRE-Build, and Build
+                into /public
+                []  Doodles should be built out from their index.js and exported into 
+                    the public folder?
+                    [] I guess the Javascript/React bits can probably be built out with the
+                        rest of the application, and merely reference .svg files that can
+                        be stored in <project> folders in the public directory
+

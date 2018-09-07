@@ -1,0 +1,28 @@
+.mainProject {
+    // padding-top: $header-height;
+    margin: 0 auto;
+    height: 100vh;
+    width: 100%;
+
+    // display: fe
+
+    img {
+        height: 100%;
+        max-width: 100%;
+    }
+}
+
+.lowerhalf {
+    display: flex;
+    flex-direction: column;
+}
+
+.doodles {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+
+    .doodle{
+        flex: 1 1 auto;
+    }
+}
