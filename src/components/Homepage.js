@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import DoodleDisplay from './DoodleDisplay';
+import MainProject from '../doodles/weather/index.js';
 import uuid from 'uuid';
 
 class HomePage extends Component {
@@ -14,7 +15,9 @@ class HomePage extends Component {
 
 				{/*Project routes are set in the configureStore.js file*/}
 				<div className="mainProject">
-					<img src={`${this.props.projects.mainProject}`} />
+					{/* <img src={`${this.props.projects.mainProject}`} /> */}
+					<MainProject 
+						doodle={this.props.projects.mainProject}/>
 				</div>
 				<div className="lowerhalf">
 					<div className="doodles">

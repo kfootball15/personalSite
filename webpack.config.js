@@ -12,6 +12,16 @@ module.exports = {
       test: /\.js$/,
       exclude: /node_modules/
     }, {
+      test: /\.(svg)$/,
+      loader: "url-loader",
+      options: {
+          // Ensure [path] is included in output file paths
+          // This causes `manifest.json` to include full paths as asset keys,
+          // which are then used by the server to discover assets in jinja templates
+          name: "[path][name].[hash].[ext]"
+      },
+      exclude: /node_modules/
+    },{
       test: /\.s?css$/,
       use: [
         'style-loader',
