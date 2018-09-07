@@ -11,7 +11,9 @@ class DoodleDisplay extends Component {
     render () {
         return (
             <div className="doodle" >
-                <img src={`${this.props.doodle}`} />
+                {/* <img src={`${this.props.doodle}`} /> */}
+               {/* This is how we might be able to inject SVG data directly onto the page for manipulation */}
+                <img src={`data:image/svg+xml;${this.props.doodle}`} alt="Flag" />
                 <div className="testButtons">
                     <button>Night</button>
                 </div>
