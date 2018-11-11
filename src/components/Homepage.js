@@ -22,7 +22,7 @@ class HomePage extends Component {
 				<div className="lowerhalf">
 					<div className="doodles">
 						{
-							this.props.projects.doodles.length 
+							this.props.projects.doodles && this.props.projects.doodles.length 
 							? this.props.projects.doodles.map((doodle)=>{
 								return <DoodleDisplay
 											key={uuid()}

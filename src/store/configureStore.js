@@ -3,9 +3,9 @@ import uuid from 'uuid';
 
 //Reducers
 const defaultProjects = {
-    mainProject: '/doodles/weather/assets/baseDrawing.svg',
+    mainProject: '/doodles/weather/assets/base.svg',
     projects:[],
-    doodles: ['/doodles/test.svg', '/doodles/test.svg']
+    // doodles: ['/doodles/test.svg', '/doodles/test.svg']
 };
 const projects = (state=defaultProjects, action) => {
 	switch(action.type) {

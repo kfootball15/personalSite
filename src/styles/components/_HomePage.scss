@@ -21,8 +21,43 @@
     flex: 1;
     display: flex;
     flex-direction: row;
+}
 
-    .doodle{
-        flex: 1 1 auto;
+.doodle-wrapper{
+    flex: 1 1 auto;
+}
+
+.doodle {
+    &--animated-fade {
+        -webkit-transition: opacity 2s; /* Safari */
+        transition: opacity 2s;
+    }
+    &--show {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+    &--hide {
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+    &--cursor {
+        cursor: pointer;
+    }
+}
+
+.testButtons {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    padding: 50px;
+    
+    button {
+        color: #fff;
+        background: rgb(83, 83, 83);
+        border-radius: 50px;
+        height: 100px;
+        width: 100px;
     }
 }
