@@ -1,63 +1,75 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import base from "./assets/base.svg";
 import { deconstruct } from "../../services/svgDeconstructor.js";
-import { hideElement, showElement, setCursor } from "../../services/svgEdit.js";
+import { hideElement, showElement, setCursor, setEvent, appendAnimation } from "../../services/svgEdit.js";
+import character from './assets/character.json';
 
 class DoodleDisplay extends Component {
     constructor(props) {
         super(props);
         this.svgRef = React.createRef();
-        this.state = { 
+        this.state = {
             svgReady: false,
             svgObj: {},
             svgElem: null,
             lightsOn: false,
-            rainEffectOn: false 
+            inkOn: false,
+            rainEffectOn: false,
+            characterOn: false, 
         };
-        this.initInitialSvgState = this.initInitialSvgState.bind(this);
-        this.toggleLights = this.toggleLights.bind(this);
-        this.toggleRainEffect = this.toggleRainEffect.bind(this);
-        this.setEvent = this.setEvent.bind(this); 
-        this.setCursor = setCursor.bind(this); //bound from my service, not really necessary... 
+
+        /* Must bind our library methods to our class so that we can access 'this' object inside the library */
+        this.showElement = showElement.bind(this);
+        this.hideElement = hideElement.bind(this);
+        this.setCursor = setCursor.bind(this); 
+        this.setEvent = setEvent.bind(this); 
+        this.appendAnimation = appendAnimation.bind(this); 
     }
-    componentDidMount (){
+    componentDidMount () {
         // let node = this; //capture DoodleDisplay component instance
         window.onload = () => { // You must wait for window to load to ensure that the svg elements have been rendered
-            var a = this.svgRef.current; // Get the Object by ref
-            var svgElem = a.contentDocument; // Get the SVG document inside the Object tag
-            var svgObj = deconstruct(svgElem, 'm_'); // return an object with the layers broken out and camel cased
-            this.setState(state => ({
+            let a = this.svgRef.current; // Get the Object by ref
+            let svgElem = a.contentDocument; // Get the SVG document inside the Object tag
+            let characterAnimation = this.appendAnimation(character, svgElem.getElementById('m_desk_ink'));
+            // let snowAnimation = this.appendAnimation(snow, svgElem.getElementById('m_wall_ink'));
+            let svgObj = deconstruct(svgElem, 'm_'); // return an object with the layers broken out and camel cased
+            this.setState( () => ({
                 svgObj,
                 svgElem
             }), () => {
-                console.log("Your svg Object:", this, this.state.svgObj)
                 this.initInitialSvgState()
             });
         };
     }
-    initInitialSvgState () {
+    initInitialSvgState = () => {
         this.toggleRainEffect();
         this.toggleLights();
-        this.setEvent([this.state.svgObj.mLampLampOff, this.state.svgObj.mLampLampOn], this.toggleLights)
-        this.setCursor([this.state.svgObj.mLampLampOff, this.state.svgObj.mLampLampOn], 'pointer')
-        this.setState(state => ({ svgReady: true }))
+        this.toggleCharacter();
+        // this.toggleInk();
+        this.setEvent(['mLampLampOff', 'mLampLampOn'], this.toggleLights);
+        this.setCursor(['mLampLampOff', 'mLampLampOn']);
+        this.setState(state => ({ svgReady: true }));
+        // lottie.play()
     }
-    setEvent (elements, event) {
-        // TODO: See if there is a way to get this function into the svgEdit service so that it can be reused easily
-        elements.forEach(function(element){
-            element.addEventListener("click", event);
-        })
+    toggleInk = () => {
+        let elements = ['mDeskInk', 'mChairInk', 'mCharacterInk', 'mWallInk'];
+        this.state.inkOn ? this.showElement(elements) : this.hideElement(elements);
+        this.setState(state => ({ inkOn: !state.inkOn }));
     }
-    toggleLights () {
-        let elements = [this.state.svgObj.mDeskLampOn, this.state.svgObj.mLampLampOn, this.state.svgObj.mCharacterLampOn];
-        this.state.lightsOn ? showElement(elements) : hideElement(elements);
-        this.setState(state => ({ lightsOn: !state.lightsOn }))
+    toggleLights = () => {
+        let elements = ['mDeskLampOn', 'mLampLampOn', 'mChairLampOn', 'mWallLampOn', 'mCharacterTorsoLampOn', 'mCharacterArmRightLampOn'];
+        this.state.lightsOn ? this.showElement(elements) : this.hideElement(elements);
+        this.setState(state => ({ lightsOn: !state.lightsOn }));
     }
-    toggleRainEffect () {
-        let elements = [this.state.svgObj.mRainEffectColor, this.state.svgObj.mRainEffectInk];
-        this.state.rainEffectOn ? showElement(elements) : hideElement(elements);
+    toggleRainEffect = () => {
+        let elements = ['mRainEffectColor', 'mRainEffectInk'];
+        this.state.rainEffectOn ? this.showElement(elements) : this.hideElement(elements);
         this.setState(state => ({ rainEffectOn: !state.rainEffectOn }))
+    }
+    toggleCharacter = () => {
+        let elements = ['mCharacterColor', 'mCharacterInk', 'mCharacterLampOn'];
+        this.state.characterOn ? this.showElement(elements) : this.hideElement(elements);
+        this.setState(state => ({ characterOn: !state.characterOn }))
     }
     render () {
         return (
@@ -65,8 +77,13 @@ class DoodleDisplay extends Component {
                 {/* NOTE: For better performance consider svg-url-loader for svgs instead of url-loader BUT had trouble with manipulation there*/}
                 {/* <object ref={this.svgRef} id="temp" data={`data:image/svg+xml;charset=UTF-8,${base}`} type="image/svg+xml"></object> */}
                 {/* { this.state.svgReady && <object ref={this.svgRef} id="temp" data={`${base}`} type="image/svg+xml"></object> } */}
-                <object ref={this.svgRef} className={ "doodle--animated-fade doodle" + (this.state.svgReady ? " doodle--show" : " doodle--hide") } id="temp" data={`${base}`} type="image/svg+xml"></object>
-                
+                <object 
+                    ref={this.svgRef} 
+                    className={ "doodle--animated-fade doodle" + (this.state.svgReady ? " doodle--show" : " doodle--hide") } 
+                    id="temp" 
+                    data={`${base}`} 
+                    type="image/svg+xml"></object>
+
                 <div className="testButtons">
 
                     <button onClick={ () => {
@@ -76,6 +93,14 @@ class DoodleDisplay extends Component {
                     <button onClick={ () => {
                         this.toggleRainEffect();
                     }}>Toggle Rain</button>
+                    
+                    <button onClick={ () => {
+                        this.toggleInk();
+                    }}>Toggle Ink</button>
+                    
+                    <button onClick={ () => {
+                        this.toggleCharacter();
+                    }}>Toggle Character</button>
 
                 </div>
             </div>
@@ -83,4 +108,4 @@ class DoodleDisplay extends Component {
     }
 }
 
-export default connect()(DoodleDisplay);
+export default DoodleDisplay;

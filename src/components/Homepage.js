@@ -1,48 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import DoodleDisplay from './DoodleDisplay';
-import MainProject from '../doodles/weather/index.js';
-import uuid from 'uuid';
+import React from 'react';
+import { Weather } from '../doodles';
 
-class HomePage extends Component {
-	constructor(props) {
-		super(props);
-	}
-
-	render () {
-		return (
-			<div className="page">
-
-				{/*Project routes are set in the configureStore.js file*/}
-				<div className="mainProject">
-					{/* <img src={`${this.props.projects.mainProject}`} /> */}
-					<MainProject 
-						doodle={this.props.projects.mainProject}/>
-				</div>
-				<div className="lowerhalf">
-					<div className="doodles">
-						{
-							this.props.projects.doodles && this.props.projects.doodles.length 
-							? this.props.projects.doodles.map((doodle)=>{
-								return <DoodleDisplay
-											key={uuid()}
-											doodle={doodle} />
-							}) 
-							: null
-
-						}
-					</div>
-				</div>
-
+export default function HomePage (props) {
+	return (
+		<div className="page">
+			<div className="mainProject">
+				<Weather />
 			</div>
-		)
-	}
+		</div>
+	)
 }
-
-const mapStateToProps = (state) => {
-	return {
-		projects: state.projects
-	}
-}
-
-export default connect(mapStateToProps)(HomePage); 

@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 
 // class DoodleDisplay extends Component {
 //     constructor(props) {
@@ -22,7 +21,7 @@ import { connect } from 'react-redux';
 export default (props) => {
 	return (
         <div className="doodle" >
-            <img src={`${props.doodle}`} />
+            <img alt="a doodle" src={`${props.doodle}`} />
         </div>
     )
 }

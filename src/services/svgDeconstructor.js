@@ -2,8 +2,8 @@ const deconstruct = (svgDoc, prefix='m_') => {
     /*
         This line of code takes advantage of "substring matching attributes" (can't use regex in querySelector);
             https://stackoverflow.com/questions/16791527/can-i-use-a-regular-expression-in-queryselectorall
-        We are grabbing all elements with an id that starts with "m_", therefore ALL illustrator layers must
-        have a prefix prior to export 
+        We are grabbing all elements with an id that starts with "m_" (or otherwise specified), therefore 
+        all illustrator layers must have a prefix prior to export 
     */
     let elemArray = svgDoc.querySelectorAll(`[id^=${prefix}]`);
     let obj = {};

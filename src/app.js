@@ -1,27 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import 'normalize.css/normalize.css';
-import './styles/styles.scss';
+import Routes from './Routes.js';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import theme from './styles/theme';
 
-import AppRouter from './routers/AppRouter.js';
-import configureStore from './store/configureStore';
-
-//Actions
-import { setProjectData } from './actions/projects'
-
-//Init Store:
-const store = configureStore();
-store.subscribe(()=>{
-    console.log('Store State', store, store.getState())
-})
-
-//Set Data to store:
-store.dispatch(setProjectData());
-
-//Render DOM:
-ReactDOM.render(
-    <Provider store={store}>
-        <AppRouter />
-    </Provider>
-, document.getElementById('app'));
+export default function App() {
+  return (
+    <MuiThemeProvider theme={theme}> 
+      <Routes />
+    </MuiThemeProvider>
+  );
+}
