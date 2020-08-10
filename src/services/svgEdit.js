@@ -1,62 +1,69 @@
 import lottie from "lottie-web/build/player/lottie.js";
 
-const hideElement = function (elements) {
+const hideElement = function (elements, svgElem) {
     if(elements.constructor === Array){
-        elements.forEach(element => {
-            this.state.svgObj[element] ? 
-                _hideElements(this.state.svgObj[element].childNodes) : 
-                _throwLayerError(element);
-            
+        elements.forEach( elementName => {
+            const element = svgElem.getElementById(elementName);
+            element
+                ? _hideElements(element.childNodes)
+                : _throwLayerError(elementName);
         })
     } else {
-        this.state.svgObj[elements] ? 
-            _hideElements(this.state.svgObj[elements].childNodes) :
+        const element = svgElem.getElementById(elements);
+        element
+            ? _hideElements(element.childNodes)
+            : _throwLayerError(elements);
+    }
+}
+
+const showElement = function (elements, svgElem) {
+    if(elements.constructor === Array){
+        elements.forEach( elementName => {
+            const element = svgElem.getElementById(elementName);
+            element
+                ? _showElements(element.childNodes)
+                : _throwLayerError(elementName);
+        })
+    } else {
+        const element = svgElem.getElementById(elements);
+        element ?
+            _showElements(element.childNodes) :
             _throwLayerError(elements);
     }
 }
 
-const showElement = function (elements) {
-    if(elements.constructor === Array){
-        elements.forEach(element => {
-            this.state.svgObj[element] ? 
-                _showElements(this.state.svgObj[element].childNodes) :
-                _throwLayerError(element);
-        })
-    } else {
-        this.state.svgObj[elements] ? 
-            _showElements(this.state.svgObj[elements].childNodes) :
-            _throwLayerError(elements);
-    }
-}
-
-const setCursor = function (elements, cursor="pointer") {
+const setCursor = function (elements, svgElem, cursor="pointer") {
     if (elements.constructor === Array){
-        elements.forEach(element => {
-            this.state.svgObj[element] ? 
-                this.state.svgObj[element].setAttribute("cursor", cursor) :
-                _throwLayerError(element);
+        elements.forEach( elementName => {
+            const element = svgElem.getElementById(elementName);
+            element
+                ? element.setAttribute("cursor", cursor)
+                : _throwLayerError(elementName);
         })
     } else {
-        this.state.svgObj[elements] ? 
-            this.state.svgObj[elements].setAttribute("cursor", cursor) :
-            _throwLayerError(elements);
+        const element = svgElem.getElementById(elements);
+        element
+            ? element.setAttribute("cursor", cursor)
+            : _throwLayerError(elements);
     }
 }
 
 // Adds click 'event' to the 'elements' passed in
-const setEvent = function (elements, event) {
-    if (elements.constructor === Array){
-        elements.forEach(element => {
-            this.state.svgObj[element] ? 
-                this.state.svgObj[element].addEventListener("click", event) :
-                _throwLayerError(element);
-        });
-    } else {
-        this.state.svgObj[elements] ? 
-            this.state.svgObj[elements].addEventListener("click", event) :
-            _throwLayerError(elements);
-    }
-}
+// const setEvent = function (elements, svgRef, event) {
+//     // let a = svgRef.current; // Get the Object by ref
+//     let svgElem = svgRef.contentDocument;
+//     if (elements.constructor === Array){
+//         elements.forEach(element => {
+//             svgElem.getElementById(element) ?
+//                 svgElem.getElementById(element).addEventListener("click", event) :
+//                 _throwLayerError(element);
+//         });
+//     } else {
+//         svgElem.getElementById(elements) ?
+//             svgElem.getElementById(elements).addEventListener("click", event) :
+//             _throwLayerError(elements);
+//     }
+// }
 
 const appendAnimation = function (animationData, elem, autoplay=true, loop=true) {
     return lottie.loadAnimation({
@@ -90,4 +97,4 @@ function _throwLayerError (element) {
     console.error("You are missing this element: ", element)
 }
 
-export { hideElement, showElement, setCursor, setEvent, appendAnimation };
+export { hideElement, showElement, setCursor, appendAnimation };
