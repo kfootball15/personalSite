@@ -5,6 +5,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* Strictly for Swiper.js */
+  margin: 0;
+  height: 100%;
+  overflow: hidden
+
 }
 
 code {

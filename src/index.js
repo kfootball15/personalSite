@@ -1,11 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-// import './styles/styles.scss';
-// import 'normalize.css';
-// import './App.css';
+// Start import swiper styles
+import 'swiper/swiper.scss';
+import 'swiper/components/navigation/navigation.scss';
+import 'swiper/components/pagination/pagination.scss';
+import 'swiper/components/scrollbar/scrollbar.scss';
+// End import swiper styles
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

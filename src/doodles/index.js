@@ -1,1 +1,2 @@
-export { default as Weather } from './weather'
+export * from './weather'
+export * from './home'

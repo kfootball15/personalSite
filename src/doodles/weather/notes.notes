@@ -1,0 +1,401 @@
+
+File export:
+    IPAD:
+        Export document as a PDF
+        Airdrop to Macbook
+    MACBOOK:
+        Open PDF in Illustrator on Macbook
+        Illustrator:
+            DELETE All Layers except the one you want to animate
+            Export > Export for SCreens
+            Change format to SVG
+            Open SVG in After Effects
+            *FIGURE OUT HOW TO EXPORT FROM AI AND IMPORT TO AE AS A LAYERED COMP THAT I CAN ADJUST - THEN BASE THE LAYER/GROUPING CONVENTION ON FINDINGS*
+        After Effects:
+
+
+
+[javascript]
+
+/**
+    1 Day loop duration in milliseconds
+    The way This could work is every animation is created to be 10 seconds,
+    and this way the duration can be adjusted easily (2 is 20s, .1 is 1s, etc)
+*/
+const loopDuration = 30000 //30 seconds
+
+// Project layer should be generated dynamically by disecting the project file */
+const PROJECT = {
+    skyLayer1: {
+        ink: {
+            node: null
+        },
+        fill: {
+            node: object (DOM Node),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] //sunrise, day, sunset, night
+        },
+        light: {
+            node: null,
+        }
+    },
+    skyLayer2: {
+        ink: {
+            node: null
+        },
+        fill: {
+            node: object (DOM Node),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] //sunrise, day, sunset, night
+        },
+        light: {
+            node: null,
+        }
+    },
+    skyLayer3: {
+        ink: {
+            node: null
+        },
+        fill: {
+            node: object (DOM Node),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] //sunrise, day, sunset, night
+        },
+        light: {
+            node: null,
+        }
+    },
+    sun: {
+        ink: {
+            node: null
+        },
+        fill: {
+            node: object (Lottie),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] //sunrise, day, sunset, night
+        },
+        light: {
+            node: null
+        }
+    },
+    moon: {
+        ink: {
+            node: null
+        },
+        fill: {
+            node: object (Lottie),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] //sunrise, day, sunset, night
+        },
+        light: {
+            node: null
+        }
+    },
+    starLayer: {
+        ink: {
+            node: null
+        },
+        fill: {
+            node: object (Lottie),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] //sunrise, day, sunset, night
+        },
+        light: {
+            node: null
+        }
+    },
+    /* First try
+    bulding1: {
+        ink: {
+            node: object (DOM Node),
+            colors: '#COLOR' // if string - always this color.
+        },
+        fill: {
+            node: object (DOM Node),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR']
+        },
+        light: {
+            node: object (Lottie),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR']
+        }
+    },
+    */
+    bulding1: {
+        base: {
+            sectionA: {
+                sideA: {
+                    
+                },
+                sideB: {
+                    sunrise: '@COLOR',
+                    day: '#COLOR',
+                    sunset: '#COLOR',
+                    night: '#COLOR,
+                }
+            },
+            sectionB: {},
+            sectionC: {},
+        },
+        windows: {}
+    },
+    bulding2: {
+        ink: {
+            node: object (DOM Node),
+            colors: '#COLOR'
+        },
+        fill: {
+            node: object (DOM Node),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR']
+        },
+        light: {
+            node: object (Lottie),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR']
+        }
+    },
+    bulding3: { // WTC
+        ink: {
+            node: object (DOM Node),
+            colors: '#COLOR'
+        },
+        fill: {
+            node: object (Lottie), // This layer will be world trade center color gradients and lights that turn on/off
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] 
+        },
+        light: {
+            node: object (Lottie), // WTC gradients in the light
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] 
+        }
+    },
+    bulding4: {
+        ink: {
+            node: object (DOM Node),
+            colors: '#COLOR'
+        },
+        fill: {
+            node: object (DOM Node),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] 
+        },
+        light: {
+            node: object (Lottie),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] 
+        }
+    },
+    window: {
+        ink: {
+            node: object (DOM Node),
+            colors: '#COLOR'
+        },
+        fill: {
+            node: object (DOM Node),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] 
+        },
+        light: {
+            node: object (DOM Node),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] 
+        }
+    },
+    character: {
+        ink: {
+            node: object (Lottie),
+            colors: '#COLOR'
+        },
+        fill: {
+            node: object (Lottie),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] 
+        },
+        light: {
+            node: object (Lottie),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] 
+        }
+    },
+    desk: {
+        ink: {
+            node: object (DOM Node),
+            colors: '#COLOR'
+        },
+        fill: {
+            node: object (DOM Node),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] 
+        },
+        light: {
+            node: object (DOM Node),
+            colors: ['#COLOR', '#COLOR', '#COLOR', '#COLOR'] 
+        }
+    }
+};
+nightFunction() {
+    timeFunction(layers, 'night'); //grabs all layers and shows night version
+}
+
+animationFunction(animation){
+    // pass the name of the animation you want to play
+    lottie.play(animation)
+}
+const times = {
+    sunrise: [5, 7],
+    day:     [8, 19],
+    sunset:  [20, 22],
+    night:   [23, 4]
+};
+const colorIndexes = {
+    sunrise: 1,
+    day: 2,
+    sunset: 3,
+    night: 4
+};
+function getThemeProportionOfDayLoop (timePeriod) {
+    // returns the proportion of the 24 hour loop that this particular theme takes up
+    const hours = timePeriod[0] > timePeriod[1]
+        ? timePeriod[0] - timePeriod[1] + 1 //account for the extra hour
+        : timePeriod[1] - timePeriod[0] + 1;
+    return hours/24;
+}
+function getThemeDurationInMS (timePeriod) {
+    // Duration as a proportion of the loopDuration
+    const proportion = getThemeProportionOfDayLoop(timePeriod)
+    return loopDuration * proportion;
+};
+function timeFunction (time = 9) {
+    let theme;
+    let duration;
+    // time: Number FLOAT (1 - 24)
+    if ( time >= times.sunrise[0] && time <= times.sunrise[1] ) { 
+        // sunrise
+        theme = 'sunrise';
+        duration = getThemeDurationInMS(theme);
+        
+    */ }
+    if ( time >= times.day[0] && time <= times.day[1] ) {
+        /* day... */
+        theme = 'day';
+        duration = getThemeDurationInMS(theme);
+    }
+    if ( time >= times.sunset[0] && time <= times.sunset[1] ) {
+        /* sunset... */
+        theme = 'sunset';
+        duration = getThemeDurationInMS(theme);
+    }
+    if ( time >= times.night[0] && time <= times.night[1] ) {
+        /* night... */
+        theme = 'night';
+        duration = getThemeDurationInMS(theme);
+    }
+
+    forEach( Object.keys(PROJECT), key => { // key === character, sky, desk, etc
+        forEach( Object.keys(PROJECT[key]), key2 => { // key2 === ink, fill, light
+            const layer = PROJECT[key][key2];
+            if (layer && layer.node) { 
+                const node = grabDomNode(layer.node); // dom node
+                const color = layers.colors[theme]; // needs to be some combination with time so we can tranistion from one color to the next
+                transitionColorTo(node, layer.colors[theme], time, duration)
+            }
+        })
+    })
+    //fallback
+}
+function transitionColorTo (node, nextColor, time, duration) {
+    // https://rileyjshaw.com/sweep/
+    // sweep(target, properties, fromColor, toColor[, options]);
+
+    // grab the node, and transition the fill color from the current color to this color
+    // use the time (which will be a float like 7.67) to find the point in the transition
+    const currentFillColor = node.fill // however you get this css property - should be easy;
+    sweep(node, 'fill', currentFillColor, nextColor, { duration })
+}
+weatherFunction() {
+    timeFunction('all', 23);
+    animationFunction('rain');
+}
+[end]
+
+*Layers*
+    Exterior
+        Sky/Clouds:
+            [ ] Colors for each time of day
+                1. *Ink Layer* (parent=sky&layer=ink)
+                2. *Light Layer* (parent=sky&layer=light)
+                3. *Fill Layer* (parent=sky&layer=fill)
+        3 or 4 building layers:
+            [ ] Buildings right outside
+                1. *Ink Layer* (parent=bulding1&layer=ink)
+                2. *Light Layer* (parent=bulding1&layer=light)
+                3. *Fill Layer* (parent=bulding1&layer=fill)
+            [ ] Buildings mid-range
+                1. *Ink Layer* (parent=bulding2&layer=ink)
+                2. *Light Layer* (parent=bulding2&layer=light)
+                3. *Fill Layer* (parent=bulding2&layer=fill)
+            [ ] WTC and distance buildings
+                1. *Ink Layer* (parent=bulding3&layer=ink)
+                2. *Light Layer* (parent=bulding3&layer=light)
+                3. *Fill Layer* (parent=bulding3&layer=fill)
+            [ ] Buildings very far distance
+                1. *Ink Layer* (parent=bulding4&layer=ink)
+                2. *Light Layer* (parent=bulding4&layer=light)
+                3. *Fill Layer* (parent=bulding4&layer=fill)
+    Interior
+        Wall layer:
+            1. *Ink Layer* (parent=wall&layer=ink)
+            2. *Light Layer* (parent=wall&layer=light) - lights on the top of the radiator and windowsill
+            3. *Fill Layer* (parent=wall&layer=fill) - wall color - static?
+        Character:
+            1. *Ink Layer* (parent=character&layer=ink)
+            2. *Light Layer* (parent=character&layer=light)
+            3. *Fill Layer* (parent=character&layer=fill)
+        Desk:
+            1. *Ink Layer* (parent=desk&layer=ink)
+            2. *Light Layer* (parent=desk&layer=light)
+            3. *Fill Layer* (parent=desk&layer=fill)
+
+Sun and Moon Drawings
+    Sun:
+        times:
+            1. Sunrise (parent=sun&time=sunrise)
+            2. Day (parent=sun&time=day)
+            3. Sunset (parent=sun&time=sunset)
+            4. Night (parent=sun&time=night)
+        weather:
+            5. none (parent=moon&weather=none)
+            6. Thunder/Lightening (parent=moon&weather=thunder)
+            7. Light Rain (parent=moon&weather=rain)
+            8. Snow (parent=moon&weather=snow)
+    Moon:
+        times: (just effects colors)
+            1. Sunrise (parent=moon&time=sunrise)
+            2. Day (parent=moon&time=day)
+            3. Sunset (parent=moon&time=sunset)
+            4. Night (parent=moon&time=night)
+        weather: (effects drawing)
+            5. none (parent=moon&weather=none)
+            6. Thunder/Lightening (parent=moon&weather=thunder)
+            7. Light Rain (parent=moon&weather=rain)
+            8. Snow (parent=moon&weather=snow)
+
+How to do this bitch
+    Weather Effects 
+        1. Thunder/Lightening Storm
+        2. Light Rain
+        3. Sunrise
+        4. Snow
+    Time of Day
+        1. Sunrise
+        2. Day
+        3. Sunset
+        4. Night
+        *Effects:*
+            1. Draggin the sun should effect time of day
+            2. Clicking the sun should change the weather effects 
+                    [ ] Also needs to change the sun drawing (sun, sun with cloud, etc) to denote the weather
+                            [ ] I think should be icon-like
+                    [ ] Also needs to change the sun color ()
+            2. Otherise the time of day should slowly change. A full day (sunrise to sunrise) should maybe 1 minute?
+        *Layers*
+            1. Sky Color (sunrise --> Day --> sunset)
+            2. Stars? (show at night, hide during day)
+            3. Sun turns to moon
+            4. Interior light color
+
+
+            
+
+Approach
+    1. Start with Just Character Drawing and sunny day outside
+    2. Add Character drawing animation
+    3. Add a Day/Night effects on a TIMER (just a loop every minute or so)
+    4. Add Weather Effects and ability to click the sun/moon to adust the timer
+    4. Add ability to click the sun to trigger weather effects 
+    5. Add ability to drag the sun to adjust the time
+    6. Add Animations for character

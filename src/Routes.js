@@ -8,17 +8,15 @@ import Navbar from './components/Navbar';
 //Routes
 export default function Routes ( props ) {
 	return (
-		<div>
-			<Router>
-				<Route component={ Navbar } />
-				<Switch>
-					<Route 
-						path="/"
-						component={ HomePage }
-						exact={true}
-					/>
-				</Switch>
-			</Router>
-		</div>
+        <Router>
+            {/* <Route component={ Navbar } /> */}
+			<Switch>
+				<Route
+					path="/"
+					component={ HomePage }
+					exact={true}
+				/>
+			</Switch>
+		</Router>
 	)
 }
