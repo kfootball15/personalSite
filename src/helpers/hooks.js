@@ -17,6 +17,7 @@ export const useEventListener = (eventName, handler, element = window) => {
 
     useEffect(
         () => {
+            console.log("hook runs")
             // Make sure element supports addEventListener
             const isSupported = element && element.addEventListener;
             if (!isSupported) {
