@@ -1,13 +1,33 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { WeatherDoodle } from 'doodles';
 import { makeStyles } from '@material-ui/core';
 import { Swiper, SwiperSlide } from 'swiper/react';
 /** for homePage project below */
 import clsx from 'clsx';
-import buildingData from 'assets/home/building1_update.json';
-import building1SVG from 'assets/home/building1.svg';
-import building2SVG from 'assets/home/building2.svg';
-import skySVG from 'assets/home/sky.svg';
+import sky from 'assets/home/sky_lottie.json';
+import wall from 'assets/home/wall_lottie.json';
+import desk from 'assets/home/desk_lottie.json';
+import character from 'assets/home/character_lottie.json';
+import chair from 'assets/home/chair_lottie.json';
+import building1 from 'assets/home/building1_lottie.json';
+import building2 from 'assets/home/building2_lottie.json';
+import building3 from 'assets/home/building3_lottie.json';
+import building4 from 'assets/home/building4_lottie.json';
+import building4a from 'assets/home/building4a_lottie.json';
+import building4b from 'assets/home/building4b_lottie.json';
+import building5 from 'assets/home/building5_lottie.json';
+import building6 from 'assets/home/building6_lottie.json';
+import building7 from 'assets/home/building7_lottie.json';
+import building8 from 'assets/home/building8_lottie.json';
+import building9 from 'assets/home/building9_lottie.json';
+import building10 from 'assets/home/building10_lottie.json';
+import building11 from 'assets/home/building11_lottie.json';
+import building12 from 'assets/home/building12_lottie.json';
+import buildingWTC from 'assets/home/buildingWTC_lottie.json';
+
+// import wallSVG from 'assets/home/wall.svg';
+// import interiorSVG from 'assets/home/interior.svg';
+// import characterSVG from 'assets/home/character.svg';
+// import skySVG from 'assets/home/sky.svg';
 // import buildingOldData from 'assets/home/building1.json';
 import {
 	useEventListener,
@@ -21,404 +41,376 @@ import {
 } from 'helpers';
 import lottie from 'lottie-web';
 
-let animObj = null;
-
 // https://josephkhan.me/lottie-web/
-
-// [sunrise, day, sunset, night]
-const time = {
-    'sunrise': 5,
-    'day': 9,
-    'sunset': 17,
-    'night': 24,
-};
-
-const sky = {
-    bottom: {
-        // colors: ["ffe8a8", "d9e9e9", "f6ae7b", "131312"]
-        colors: {
-            [time.sunrise] : "#ffe8a8",
-            [time.day] : "#d9e9e9",
-            [time.sunset] : "#f6ae7b",
-            [time.night] : "#131312"
-        }
-    },
-    lower: {
-        colors: {
-            [time.sunrise] : "#fff1ca",
-            [time.day] : "#d9e9e9",
-            [time.sunset] : "#e2b68d",
-            [time.night] : "#131312"
-        }
-    },
-    middle: {
-        colors: {
-            [time.sunrise] : "#fff6de",
-            [time.day] : "#c1dbea",
-            [time.sunset] : "#d2bea5",
-            [time.night] : "#131312"
-        }
-    },
-    higher: {
-        colors: {
-            [time.sunrise] : "#ffe8a8",
-            [time.day] : "#d9e9e9",
-            [time.sunset] : "#d2bea5",
-            [time.night] : "#131312"
-        }
-    },
-    top: {
-        colors: {
-            [time.sunrise] : "#ecfdff",
-            [time.day] : "#88b7ec",
-            [time.sunset] : "#aeb8bd",
-            [time.night] : "#131312"
-        }
-    }
-};
-
-const building1 = {
-    bottom: {
-        a: {
-            // colors: ["#edcfa1", "#999297", "#60594e", "#332921"],
-            colors: {
-                [time.sunrise] : "#edcfa1",
-                [time.day] : "#999297",
-                [time.sunset] : "#60594e",
-                [time.night] : "#332921"
-            }
-        },
-        b: {
-            // colors: ["#8c8685", "#a8a29e", "#ed8453", "#494142"],
-            colors: {
-                [time.sunrise] : "#8c8685",
-                [time.day] : "#a8a29e",
-                [time.sunset] : "#ed8453",
-                [time.night] : "#494142"
-            }
-        }
-    },
-    top: {
-        a: {
-            // colors: ["#5e6872", "#607b9e", "#1e1e1e", "#0c0805"],
-            colors: {
-                [time.sunrise] : "#5e6872",
-                [time.day] : "#607b9e",
-                [time.sunset] : "#1e1e1e",
-                [time.night] : "#0c0805"
-            }
-        },
-        b: {
-            // colors: ["#8c8685", "#90a0b7", "#bb9587", "#31343a"]
-            colors: {
-                [time.sunrise] : "#8c8685",
-                [time.day] : "#90a0b7",
-                [time.sunset] : "#bb9587",
-                [time.night] : "#31343a"
-            }
-        }
-    },
-    windows: {
-        a: {
-            // colors: ["#a1b7b1", "#85aab5", "#5d7066", "#434854"],
-            colors: {
-                [time.sunrise] : "#a1b7b1",
-                [time.day] : "#85aab5",
-                [time.sunset] : "#5d7066",
-                [time.night] : "#434854"
-            }
-        },
-        b: {
-            // colors: ["#94bddb", "#90aece", "#e3f2de", "#191816"],
-            colors: {
-                [time.sunrise] : "#94bddb",
-                [time.day] : "#90aece",
-                [time.sunset] : "#e3f2de",
-                [time.night] : "#191816"
-            }
-        }
-    },
-    /** windowsOn will just be toggled on/off, no colors */
-    // windowsOn: {
-    //     a: {
-    //         colors: []
-    //     },
-    //     b: {
-    //         colors: []
-    //     }
-    // }
-};
-
-const building2 = {
-    windows: {
-        // colors: ["#a2b8b6", "#85aab5", "#5d7066", "#434854"]
-        colors: {
-            [time.sunrise] : "#a2b8b6",
-            [time.day] : "#85aab5",
-            [time.sunset] : "#5d7066",
-            [time.night] : "#434854"
-        }
-    },
-    base: {
-        a: {
-            // colors: ["#edb2a1", "#a99b97", "#61534e", "#332622"]
-            colors: {
-                [time.sunrise] : "#edb2a1",
-                [time.day] : "#a99b97",
-                [time.sunset] : "#61534e",
-                [time.night] : "#332622"
-            }
-        },
-        b: {
-            // colors: ["#8c7b7a", "#9c9795", "#ea8d73", "#494544"]
-            colors: {
-                [time.sunrise] : "#8c7b7a",
-                [time.day] : "#9c9795",
-                [time.sunset] : "#ea8d73",
-                [time.night] : "#494544"
-            }
-        }
-    },
-};
+let skyAnimationObject = null;
+let wallAnimationObject = null;
+let deskAnimationObject = null;
+let chairAnimationObject = null;
+let characterAnimationObject = null;
+let building1AnimationObject = null;
+let building2AnimationObject = null;
+let building3AnimationObject = null;
+let building4AnimationObject = null;
+let building4aAnimationObject = null;
+let building4bAnimationObject = null;
+let building5AnimationObject = null;
+let building6AnimationObject = null;
+let building7AnimationObject = null;
+let building8AnimationObject = null;
+let building9AnimationObject = null;
+let building10AnimationObject = null;
+let building11AnimationObject = null;
+let building12AnimationObject = null;
+let buildingWTCAnimationObject = null;
 
 /** transition config */
 const hrsPerSecond = 1;
+const fps = 30;
 const ease = 0;
+const m = 1000;
 
-function getDuration ( destinationTime ) {
-    //returns the amount of time a fake hour should lost in the animation
-    if (destinationTime === time.sunrise) return time.day - time.sunrise;
-    if (destinationTime === time.day) return time.sunset - time.day;
-    if (destinationTime === time.sunset) return time.night - time.sunset;
-    if (destinationTime === time.night) return 6;
+// [sunrise, day, sunset, night]
+const time = {
+    'sunrise': 20 * fps,
+    'day': 4 * fps,
+    'sunset': 10 * fps,
+    'night': 14 * fps
+};
+const animationSegments = {
+    'sunrise': 0 * fps,
+    'day': 6 * fps,
+    'sunset': 12 * fps,
+    'night': 18 * fps,
+    'end': 24 * fps 
+};
+const segments = {
+    'sunrise': [animationSegments.sunrise, animationSegments.day],
+    'day': [animationSegments.day, animationSegments.sunset],
+    'sunset': [animationSegments.sunset, animationSegments.night],
+    'night': [animationSegments.night, animationSegments.end]
+};
+
+const renderer = 'svg';
+
+const defaultAnimationObjectSettings = {
+    renderer, // Required
+    loop: true, // Optional
+    autoplay: true // Optional
+};
+
+const setDuration = anim => e => {
+    const curr = e.currentTime;
+    const slow = 0.75;
+    const fast = 1.5;
+
+    /**
+     * Uncommenting the code below will not allow you to set speed dynamically
+     */
+    
+    // if (
+    //     curr >= (time.sunrise) || 
+    //     curr < (time.day)
+    // ) {
+    //     // console.log("sunrise", curr)
+    //     anim.setSpeed(fast);
+    // }
+    // else if (
+    //     curr >= (time.day) && 
+    //     curr < (time.sunset)
+    // ) {
+    //     // console.log("day", curr)
+    //     anim.setSpeed(slow);
+    // }
+    // else if (
+    //     curr >= (time.sunset) && 
+    //     curr < (time.night)
+    // ) {
+    //     // console.log("sunset", curr)
+    //     anim.setSpeed(fast);
+    // }
+    // else if (
+    //     curr >= (time.night) &&
+    //     curr < (time.sunrise)
+    // ) {
+    //     // console.log("night", curr)
+    //     anim.setSpeed(slow);
+    // }
 }
 
-const findNextTime = time => {
-    if (time < 24 ) return time + 1
-    if (time === 24) return 0;
-}
 
 export default function HomeDoodle (props) {
-	const classes = useStyles();
-	const skySVGRef = useRef(null);
-	const building1SVGRef = useRef(null);
-	const building2SVGRef = useRef(null);
-    const lottieSVGRef = useRef(null);
-    const [currentTime, setCurrentTime] = useState(time.day);
-    const [destinationTime, setDestinationTime] = useState(time.sunset);
+    const windowSize = useWindowSize();
+    const isMobile = windowSize.width <= 480
+    const classes = useStyles({ isMobile, windowSize });
     const [DOMReady, setDOMReady] = useState(false);
-    const [duration, setDuration] = useState(getDuration(time.sunset));
-    const [interval, setNewInterval] = useState(hrsPerSecond * 1000);
+    
+    /** Sky */
+    const skyRef = useRef(null);
 
-    const setSky = useCallback((elem, time) => {
-        /** sky */
-        transitionFill('parent-sky_layer-bottom', elem, sky.bottom.colors[time], duration, ease );
-        transitionFill('parent-sky_layer-lower', elem, sky.lower.colors[time], duration, ease );
-        transitionFill('parent-sky_layer-middle', elem, sky.middle.colors[time], duration, ease );
-        transitionFill('parent-sky_layer-higher', elem, sky.higher.colors[time], duration, ease );
-        transitionFill('parent-sky_layer-top', elem, sky.top.colors[time], duration, ease );
-    }, [duration]);
+    /** Buildings */
+    const building1Ref = useRef(null);
+    const building2Ref = useRef(null);
+    const building3Ref = useRef(null);
+    const building4Ref = useRef(null);
+    const building4aRef = useRef(null);
+    const building4bRef = useRef(null);
+    const building5Ref = useRef(null);
+    const building6Ref = useRef(null);
+    const building7Ref = useRef(null);
+    const building8Ref = useRef(null);
+    const building9Ref = useRef(null);
+    const building10Ref = useRef(null);
+    const building11Ref = useRef(null);
+    const building12Ref = useRef(null);
+    const buildingWTCRef = useRef(null);
 
-    const setBuilding1 = useCallback((elem, time) => {
-        transitionFill('parent-building1_layer-bottom_side-a', elem, building1.bottom.a.colors[time], duration, ease );
-        transitionFill('parent-building1_layer-bottom_side-b', elem, building1.bottom.b.colors[time], duration, ease );
-        transitionFill('parent-building1_layer-top_side-a', elem, building1.top.a.colors[time], duration, ease );
-        transitionFill('parent-building1_layer-top_side-b', elem, building1.top.b.colors[time], duration, ease );
-        transitionFill('parent-building1_layer-windows_side-a', elem, building1.windows.a.colors[time], duration, ease );
-        transitionFill('parent-building1_layer-windows_side-b', elem, building1.windows.b.colors[time], duration, ease );
-    }, [duration]);
+    /** Interiors */
+    const wallRef = useRef(null);
+    const characterRef = useRef(null);
+    const deskRef = useRef(null);
+    const chairRef = useRef(null);
 
-    const setBuilding2 = useCallback((elem, time) => {
-        transitionFill('parent-building2_layer-windows', elem, building2.windows.colors[time], duration, ease );
-        transitionFill('parent-building2_layer-base_side-a', elem, building2.base.a.colors[time], duration, ease );
-        transitionFill('parent-building2_layer-base_side-b', elem, building2.base.b.colors[time], duration, ease );
-    }, [duration]);
-
+    // Lottie Animations
     useEffect(() => {
-        console.log("runs 1")
-        animObj = lottie.loadAnimation({
-            container: lottieSVGRef.current,
-            renderer: 'svg', // Required
-            loop: true, // Optional
-            autoplay: true, // Optional
+        wallAnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: wallRef.current,
+            name: "wall", // Name for future reference. Optional.
+            animationData: wall
+        });
+        characterAnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: characterRef.current,
+            name: "character", // Name for future reference. Optional.
+            animationData: character
+        });
+        chairAnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: chairRef.current,
+            name: "chair", // Name for future reference. Optional.
+            animationData: chair
+        });
+        deskAnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: deskRef.current,
+            name: "desk", // Name for future reference. Optional.
+            animationData: desk
+        });
+        building1AnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building1Ref.current,
             name: "building1", // Name for future reference. Optional.
-            animationData: buildingData
-        })
-    }, [])
-
-    const setLayers = (currentTime) => {
-        console.log("runs", currentTime)
-        const building1Elem = building1SVGRef.current.contentDocument;
-        const building2Elem = building2SVGRef.current.contentDocument;
-        const skyElem = skySVGRef.current.contentDocument;
-
-
-        if (currentTime === time.sunrise) {
-            /** sky */
-            hideElement('parent-sky_layer-stars', skyElem);
-            /** building1 */
-            hideElement('parent-building1_layer-windowsOn_side-a', building1Elem);
-            hideElement('parent-building1_layer-windowsOn_side-b', building1Elem);
-            /** building2 */
-            hideElement('parent-building2_layer-windowsOn', building2Elem);
-        }
-        if (currentTime === time.day) {
-            /** sky */
-            hideElement('parent-sky_layer-stars', skyElem);
-            /** building1 */
-            hideElement('parent-building1_layer-windowsOn_side-a', building1Elem);
-            hideElement('parent-building1_layer-windowsOn_side-b', building1Elem);
-            /** building2 */
-            hideElement('parent-building2_layer-windowsOn', building2Elem);
-        }
-        if (currentTime === time.sunset) {
-            /** sky */
-            hideElement('parent-sky_layer-stars', skyElem);
-            /** building1 */
-            hideElement('parent-building1_layer-windowsOn_side-a', building1Elem);
-            hideElement('parent-building1_layer-windowsOn_side-b', building1Elem);
-            /** building2 */
-            hideElement('parent-building2_layer-windowsOn', building2Elem);
-        }
-        if (currentTime === time.night) {
-            /** sky */
-            showElement('parent-sky_layer-stars', skyElem);
-            // /** building1 */
-            // showElement('parent-building1_layer-windowsOn_side-a', building1Elem);
-            // showElement('parent-building1_layer-windowsOn_side-b', building1Elem);
-            // /** building2 */
-            // showElement('parent-building2_layer-windowsOn', building2Elem);
-        }
-    }
-
-    useEffect(() => {
-        if (DOMReady){
-            const building1Elem = building1SVGRef.current.contentDocument;
-            const building2Elem = building2SVGRef.current.contentDocument;
-            const skyElem = skySVGRef.current.contentDocument;
-
-            /** If we are tracking the time, update */
-            if (currentTime === time.sunrise ||
-                currentTime === time.day ||
-                currentTime === time.sunset ||
-                currentTime === time.night){
-                setDuration( getDuration(destinationTime) * hrsPerSecond );
-                setLayers(currentTime);
-                setSky(skyElem, currentTime); //sky
-                setBuilding1(building1Elem, currentTime); //building1
-                setBuilding2(building2Elem, currentTime); //building2
-            }
-        }
-    }, [DOMReady, currentTime, destinationTime, setSky, setBuilding1, setBuilding2])
-
-
-    useEffect(() => {
-        const int = setInterval(() => {
-            console.log('interval', currentTime);
-            setCurrentTime(findNextTime(currentTime))
-        }, interval);
-        return () => clearInterval(int);
-    }, [DOMReady, interval, currentTime]);
+            animationData: building1
+        });
+        building2AnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building2Ref.current,
+            name: "building2", // Name for future reference. Optional.
+            animationData: building2
+        });
+        building3AnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building3Ref.current,
+            name: "building3", // Name for future reference. Optional.
+            animationData: building3
+        });
+        building4AnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building4Ref.current,
+            name: "building4", // Name for future reference. Optional.
+            animationData: building4
+        });
+        building4aAnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building4aRef.current,
+            name: "building4a", // Name for future reference. Optional.
+            animationData: building4a
+        });
+        building4bAnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building4bRef.current,
+            name: "building4b", // Name for future reference. Optional.
+            animationData: building4b
+        });
+        building5AnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building5Ref.current,
+            name: "building5", // Name for future reference. Optional.
+            animationData: building5
+        });
+        building6AnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building6Ref.current,
+            name: "building6", // Name for future reference. Optional.
+            animationData: building6
+        });
+        building7AnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building7Ref.current,
+            name: "building7", // Name for future reference. Optional.
+            animationData: building7
+        });
+        building8AnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building8Ref.current,
+            name: "building8", // Name for future reference. Optional.
+            animationData: building8
+        });
+        building9AnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building9Ref.current,
+            name: "building9", // Name for future reference. Optional.
+            animationData: building9
+        });
+        building10AnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building10Ref.current,
+            name: "building10", // Name for future reference. Optional.
+            animationData: building10
+        });
+        building11AnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building11Ref.current,
+            name: "building11", // Name for future reference. Optional.
+            animationData: building11
+        });
+        building12AnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: building12Ref.current,
+            name: "building12", // Name for future reference. Optional.
+            animationData: building12
+        });
+        buildingWTCAnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: buildingWTCRef.current,
+            name: "buildingWTC", // Name for future reference. Optional.
+            animationData: buildingWTC
+        });
+        skyAnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: skyRef.current,
+            name: "sky", // Name for future reference. Optional.
+            animationData: sky
+        });
+        wallAnimationObject.onEnterFrame = setDuration(wallAnimationObject);
+        characterAnimationObject.onEnterFrame = setDuration(characterAnimationObject);
+        chairAnimationObject.onEnterFrame = setDuration(chairAnimationObject);
+        deskAnimationObject.onEnterFrame = setDuration(deskAnimationObject);
+        building1AnimationObject.onEnterFrame = setDuration(building1AnimationObject);
+        building2AnimationObject.onEnterFrame = setDuration(building2AnimationObject);
+        building3AnimationObject.onEnterFrame = setDuration(building3AnimationObject);
+        building4AnimationObject.onEnterFrame = setDuration(building4AnimationObject);
+        building4aAnimationObject.onEnterFrame = setDuration(building4aAnimationObject);
+        building4bAnimationObject.onEnterFrame = setDuration(building4bAnimationObject);
+        building5AnimationObject.onEnterFrame = setDuration(building5AnimationObject);
+        building6AnimationObject.onEnterFrame = setDuration(building6AnimationObject);
+        building7AnimationObject.onEnterFrame = setDuration(building7AnimationObject);
+        building8AnimationObject.onEnterFrame = setDuration(building8AnimationObject);
+        building9AnimationObject.onEnterFrame = setDuration(building9AnimationObject);
+        building10AnimationObject.onEnterFrame = setDuration(building10AnimationObject);
+        building11AnimationObject.onEnterFrame = setDuration(building11AnimationObject);
+        building12AnimationObject.onEnterFrame = setDuration(building12AnimationObject);
+        buildingWTCAnimationObject.onEnterFrame = setDuration(buildingWTCAnimationObject);
+        skyAnimationObject.onEnterFrame = setDuration(skyAnimationObject);
+    }, []);
 
     useEventListener('load', function() {
         console.log("dom loaded");
         setDOMReady(true);
     });
 
-
+    const handleTurnOnLights = () => {
+        console.log(building2Ref.current)
+        transitionFill('parent_building2-layer_windows-side_b', document, "#ffedbd", 0.1, ease );
+        // transitionFill('parent_building7-layer_windows-side_a', building7Ref.current.contentDocument, "#ffedbd", duration, ease );
+        // transitionFill('parent_building7-layer_windows-side_b', building7Ref.current.contentDocument, "#ffedbd", duration, ease );
+    }
     /** Lottie Anmiations */
-    // const handleStop = () => {
-    //     animObj.stop();
-    // }
-    // const handlePlay = () => {
-    //     animObj.play();
-    // }
-    // const handlePause = () => {
-    //     animObj.pause();
-    // }
-    // const handleSlow = () => {
-    //     animObj.setSpeed(0.15);
-    // }
-    // const handleSunrise = () => {
-    //     animObj.goToAndPlay(10000 , false);
-    // }
-    // const handleDay = () => {
-    //     animObj.goToAndPlay(2500 , false);
-    // }
-    // const handleSunset = () => {
-    //     animObj.goToAndPlay(5000 , false);
-    // }
-    // const handleNight = async () => {
-    //     animObj.setSpeed(2);
-    //     await animObj.playSegments([1,400], false);
-    //     await animObj.setSpeed(1);
-    //     animObj.goToAndPlay(7500 , false);
-    // }
-
-    /** Manual Animations */
-    const handleMSunrise = () => {
-        setDestinationTime(time.sunrise);
-    };
-    const handleMDay = () => {
-        setDestinationTime(time.day);
-    };
-    const handleMSunset = () => {
-        setDestinationTime(time.sunset);
-    };
-    const handleMNight = () => {
-        setDestinationTime(time.night);
-    };
-
+    const handlePlaySeg = (segment, duration=1, loop=false) => () => {
+        const animationObjects = [
+            skyAnimationObject,
+            wallAnimationObject,
+            characterAnimationObject,
+            deskAnimationObject,
+            chairAnimationObject,
+            building1AnimationObject,
+            building2AnimationObject,
+            building3AnimationObject,
+            building4AnimationObject,
+            building4aAnimationObject,
+            building4bAnimationObject,
+            building5AnimationObject,
+            building6AnimationObject,
+            building7AnimationObject,
+            building8AnimationObject,
+            building9AnimationObject,
+            building10AnimationObject,
+            building11AnimationObject,
+            building12AnimationObject,
+            buildingWTCAnimationObject
+        ];
+        animationObjects.forEach( obj => {
+            obj.setSpeed(duration);
+            obj.playSegments(segments[segment], true);
+            obj.loop = loop;
+        })
+    }
+    const handleStop = () => {
+        lottie.stop();
+    }
+    const handlePlay = () => {
+        lottie.play();
+    }
+    const handlePause = () => {
+        lottie.pause();
+    }
+    const handleFast = () => {
+        lottie.setSpeed(15);
+    }
+    const handleSlow = () => {
+        lottie.setSpeed(0.15);
+    }
+    
     return (<>
-        <div ref={lottieSVGRef}></div>
-        <div>
-            <object
-                className={classes.svgObj}
-                ref={skySVGRef}
-                id="sky"
-                data={ skySVG }
-                aria-label="sky-label"
-                aria-required="true"
-                type="image/svg+xml"
-            >
-                    Sky
-            </object>
-            <object
-                className={classes.svgObj}
-                ref={building2SVGRef}
-                id="building1"
-                data={ building2SVG }
-                aria-label="Doodle"
-                aria-required="true"
-                type="image/svg+xml"
-            >
-                    Building2
-            </object>
-            <object
-                className={classes.svgObj}
-                ref={building1SVGRef}
-                id="building1"
-                data={ building1SVG }
-                aria-label="Doodle"
-                aria-required="true"
-                type="image/svg+xml"
-            >
-                    Building1
-            </object>
-        </div>
-        {/* <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 0, left: 0}} onClick={handlePlay}>Play</button>
+        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 0, left: 0}} onClick={handlePlay}>Play</button>
         <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 50, left: 0}} onClick={handleStop}>Stop</button>
         <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 100, left: 0}} onClick={handlePause}>Pause</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 150, left: 0}} onClick={handleSlow}>Slow</button> */}
-        {/* <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 200, left: 0}} onClick={handleSunrise}>Sunrise</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 250, left: 0}} onClick={handleDay}>Day</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 300, left: 0}} onClick={handleSunset}>Sunset</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 350, left: 0}} onClick={handleNight}>Night</button> */}
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 200, left: 0}} onClick={handleMSunrise}>M Sunrise</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 250, left: 0}} onClick={handleMDay}>M Day</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 300, left: 0}} onClick={handleMSunset}>M Sunset</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 350, left: 0}} onClick={handleMNight}>M Night</button>
-	</>)
+        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 150, left: 0}} onClick={handleFast}>Fast</button>
+        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 200, left: 0}} onClick={handleSlow}>Slow</button>
+        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 250, left: 0}} onClick={handlePlaySeg('sunrise', 1)}>Play Sunrise</button>
+        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 300, left: 0}} onClick={handlePlaySeg('day', 1)}>Play Day</button>
+        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 350, left: 0}} onClick={handlePlaySeg('sunset', 1)}>Play Sunset</button>
+        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 400, left: 0}} onClick={handlePlaySeg('night', 1)}>Play Night</button>
+        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 450, left: 0}} onClick={handleTurnOnLights}>Lights On</button>
+        <div className={classes.container}>
+            
+            {/* Sky */}
+            <div className={classes.svgObj} ref={skyRef}></div>
+
+            {/* Buildings */}
+            <div className={classes.svgObj} ref={buildingWTCRef}></div>
+            <div className={classes.svgObj} ref={building12Ref}></div>
+            <div className={classes.svgObj} ref={building11Ref}></div>
+            <div className={classes.svgObj} ref={building10Ref}></div>
+            <div className={classes.svgObj} ref={building9Ref}></div>
+            <div className={classes.svgObj} ref={building8Ref}></div>
+            <div className={classes.svgObj} ref={building7Ref}></div>
+            <div className={classes.svgObj} ref={building6Ref}></div>
+            <div className={classes.svgObj} ref={building5Ref}></div>
+            <div className={classes.svgObj} ref={building4bRef}></div>
+            <div className={classes.svgObj} ref={building4aRef}></div>
+            <div className={classes.svgObj} ref={building4Ref}></div>
+            <div className={classes.svgObj} ref={building3Ref}></div>
+            <div className={classes.svgObj} ref={building2Ref}></div>
+            <div className={classes.svgObj} ref={building1Ref}></div>
+
+            {/* Interior */}
+            <div className={classes.svgObj} ref={wallRef}></div>
+            <div className={classes.svgObj} ref={chairRef}></div>
+            <div className={classes.svgObj} ref={deskRef}></div>
+            <div className={classes.svgObj} ref={characterRef}></div>
+        </div>
+    </>)
 }
 
 const useStyles = makeStyles(theme => ({
@@ -430,7 +422,29 @@ const useStyles = makeStyles(theme => ({
         opacity: 0,
         filter: 'alpha(opacity=0)'
     },
-    svgObj: {
-        position: 'absolute'
+    svgObj: ({ windowSize, isMobile }) => {
+        const { height, width } = windowSize
+        const largerWidthSceen = width > height;
+
+        const base = {
+            position: 'absolute',
+            transform: 'scale(1)',
+            bottom: isMobile ? 0 : 0,
+            right: isMobile ? -56 : 0,
+            height: '100vh'
+        }
+        
+        return largerWidthSceen
+            ? { ...base, width: '100%' }
+            // : { ...base, height: '100vh' }
+            : { ...base, width: '100%' }
+    },
+    container: {
+        position: 'absolute',
+        // bottom: 0,
+        top: 0,
+        right: 0,
+        height: '100vh',
+        width: '100vw'
     }
 }))
