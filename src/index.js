@@ -7,8 +7,8 @@ import 'swiper/components/navigation/navigation.scss';
 import 'swiper/components/pagination/pagination.scss';
 import 'swiper/components/scrollbar/scrollbar.scss';
 // End import swiper styles
-import App from './App.js';
-import * as serviceWorker from './serviceWorker';
+import App from 'App.js';
+import * as serviceWorker from 'serviceWorker';
 
 
 
