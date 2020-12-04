@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core';
-import { Swiper, SwiperSlide } from 'swiper/react';
 /** for homePage project below */
 import clsx from 'clsx';
 import sky from 'assets/home/sky_lottie.json';
@@ -24,7 +23,7 @@ import building9 from 'assets/home/building9_lottie.json';
 import building10 from 'assets/home/building10_lottie.json';
 import building11 from 'assets/home/building11_lottie.json';
 import building12 from 'assets/home/building12_lottie.json';
-import buildingWTC from 'assets/home/buildingWTC_lottie.json';
+// import buildingWTC from 'assets/home/buildingWTC_lottie.json';
 
 import {
 	useEventListener,
@@ -40,6 +39,8 @@ import lottie from 'lottie-web';
 
 // https://josephkhan.me/lottie-web/
 let skyAnimationObject = null;
+let sunAnimationObject = null;
+let moonAnimationObject = null;
 let wallAnimationObject = null;
 let deskAnimationObject = null;
 let chairAnimationObject = null;
@@ -86,12 +87,10 @@ const segments = {
     'sunset': [animationSegments.sunset, animationSegments.night],
     'night': [animationSegments.night, animationSegments.end]
 };
-
 const renderer = 'svg';
-
 const defaultAnimationObjectSettings = {
     renderer, // Required
-    loop: true, // Optional
+    loop: false, // Optional
     autoplay: true // Optional
 };
 
@@ -134,7 +133,6 @@ const setDuration = anim => e => {
     // }
 }
 
-
 export default function HomeDoodle (props) {
     const windowSize = useWindowSize();
     const isMobile = windowSize.width <= 480
@@ -143,6 +141,8 @@ export default function HomeDoodle (props) {
     
     /** Sky */
     const skyRef = useRef(null);
+    const moonRef = useRef(null);
+    const sunRef = useRef(null);
 
     /** Buildings */
     const building1Ref = useRef(null);
@@ -167,7 +167,7 @@ export default function HomeDoodle (props) {
     const deskRef = useRef(null);
     const chairRef = useRef(null);
 
-    // Lottie Animations
+    // Configure and instantiate Lottie Animations
     useEffect(() => {
         wallAnimationObject = lottie.loadAnimation({
             ...defaultAnimationObjectSettings,
@@ -277,17 +277,29 @@ export default function HomeDoodle (props) {
             name: "building12", // Name for future reference. Optional.
             animationData: building12
         });
-        buildingWTCAnimationObject = lottie.loadAnimation({
-            ...defaultAnimationObjectSettings,
-            container: buildingWTCRef.current,
-            name: "buildingWTC", // Name for future reference. Optional.
-            animationData: buildingWTC
-        });
+        // buildingWTCAnimationObject = lottie.loadAnimation({
+        //     ...defaultAnimationObjectSettings,
+        //     container: buildingWTCRef.current,
+        //     name: "buildingWTC", // Name for future reference. Optional.
+        //     animationData: buildingWTC
+        // });
         skyAnimationObject = lottie.loadAnimation({
             ...defaultAnimationObjectSettings,
             container: skyRef.current,
             name: "sky", // Name for future reference. Optional.
             animationData: sky
+        });
+        sunAnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: sunRef.current,
+            name: "sun", // Name for future reference. Optional.
+            animationData: null
+        });
+        moonAnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: moonRef.current,
+            name: "moon", // Name for future reference. Optional.
+            animationData: null
         });
         wallAnimationObject.onEnterFrame = setDuration(wallAnimationObject);
         // characterAnimationObject.onEnterFrame = setDuration(characterAnimationObject);
@@ -307,32 +319,36 @@ export default function HomeDoodle (props) {
         building10AnimationObject.onEnterFrame = setDuration(building10AnimationObject);
         building11AnimationObject.onEnterFrame = setDuration(building11AnimationObject);
         building12AnimationObject.onEnterFrame = setDuration(building12AnimationObject);
-        buildingWTCAnimationObject.onEnterFrame = setDuration(buildingWTCAnimationObject);
+        // buildingWTCAnimationObject.onEnterFrame = setDuration(buildingWTCAnimationObject);
         skyAnimationObject.onEnterFrame = setDuration(skyAnimationObject);
+        sunAnimationObject.onEnterFrame = setDuration(sunAnimationObject);
+        moonAnimationObject.onEnterFrame = setDuration(moonAnimationObject);
     }, []);
 
+    // Listens for dom ready - can use SVGs
     useEventListener('load', function() {
         console.log("dom loaded");
         setDOMReady(true);
     });
 
-    function handleTurnBuilding1Light (on=true) {
-        const building1 = building1Ref.current;
+    /** Lottie Animation buttons */
+    const handleTurnBuilding1Light = (on=true) => {
+        // const building1 = building1Ref.current;
         const func = on ? showElement : hideElement;
         func('parent_building1-layer_windowsON-side_a', document);
         func('parent_building1-layer_windowsON-side_b', document);
     }
-
     const handleTurnOffLights = () => {
         handleTurnBuilding1Light(false);
     }
     const handleTurnOnLights = () => {
         handleTurnBuilding1Light(true);
     }
-    /** Lottie Anmiations */
     const handlePlaySeg = (segment, duration=1, loop=false) => () => {
         const animationObjects = [
             skyAnimationObject,
+            sunAnimationObject,
+            moonAnimationObject,
             wallAnimationObject,
             characterAnimationObject,
             deskAnimationObject,
@@ -351,7 +367,7 @@ export default function HomeDoodle (props) {
             building10AnimationObject,
             building11AnimationObject,
             building12AnimationObject,
-            buildingWTCAnimationObject
+            // buildingWTCAnimationObject
         ];
         animationObjects.forEach( obj => {
             obj.setSpeed(duration);
@@ -391,10 +407,12 @@ export default function HomeDoodle (props) {
             
             {/* Sky */}
             <div className={classes.svgObj} ref={skyRef}></div>
+            <div className={classes.svgObj} ref={sunRef}></div>
+            <div className={classes.svgObj} ref={moonRef}></div>
 
             {/* Buildings - distance 4 */}
             <div className={classes.distance4}>
-                <div className={classes.svgObj} ref={buildingWTCRef}></div>
+                {/* <div className={classes.svgObj} ref={buildingWTCRef}></div> */}
                 <div className={classes.svgObj} ref={building12Ref}></div>
                 <div className={classes.svgObj} ref={building11Ref}></div>
             </div>
