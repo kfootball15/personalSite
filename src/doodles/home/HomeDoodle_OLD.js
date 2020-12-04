@@ -3,25 +3,26 @@ import { makeStyles } from '@material-ui/core';
 import { Swiper, SwiperSlide } from 'swiper/react';
 /** for homePage project below */
 import clsx from 'clsx';
-import buildingData from 'assets/home/building1_update.json';
-import building1SVG from 'assets/home/building1.svg';
-import building2SVG from 'assets/home/building2.svg';
-import building3SVG from 'assets/home/building3.svg';
-import building4SVG from 'assets/home/building4.svg';
-import building5SVG from 'assets/home/building5.svg';
-import building6SVG from 'assets/home/building6.svg';
-import building7SVG from 'assets/home/building7.svg';
-import building8SVG from 'assets/home/building8.svg';
-import building9SVG from 'assets/home/building9.svg';
-import building10SVG from 'assets/home/building10.svg';
-import building11SVG from 'assets/home/building11.svg';
-import building12SVG from 'assets/home/building12.svg';
-import building13SVG from 'assets/home/building13.svg';
-import wallSVG from 'assets/home/wall.svg';
-import interiorSVG from 'assets/home/interior.svg';
-import characterSVG from 'assets/home/character.svg';
-import wc1SVG from 'assets/home/wc1.svg';
-import skySVG from 'assets/home/sky.svg';
+// Moved these assets to ./asets/home/old image files
+// import buildingData from 'assets/home/building1_update.json';
+// import building1SVG from 'assets/home/building1.svg';
+// import building2SVG from 'assets/home/building2.svg';
+// import building3SVG from 'assets/home/building3.svg';
+// import building4SVG from 'assets/home/building4.svg';
+// import building5SVG from 'assets/home/building5.svg';
+// import building6SVG from 'assets/home/building6.svg';
+// import building7SVG from 'assets/home/building7.svg';
+// import building8SVG from 'assets/home/building8.svg';
+// import building9SVG from 'assets/home/building9.svg';
+// import building10SVG from 'assets/home/building10.svg';
+// import building11SVG from 'assets/home/building11.svg';
+// import building12SVG from 'assets/home/building12.svg';
+// import building13SVG from 'assets/home/building13.svg';
+// import wallSVG from 'assets/home/wall.svg';
+// import interiorSVG from 'assets/home/interior.svg';
+// import characterSVG from 'assets/home/character.svg';
+// import wc1SVG from 'assets/home/wc1.svg';
+// import skySVG from 'assets/home/sky.svg';
 // import buildingOldData from 'assets/home/building1.json';
 import {
 	useEventListener,
