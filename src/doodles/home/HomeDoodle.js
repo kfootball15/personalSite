@@ -23,7 +23,7 @@ import building9 from 'assets/home/building9_lottie.json';
 import building10 from 'assets/home/building10_lottie.json';
 import building11 from 'assets/home/building11_lottie.json';
 import building12 from 'assets/home/building12_lottie.json';
-// import buildingWTC from 'assets/home/buildingWTC_lottie.json';
+import buildingWTC from 'assets/home/buildingWTC_lottie.json';
 
 import {
 	useEventListener,
@@ -277,12 +277,12 @@ export default function HomeDoodle (props) {
             name: "building12", // Name for future reference. Optional.
             animationData: building12
         });
-        // buildingWTCAnimationObject = lottie.loadAnimation({
-        //     ...defaultAnimationObjectSettings,
-        //     container: buildingWTCRef.current,
-        //     name: "buildingWTC", // Name for future reference. Optional.
-        //     animationData: buildingWTC
-        // });
+        buildingWTCAnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: buildingWTCRef.current,
+            name: "buildingWTC", // Name for future reference. Optional.
+            animationData: buildingWTC
+        });
         skyAnimationObject = lottie.loadAnimation({
             ...defaultAnimationObjectSettings,
             container: skyRef.current,
@@ -319,7 +319,7 @@ export default function HomeDoodle (props) {
         building10AnimationObject.onEnterFrame = setDuration(building10AnimationObject);
         building11AnimationObject.onEnterFrame = setDuration(building11AnimationObject);
         building12AnimationObject.onEnterFrame = setDuration(building12AnimationObject);
-        // buildingWTCAnimationObject.onEnterFrame = setDuration(buildingWTCAnimationObject);
+        buildingWTCAnimationObject.onEnterFrame = setDuration(buildingWTCAnimationObject);
         skyAnimationObject.onEnterFrame = setDuration(skyAnimationObject);
         sunAnimationObject.onEnterFrame = setDuration(sunAnimationObject);
         moonAnimationObject.onEnterFrame = setDuration(moonAnimationObject);
@@ -367,7 +367,7 @@ export default function HomeDoodle (props) {
             building10AnimationObject,
             building11AnimationObject,
             building12AnimationObject,
-            // buildingWTCAnimationObject
+            buildingWTCAnimationObject
         ];
         animationObjects.forEach( obj => {
             obj.setSpeed(duration);
@@ -412,7 +412,7 @@ export default function HomeDoodle (props) {
 
             {/* Buildings - distance 4 */}
             <div className={classes.distance4}>
-                {/* <div className={classes.svgObj} ref={buildingWTCRef}></div> */}
+                <div className={classes.svgObj} ref={buildingWTCRef}></div>
                 <div className={classes.svgObj} ref={building12Ref}></div>
                 <div className={classes.svgObj} ref={building11Ref}></div>
             </div>
