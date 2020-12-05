@@ -281,7 +281,8 @@ export default function HomeDoodle (props) {
             ...defaultAnimationObjectSettings,
             container: buildingWTCRef.current,
             name: "buildingWTC", // Name for future reference. Optional.
-            animationData: buildingWTC
+            // animationData: buildingWTC
+            animationData: null
         });
         skyAnimationObject = lottie.loadAnimation({
             ...defaultAnimationObjectSettings,
