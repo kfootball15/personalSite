@@ -90,7 +90,7 @@ const segments = {
 const renderer = 'svg';
 const defaultAnimationObjectSettings = {
     renderer, // Required
-    loop: false, // Optional
+    loop: true, // Optional
     autoplay: true // Optional
 };
 
@@ -281,8 +281,7 @@ export default function HomeDoodle (props) {
             ...defaultAnimationObjectSettings,
             container: buildingWTCRef.current,
             name: "buildingWTC", // Name for future reference. Optional.
-            // animationData: buildingWTC
-            animationData: null
+            animationData: buildingWTC
         });
         skyAnimationObject = lottie.loadAnimation({
             ...defaultAnimationObjectSettings,
