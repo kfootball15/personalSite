@@ -50,6 +50,7 @@ curr;
  *      Select the Layer property you want to reduce (can select as many layers as you want)
  *      Run the script (file > scripts > Reduce Keyframes (JF) )
  *      Wait :)
+ *      Afterwards, you may have to select all keyframes and select "Toggle Hold" if you want keyframes to change one frame to the next instead of transitioning over many keyframes
  */
 var activeItem = app.project.activeItem;
 
