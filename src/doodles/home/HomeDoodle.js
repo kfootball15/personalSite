@@ -392,26 +392,29 @@ export default function HomeDoodle (props) {
     }
     
     return (<>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 0, left: 0}} onClick={handlePlay}>Play</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 50, left: 0}} onClick={handleStop}>Stop</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 100, left: 0}} onClick={handlePause}>Pause</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 150, left: 0}} onClick={handleFast}>Fast</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 200, left: 0}} onClick={handleSlow}>Slow</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 250, left: 0}} onClick={handlePlaySeg('sunrise', 1)}>Play Sunrise</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 300, left: 0}} onClick={handlePlaySeg('day', 1)}>Play Day</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 350, left: 0}} onClick={handlePlaySeg('sunset', 1)}>Play Sunset</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 400, left: 0}} onClick={handlePlaySeg('night', 1)}>Play Night</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 450, left: 0}} onClick={handleTurnOffLights}>Lights Off</button>
-        <button style={{ width: 50, height: 50, zIndex: 100, position: 'absolute', top: 500, left: 0}} onClick={handleTurnOnLights}>Lights On</button>
         <div className={classes.container}>
+            <div className={classes.buttons}>
+                <button className={classes.button} style={{ top: 0 }} onClick={handlePlay}>Play</button>
+                <button className={classes.button} style={{ top: 50 }} onClick={handleStop}>Stop</button>
+                <button className={classes.button} style={{ top: 100 }} onClick={handlePause}>Pause</button>
+                <button className={classes.button} style={{ top: 150 }} onClick={handleFast}>Fast</button>
+                <button className={classes.button} style={{ top: 200 }} onClick={handleSlow}>Slow</button>
+                <button className={classes.button} style={{ top: 250 }} onClick={handlePlaySeg('sunrise', 1)}>Play Sunrise</button>
+                <button className={classes.button} style={{ top: 300 }} onClick={handlePlaySeg('day', 1)}>Play Day</button>
+                <button className={classes.button} style={{ top: 350 }} onClick={handlePlaySeg('sunset', 1)}>Play Sunset</button>
+                <button className={classes.button} style={{ top: 400 }} onClick={handlePlaySeg('night', 1)}>Play Night</button>
+                <button className={classes.button} style={{ top: 450 }} onClick={handleTurnOffLights}>Lights Off</button>
+                <button className={classes.button} style={{ top: 500 }} onClick={handleTurnOnLights}>Lights On</button>
+            </div>
             
-            {/* Sky */}
-            <div className={classes.svgObj} ref={skyRef}></div>
-            <div className={classes.svgObj} ref={sunRef}></div>
-            <div className={classes.svgObj} ref={moonRef}></div>
-
             {/* Buildings - distance 4 */}
             <div className={classes.distance4}>
+                {/* Sky */}
+                <div className={classes.svgObj} ref={skyRef}></div>
+                <div className={classes.svgObj} ref={sunRef}></div>
+                <div className={classes.svgObj} ref={moonRef}></div>
+                
+                {/* Buildings */}
                 <div className={classes.svgObj} ref={buildingWTCRef}></div>
                 <div className={classes.svgObj} ref={building12Ref}></div>
                 <div className={classes.svgObj} ref={building11Ref}></div>
@@ -439,15 +442,29 @@ export default function HomeDoodle (props) {
             </div>
 
             {/* Interior */}
-            <div className={classes.svgObj} ref={wallRef}></div>
-            <div className={classes.svgObj} ref={deskRef}></div>
-            <div className={classes.svgObj} ref={chairRef}></div>
+            <div className={classes.wall}>
+                <div className={classes.svgObj} ref={wallRef}></div>
+            </div>
+            <div className={classes.interior}>
+                <div className={classes.svgObj} ref={deskRef}></div>
+                <div className={classes.svgObj} ref={chairRef}></div>
+            </div>
             {/* <div className={classes.svgObj} ref={characterRef}></div> */}
         </div>
     </>)
 }
 
 const useStyles = makeStyles(theme => ({
+    buttons: {
+        
+    },
+    button: {
+        width: 50,
+        height: 50,
+        zIndex: 100,
+        position: 'absolute',
+        left: 0
+    },
     show: {
         opacity: 100,
         filter: 'alpha(opacity=100)'
@@ -510,10 +527,12 @@ const useStyles = makeStyles(theme => ({
 
         const base = {
             position: 'absolute',
-            transform: 'scale(1)',
-            bottom: isMobile ? 0 : 0,
-            right: isMobile ? -56 : 0,
-            height: '100vh'
+            // transform: 'scale(1)',
+            // bottom: isMobile ? 0 : 0,
+            // right: isMobile ? -56 : 0,
+            width: '100%',
+            position: 'absolute',
+            bottom: 0
         }
         
         return largerWidthSceen
@@ -521,10 +540,22 @@ const useStyles = makeStyles(theme => ({
             // : { ...base, height: '100vh' }
             : { ...base, width: '100%' }
     },
+    interior: {
+        bottom: 0,
+        right: 0,
+    },
+    wall: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: '100%',
+        height: '100%'
+    },
     container: {
+        backgroundColor: '#3b3b3b',
         position: 'absolute',
         // bottom: 0,
-        top: 0,
+        bottom: 0,
         right: 0,
         height: '100vh',
         width: '100vw'
