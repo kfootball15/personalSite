@@ -497,7 +497,7 @@ const useStyles = makeStyles(theme => ({
     },
     distance3: ({ weather }) => {
         const filter = {
-            filter: 'brightness(0.9) grayscale(20%)'
+            // filter: 'brightness(0.9) grayscale(20%)'
         };
         
         if (weather === 'rain') {}
@@ -510,7 +510,7 @@ const useStyles = makeStyles(theme => ({
     },
     distance4: ({ weather }) => {
         const filter = {
-            filter: 'brightness(0.8) grayscale(30%)'
+            // filter: 'brightness(0.8) grayscale(30%)'
         };
         
         if (weather === 'rain') {}
