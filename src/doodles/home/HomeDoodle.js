@@ -62,18 +62,7 @@ let building12AnimationObject = null;
 let buildingWTCAnimationObject = null;
 
 /** transition config */
-const hrsPerSecond = 1;
 const fps = 30;
-const ease = 0;
-const m = 1000;
-
-// [sunrise, day, sunset, night]
-const time = {
-    'sunrise': 20 * fps,
-    'day': 4 * fps,
-    'sunset': 10 * fps,
-    'night': 14 * fps
-};
 const animationSegments = {
     'sunrise': 0 * fps,
     'day': 6 * fps,
@@ -81,20 +70,22 @@ const animationSegments = {
     'night': 18 * fps,
     'end': 24 * fps 
 };
+
 const segments = {
     'sunrise': [animationSegments.sunrise, animationSegments.day],
     'day': [animationSegments.day, animationSegments.sunset],
     'sunset': [animationSegments.sunset, animationSegments.night],
     'night': [animationSegments.night, animationSegments.end]
 };
-const renderer = 'svg';
+
 const defaultAnimationObjectSettings = {
-    renderer, // Required
+    renderer: 'svg', // Required
     loop: true, // Optional
     autoplay: true // Optional
 };
 
 const setDuration = anim => e => {
+    console.log("set duration")
     const curr = e.currentTime;
     const slow = 0.75;
     const fast = 1.5;
@@ -134,10 +125,11 @@ const setDuration = anim => e => {
 }
 
 export default function HomeDoodle (props) {
+    const [DOMReady, setDOMReady] = useState(false);
     const windowSize = useWindowSize();
     const isMobile = windowSize.width <= 480
+    const [weather, setWeather] = useState('clear'); 
     const classes = useStyles({ isMobile, windowSize });
-    const [DOMReady, setDOMReady] = useState(false);
     
     /** Sky */
     const skyRef = useRef(null);
@@ -169,6 +161,7 @@ export default function HomeDoodle (props) {
 
     // Configure and instantiate Lottie Animations
     useEffect(() => {
+        console.log("instantiate animations")
         wallAnimationObject = lottie.loadAnimation({
             ...defaultAnimationObjectSettings,
             container: wallRef.current,
@@ -301,28 +294,28 @@ export default function HomeDoodle (props) {
             name: "moon", // Name for future reference. Optional.
             animationData: null
         });
-        wallAnimationObject.onEnterFrame = setDuration(wallAnimationObject);
-        // characterAnimationObject.onEnterFrame = setDuration(characterAnimationObject);
-        chairAnimationObject.onEnterFrame = setDuration(chairAnimationObject);
-        deskAnimationObject.onEnterFrame = setDuration(deskAnimationObject);
-        building1AnimationObject.onEnterFrame = setDuration(building1AnimationObject);
-        building2AnimationObject.onEnterFrame = setDuration(building2AnimationObject);
-        building3AnimationObject.onEnterFrame = setDuration(building3AnimationObject);
-        building4AnimationObject.onEnterFrame = setDuration(building4AnimationObject);
-        building4aAnimationObject.onEnterFrame = setDuration(building4aAnimationObject);
-        building4bAnimationObject.onEnterFrame = setDuration(building4bAnimationObject);
-        building5AnimationObject.onEnterFrame = setDuration(building5AnimationObject);
-        building6AnimationObject.onEnterFrame = setDuration(building6AnimationObject);
-        building7AnimationObject.onEnterFrame = setDuration(building7AnimationObject);
-        building8AnimationObject.onEnterFrame = setDuration(building8AnimationObject);
-        building9AnimationObject.onEnterFrame = setDuration(building9AnimationObject);
-        building10AnimationObject.onEnterFrame = setDuration(building10AnimationObject);
-        building11AnimationObject.onEnterFrame = setDuration(building11AnimationObject);
-        building12AnimationObject.onEnterFrame = setDuration(building12AnimationObject);
-        buildingWTCAnimationObject.onEnterFrame = setDuration(buildingWTCAnimationObject);
-        skyAnimationObject.onEnterFrame = setDuration(skyAnimationObject);
-        sunAnimationObject.onEnterFrame = setDuration(sunAnimationObject);
-        moonAnimationObject.onEnterFrame = setDuration(moonAnimationObject);
+        // wallAnimationObject.onEnterFrame = setDuration(wallAnimationObject);
+        // // characterAnimationObject.onEnterFrame = setDuration(characterAnimationObject);
+        // chairAnimationObject.onEnterFrame = setDuration(chairAnimationObject);
+        // deskAnimationObject.onEnterFrame = setDuration(deskAnimationObject);
+        // building1AnimationObject.onEnterFrame = setDuration(building1AnimationObject);
+        // building2AnimationObject.onEnterFrame = setDuration(building2AnimationObject);
+        // building3AnimationObject.onEnterFrame = setDuration(building3AnimationObject);
+        // building4AnimationObject.onEnterFrame = setDuration(building4AnimationObject);
+        // building4aAnimationObject.onEnterFrame = setDuration(building4aAnimationObject);
+        // building4bAnimationObject.onEnterFrame = setDuration(building4bAnimationObject);
+        // building5AnimationObject.onEnterFrame = setDuration(building5AnimationObject);
+        // building6AnimationObject.onEnterFrame = setDuration(building6AnimationObject);
+        // building7AnimationObject.onEnterFrame = setDuration(building7AnimationObject);
+        // building8AnimationObject.onEnterFrame = setDuration(building8AnimationObject);
+        // building9AnimationObject.onEnterFrame = setDuration(building9AnimationObject);
+        // building10AnimationObject.onEnterFrame = setDuration(building10AnimationObject);
+        // building11AnimationObject.onEnterFrame = setDuration(building11AnimationObject);
+        // building12AnimationObject.onEnterFrame = setDuration(building12AnimationObject);
+        // buildingWTCAnimationObject.onEnterFrame = setDuration(buildingWTCAnimationObject);
+        // skyAnimationObject.onEnterFrame = setDuration(skyAnimationObject);
+        // sunAnimationObject.onEnterFrame = setDuration(sunAnimationObject);
+        // moonAnimationObject.onEnterFrame = setDuration(moonAnimationObject);
     }, []);
 
     // Listens for dom ready - can use SVGs
@@ -408,12 +401,13 @@ export default function HomeDoodle (props) {
             </div>
             
             {/* Buildings - distance 4 */}
-            <div className={classes.distance4}>
+            <div className={classes.distance5}>
                 {/* Sky */}
                 <div className={classes.svgObj} ref={skyRef}></div>
                 <div className={classes.svgObj} ref={sunRef}></div>
                 <div className={classes.svgObj} ref={moonRef}></div>
-                
+            </div>
+            <div className={classes.distance4}>        
                 {/* Buildings */}
                 <div className={classes.svgObj} ref={buildingWTCRef}></div>
                 <div className={classes.svgObj} ref={building12Ref}></div>
@@ -474,7 +468,9 @@ const useStyles = makeStyles(theme => ({
         filter: 'alpha(opacity=0)'
     },
     distance1: ({ weather }) => {
-        const filter = {};
+        const filter = {
+            // filter: 'blur(5px)'
+        };
         
         if (weather === 'rain') {}
         if (weather === 'snow') {}
@@ -497,7 +493,7 @@ const useStyles = makeStyles(theme => ({
     },
     distance3: ({ weather }) => {
         const filter = {
-            // filter: 'brightness(0.9) grayscale(20%)'
+            filter: 'brightness(1.2) saturate(80%) contrast(50%)'
         };
         
         if (weather === 'rain') {}
@@ -510,7 +506,7 @@ const useStyles = makeStyles(theme => ({
     },
     distance4: ({ weather }) => {
         const filter = {
-            // filter: 'brightness(0.8) grayscale(30%)'
+            filter: 'brightness(1) saturate(70%) contrast(50%)'
         };
         
         if (weather === 'rain') {}
