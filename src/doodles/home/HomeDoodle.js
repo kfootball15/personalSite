@@ -142,7 +142,7 @@ export default function HomeDoodle (props) {
     return (<>
         <div className={classes.container}>
             <div className={classes.buttons}>
-                <button className={classes.button} style={{ top: 0 }} onClick={handlePlay}>Play</button>
+                <button className={classes.button} style={{ top: 0 }} onClick={handleToggleFocus}>Focus</button>
                 <button className={classes.button} style={{ top: 50 }} onClick={handleStop}>Stop</button>
                 <button className={classes.button} style={{ top: 100 }} onClick={handlePause}>Pause</button>
                 <button className={classes.button} style={{ top: 150 }} onClick={handleSpeed(15)}>Fast</button>
@@ -154,7 +154,7 @@ export default function HomeDoodle (props) {
                 <button className={classes.button} style={{ top: 450 }} onClick={handlePlaySeg('night', 1)}>Play Night</button>
                 <button className={classes.button} style={{ top: 500 }} onClick={handleTurnOffLights}>Lights Off</button>
                 <button className={classes.button} style={{ top: 550 }} onClick={handleTurnOnLights}>Lights On</button>
-                <button className={classes.button} style={{ top: 550 }} onClick={handleToggleFocus}>Focus</button>
+                <button className={classes.button} style={{ top: 550 }} onClick={handlePlay}>Play</button>
             </div>
             
             <div className={classes.exterior}>
