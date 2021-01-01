@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core';
 /** for homePage project below */
 import clsx from 'clsx';
-import wall from 'assets/home/full_interior_lottie.json';
-import building1 from 'assets/home/full_exterior_lottie.json';
+import INTERIOR_LOTTI from 'assets/home/full_interior_lottie.json';
+import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
+import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
 
 import {
 	useEventListener,
@@ -18,8 +19,9 @@ import {
 import lottie from 'lottie-web';
 
 // https://josephkhan.me/lottie-web/
-let wallAnimationObject = null;
-let building1AnimationObject = null;
+let skyAnimationObject = null;
+let interiorAnimationObject = null;
+let exteriorAnimationObject = null;
 
 /** transition config */
 const fps = 30;
@@ -62,11 +64,12 @@ export default function HomeDoodle (props) {
     const classes = useStyles({ weather, currentSegment, focus, isMobile, windowSize });
     
 
+    /** Sky */
+    const skyRef = useRef(null);
     /** Exterior */
-    const building1Ref = useRef(null);
-
+    const exteriorRef = useRef(null);
     /** Interior */
-    const wallRef = useRef(null);
+    const interiorRef = useRef(null);
 
     // Configure and instantiate Lottie Animations
     useEffect(() => {
@@ -76,20 +79,26 @@ export default function HomeDoodle (props) {
         // lottie.setQuality(2);
         
         // Animation Settings
-        wallAnimationObject = lottie.loadAnimation({
+        skyAnimationObject = lottie.loadAnimation({
             ...defaultAnimationObjectSettings,
-            container: wallRef.current,
-            name: "wall", // Name for future reference. Optional.
-            animationData: wall
+            container: skyRef.current,
+            name: "sky", // Name for future reference. Optional.
+            animationData: SKY_LOTTIE
         });
-        building1AnimationObject = lottie.loadAnimation({
+        interiorAnimationObject = lottie.loadAnimation({
             ...defaultAnimationObjectSettings,
-            container: building1Ref.current,
-            name: "building1", // Name for future reference. Optional.
-            animationData: building1
+            container: interiorRef.current,
+            name: "interior", // Name for future reference. Optional.
+            animationData: INTERIOR_LOTTI
+        });
+        exteriorAnimationObject = lottie.loadAnimation({
+            ...defaultAnimationObjectSettings,
+            container: exteriorRef.current,
+            name: "exterior", // Name for future reference. Optional.
+            animationData: EXTERIOR_LOTTIE
         });
         // This will set the curAppend this to any of the layers
-        wallAnimationObject.onEnterFrame = handleSetCurrentSegment(setCurrentSegment);
+        interiorAnimationObject.onEnterFrame = handleSetCurrentSegment(setCurrentSegment);
     }, []);
 
     // Listens for dom ready - can use SVGs
@@ -100,7 +109,7 @@ export default function HomeDoodle (props) {
 
     /** Lottie Animation buttons */
     const handleTurnBuilding1Light = (on=true) => {
-        // const building1 = building1Ref.current;
+        // const building1 = exteriorRef.current;
         const func = on ? showElement : hideElement;
         func('parent_building1-layer_windowsON-side_a', document);
         func('parent_building1-layer_windowsON-side_b', document);
@@ -113,8 +122,9 @@ export default function HomeDoodle (props) {
     }
     const handlePlaySeg = (segment, duration=1, loop=false) => () => {
         const animationObjects = [
-            wallAnimationObject,
-            building1AnimationObject,
+            skyAnimationObject,
+            interiorAnimationObject,
+            exteriorAnimationObject,
         ];
         animationObjects.forEach( obj => {
             obj.setSpeed(duration);
@@ -156,18 +166,18 @@ export default function HomeDoodle (props) {
                 <button className={classes.button} style={{ top: 550 }} onClick={handleTurnOnLights}>Lights On</button>
                 <button className={classes.button} style={{ top: 550 }} onClick={handlePlay}>Play</button>
             </div>
+
+            <div className={classes.svgObj} ref={skyRef}></div>
             
             <div className={classes.exterior}>
                 {/* Buildings - distance 0 */}
-                <div className={classes.distance0}>
-                    <div className={classes.svgObj} ref={building1Ref}></div>
-                </div>
+                <div className={classes.svgObj} ref={exteriorRef}></div>
             </div>
 
             {/* Interior */}
             <div className={classes.interior}>
-                <div className={classes.wall}>
-                    <div className={classes.svgObj} ref={wallRef}></div>
+                <div className={classes.interiorContainer}>
+                    <div className={classes.svgObj} ref={interiorRef}></div>
                 </div>
             </div>
         </div>
@@ -178,9 +188,7 @@ export default function HomeDoodle (props) {
 const transitionSpeed = '2s';
 
 const useStyles = makeStyles(theme => ({
-    buttons: {
-        
-    },
+    buttons: {},
     button: {
         width: 50,
         height: 50,
@@ -200,18 +208,18 @@ const useStyles = makeStyles(theme => ({
         bottom: 0,
         right: 0,
     },
-    distance0: ({ weather, currentSegment, focus }) => {
-        const nightTheme = currentSegment === 'night' || currentSegment === 'sunset';
+    exterior: ({ weather, currentSegment, focus }) => {
+        const nightTime = currentSegment === 'night' || currentSegment === 'sunset';
         const interior = focus === 'interior';
 
         const brightness = '1';
-        const saturate = '100%';
-        const contrast = '100%';
+        const saturate = nightTime ? '100%' : '100%';
+        const contrast = nightTime ? '100%' : '100%';
         const blur = interior ? '3px' : '0px';
         
         const filter = {
-            filter: `brightness(${brightness}) saturate(${saturate}) contrast(${contrast}) blur(${blur})`,
-            transition: `filter ${transitionSpeed} linear`
+            filter: `brightness(${ brightness }) saturate(${ saturate }) contrast(${ contrast }) blur(${ blur })`,
+            transition: `filter ${ transitionSpeed } linear`
         };
         
         if (weather === 'rain') {}
@@ -222,100 +230,15 @@ const useStyles = makeStyles(theme => ({
             '& div': filter
         } 
     },
-    distance1: ({ weather, currentSegment, focus }) => {
-
-        const nightTheme = currentSegment === 'night' || currentSegment === 'sunset';
+    interior: ({ focus }) => {
         const interior = focus === 'interior';
-
-        const brightness = '1';
-        const saturate = '100%';
-        const contrast = '100%';
-        const blur = interior ? '2px' : '0px';
-        
-        const filter = {
-            filter: `brightness(${brightness}) saturate(${saturate}) contrast(${contrast}) blur(${blur})`,
-            transition: `filter ${transitionSpeed} linear`
-        };
-        
-        if (weather === 'rain') {}
-        if (weather === 'snow') {}
-        if (weather === 'storm') {}
+        const blur = interior ? '0px' : '4px';
 
         return {
-            '& div': filter
-        }
-    },
-    distance2: ({ weather, currentSegment, focus }) => {
-        
-        const nightTheme = currentSegment === 'night' || currentSegment === 'sunset';
-        const interior = focus === 'interior';
-
-        const brightness = '1';
-        const saturate = '100%';
-        const contrast = '100%';
-        const blur = interior ? '2px' : '0px';
-        
-        const filter = {
-            filter: `brightness(${brightness}) saturate(${saturate}) contrast(${contrast}) blur(${blur})`,
-            transition: `filter ${transitionSpeed} linear`
-        };
-        
-        if (weather === 'rain') {}
-        if (weather === 'snow') {}
-        if (weather === 'storm') {}
-
-        return {
-            '& div': filter
-        }
-    },
-    distance3: ({ weather, currentSegment, focus }) => {
-
-        const nightTheme = currentSegment === 'night' || currentSegment === 'sunset';
-        const interior = focus === 'interior';
-
-        const brightness = nightTheme ? '1' : '1.3';
-        const saturate = nightTheme ? '50%' : '70%';
-        const contrast = nightTheme ? '100%' : '50%';
-        const blur = interior ? '2px' : '0px';
-
-        const filter = {
-            filter: `brightness(${brightness}) saturate(${saturate}) contrast(${contrast}) blur(${blur})`,
-            transition: `filter ${transitionSpeed} linear`
-        };
-        
-        if (weather === 'rain') {}
-        if (weather === 'snow') {}
-        if (weather === 'storm') {}
-
-        return {
-            '& div': filter
-        }
-    },
-    distance4: ({ weather, currentSegment, focus }) => {
-
-        const nightTheme = currentSegment === 'night' || currentSegment === 'sunset';
-        const interior = focus === 'interior';
-
-        const brightness = nightTheme ? '1' : '1.5';
-        const saturate = nightTheme ? '50%' : '100%';
-        const contrast = nightTheme ? '100%' : '50%';
-        const blur = interior ? '3px' : '0px';
-
-        const filter = {
-            filter: `brightness(${brightness}) saturate(${saturate}) contrast(${contrast}) blur(${blur})`,
-            transition: `filter ${transitionSpeed} linear`
-        };
-        // const filter = {
-        //     filter: 'brightness(1.2) saturate(70%) contrast(50%)',
-        //     // transition: ''
-        // };
-        
-        if (weather === 'rain') {}
-        if (weather === 'snow') {}
-        if (weather === 'storm') {}
-
-        return {
-            '& div': filter
+            '& div': {
+                filter: `blur(${ blur })`,
+                transition: `filter ${ transitionSpeed } linear`
+            }
         }
     },
     svgObj: ({ windowSize, isMobile }) => {
@@ -337,21 +260,7 @@ const useStyles = makeStyles(theme => ({
             // : { ...base, height: '100vh' }
             : { ...base, width: '100%' }
     },
-    exterior: ({}) => {},
-    interior: ({ focus }) => {
-
-        const interior = focus === 'interior';
-
-        const blur = interior ? '0px' : '5px';
-
-        return {
-            '& div': {
-                filter: `blur(${blur})`,
-                transition: `filter ${transitionSpeed} linear`
-            }
-        }
-    },
-    wall: {
+    interiorContainer: {
         position: 'absolute',
         bottom: 0,
         left: 0,
