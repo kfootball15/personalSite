@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core';
 /** for homePage project below */
 import clsx from 'clsx';
-import INTERIOR_LOTTI from 'assets/home/full_interior_lottie.json';
+import INTERIOR_LOTTIE from 'assets/home/full_interior_lottie.json';
 import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
 import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
 
@@ -70,6 +70,20 @@ export default function HomeDoodle (props) {
     const exteriorRef = useRef(null);
     /** Interior */
     const interiorRef = useRef(null);
+    /** SVG Animation Elements */
+    const animBlurExterior1Ref = useRef(null);
+    const animBlurExterior2Ref = useRef(null);
+    const animBlurExterior3Ref = useRef(null);
+    const animBlurExterior4Ref = useRef(null);
+    const animBlurExterior5Ref = useRef(null);
+    const animBlurExterior6Ref = useRef(null);
+    /** SVG Blur Animations */
+    const blurExterior1Ref = useRef(null);
+    const blurExterior2Ref = useRef(null);
+    const blurExterior3Ref = useRef(null);
+    const blurExterior4Ref = useRef(null);
+    const blurExterior5Ref = useRef(null);
+    const blurExterior6Ref = useRef(null);
 
     // Configure and instantiate Lottie Animations
     useEffect(() => {
@@ -89,7 +103,7 @@ export default function HomeDoodle (props) {
             ...defaultAnimationObjectSettings,
             container: interiorRef.current,
             name: "interior", // Name for future reference. Optional.
-            animationData: INTERIOR_LOTTI
+            animationData: INTERIOR_LOTTIE
         });
         exteriorAnimationObject = lottie.loadAnimation({
             ...defaultAnimationObjectSettings,
@@ -147,7 +161,50 @@ export default function HomeDoodle (props) {
     const handleToggleFocus = () => {
         const newFocus = focus === 'interior' ? 'exterior' : 'interior';
         setFocus(newFocus);
+
+   
     }
+    
+    /** Can latch on on 'segments' and play animations here (in future, maybe change segment to keyframes so we can be more granular about when animations play) */
+    useEffect(() => {
+        console.log("segment change: ", currentSegment);
+
+        // const anim_contrast = document.getElementById('anim_contrast');
+        // anim_contrast.beginElement();
+    }, [ currentSegment ])
+
+    useEffect(() => {
+        // https://properdesign.co.uk/animating-svg-with-beginelement/
+        // https://stackoverflow.com/questions/8455773/svg-trigger-animation-with-event
+        const blurVal = focus === 'interior' ? "4" : "0" 
+        animBlurExterior1Ref.current.beginElement();
+        animBlurExterior1Ref.current.onbegin = () => {
+            blurExterior1Ref.current.setStdDeviation(blurVal, blurVal); //https://developer.mozilla.org/en-US/docs/Web/API/SVGFEGaussianBlurElement
+        }
+        animBlurExterior2Ref.current.beginElement();
+        animBlurExterior2Ref.current.onbegin = () => {
+            blurExterior2Ref.current.setStdDeviation(blurVal, blurVal); //https://developer.mozilla.org/en-US/docs/Web/API/SVGFEGaussianBlurElement
+        }
+        animBlurExterior3Ref.current.beginElement();
+        animBlurExterior3Ref.current.onbegin = () => {
+            blurExterior3Ref.current.setStdDeviation(blurVal, blurVal); //https://developer.mozilla.org/en-US/docs/Web/API/SVGFEGaussianBlurElement
+        }
+        animBlurExterior4Ref.current.beginElement();
+        animBlurExterior4Ref.current.onbegin = () => {
+            blurExterior4Ref.current.setStdDeviation(blurVal, blurVal); //https://developer.mozilla.org/en-US/docs/Web/API/SVGFEGaussianBlurElement
+        }
+        animBlurExterior5Ref.current.beginElement();
+        animBlurExterior5Ref.current.onbegin = () => {
+            blurExterior5Ref.current.setStdDeviation(blurVal, blurVal); //https://developer.mozilla.org/en-US/docs/Web/API/SVGFEGaussianBlurElement
+        }
+        animBlurExterior6Ref.current.beginElement();
+        animBlurExterior6Ref.current.onbegin = () => {
+            blurExterior6Ref.current.setStdDeviation(blurVal, blurVal); //https://developer.mozilla.org/en-US/docs/Web/API/SVGFEGaussianBlurElement
+        }
+    }, [focus])
+
+    const blur = "3";
+    const transitionDuration = "1s";
     
     return (<>
         <div className={classes.container}>
@@ -167,14 +224,159 @@ export default function HomeDoodle (props) {
                 <button className={classes.button} style={{ top: 550 }} onClick={handlePlay}>Play</button>
             </div>
 
-            <div className={classes.svgObj} ref={skyRef}></div>
+            <svg>
+            <defs>
+                <filter id="exterior_1">
+                    <feGaussianBlur
+                        ref={blurExterior1Ref}
+                        id="blur_exterior_1"
+                    />
+                    <animate
+                        ref={ animBlurExterior1Ref }
+                        xlinkHref="#blur_exterior_1"
+                        id="anim_blur_exterior_1" 
+                        attributeName="stdDeviation"
+                        // from={ focus === 'interior' ? "0" : blur }
+                        // to={ focus === 'interior' ? blur : "0" }
+                        values={focus === 'interior' ? "0;4" : "4;0"}
+                        dur={ transitionDuration }
+                        begin='indefinite'
+                    />
+                </filter>
+                <filter id="exterior_2">
+                    <feGaussianBlur
+                        ref={blurExterior2Ref}
+                        id="blur_exterior_2"
+                    />
+                    <animate
+                        ref={ animBlurExterior2Ref }
+                        xlinkHref="#blur_exterior_2"
+                        id="anim_blur_exterior_2" 
+                        attributeName="stdDeviation"
+                        from={ focus === 'interior' ? "0" : blur }
+                        to={ focus === 'interior' ? blur : "0" }
+                        dur={ transitionDuration }
+                        begin='indefinite'
+                    />
+                </filter>
+                <filter id="exterior_3">
+                    <feGaussianBlur
+                        ref={blurExterior3Ref}
+                        id="blur_exterior_3"
+                    />
+                    <animate
+                        ref={ animBlurExterior3Ref }
+                        xlinkHref="#blur_exterior_3"
+                        id="anim_blur_exterior_3" 
+                        attributeName="stdDeviation"
+                        from={ focus === 'interior' ? "0" : blur }
+                        to={ focus === 'interior' ? blur : "0" }
+                        dur={ transitionDuration }
+                        begin='indefinite'
+                    />
+                </filter>
+                <filter id="exterior_4">
+                    <feGaussianBlur
+                        ref={blurExterior4Ref}
+                        id="blur_exterior_4"
+                    />
+                    <feComponentTransfer id="contrast">
+                        <feFuncR type="linear" slope="1.1"/>
+                        <feFuncG type="linear" slope="1.1"/>
+                        <feFuncB type="linear" slope="1.1"/>
+                    </feComponentTransfer>
+
+                    <animate
+                        ref={ animBlurExterior4Ref }
+                        xlinkHref="#blur_exterior_4"
+                        id="anim_blur_exterior_4" 
+                        attributeName="stdDeviation"
+                        from={ focus === 'interior' ? "0" : blur }
+                        to={ focus === 'interior' ? blur : "0" }
+                        dur={ transitionDuration }
+                        begin='indefinite'
+                    />
+                </filter>
+                <filter id="exterior_5">
+                    <feGaussianBlur
+                        ref={blurExterior5Ref}
+                        id="blur_exterior_5"
+                    />
+
+                    <feComponentTransfer id="contrast">
+                        <feFuncR type="linear" slope="1.2"/>
+                        <feFuncG type="linear" slope="1.2"/>
+                        <feFuncB type="linear" slope="1.2"/>
+                    </feComponentTransfer>
+
+                    {/* <feColorMatrix type="saturate" values="0.6"/> */}
+
+                    {/* https://codepen.io/chriscoyier/pen/dPRVqL?editors=1000 */}
+                    <animate
+                        ref={ animBlurExterior5Ref }
+                        xlinkHref="#blur_exterior_5"
+                        id="anim_blur_exterior_5" 
+                        attributeName="stdDeviation"
+                        from={ focus === 'interior' ? "0" : blur }
+                        to={ focus === 'interior' ? blur : "0" }
+                        dur={ transitionDuration }
+                        begin='indefinite'
+                        // repeatCount="indefinite"
+                        // fill="freeze"
+                    />
+                    {/* <animate 
+                        xlinkHref="#contrast"
+                        id="anim_contrast" 
+                        attributeName="slope"
+                        from={ currentSegment === 'sunset' ? "1.9" : "0.1" }
+                        to={ currentSegment === 'sunrise' ? "0.1" : "1.9" }
+                        dur={ transitionDuration }
+                        begin='indefinite'
+                        // repeatCount="indefinite"
+                        // fill="freeze"
+                    /> */}
+                </filter>
+                <filter id="exterior_6">
+                    <feGaussianBlur
+                        ref={blurExterior6Ref}
+                        id="blur_exterior_6"
+                    />
+
+                    <feComponentTransfer id="contrast">
+                        <feFuncR type="linear" slope="1.1"/>
+                        <feFuncG type="linear" slope="1.1"/>
+                        <feFuncB type="linear" slope="1.1"/>
+                    </feComponentTransfer>
+
+                    <animate
+                        ref={ animBlurExterior6Ref }
+                        xlinkHref="#blur_exterior_6"
+                        id="anim_blur_exterior_6" 
+                        attributeName="stdDeviation"
+                        from={ focus === 'interior' ? "0" : blur }
+                        to={ focus === 'interior' ? blur : "0" }
+                        dur={ transitionDuration }
+                        begin='indefinite'
+                    />
+                </filter>
+                <filter id="sky">
+                    <feComponentTransfer id="contrast">
+                        <feFuncR type="linear" slope="1.2"/>
+                        <feFuncG type="linear" slope="1.2"/>
+                        <feFuncB type="linear" slope="1.2"/>
+                    </feComponentTransfer>
+                </filter>
+            </defs>
+            </svg>
+
             
+            {/* Extertior SVGs */}
             <div className={classes.exterior}>
-                {/* Buildings - distance 0 */}
+                <div className={classes.svgObj} ref={skyRef}></div>
                 <div className={classes.svgObj} ref={exteriorRef}></div>
             </div>
 
-            {/* Interior */}
+            {/* Interior SVGs */}
             <div className={classes.interior}>
                 <div className={classes.interiorContainer}>
                     <div className={classes.svgObj} ref={interiorRef}></div>
@@ -209,27 +411,133 @@ const useStyles = makeStyles(theme => ({
         right: 0,
     },
     exterior: ({ weather, currentSegment, focus }) => {
-        const nightTime = currentSegment === 'night' || currentSegment === 'sunset';
-        const interior = focus === 'interior';
 
-        const brightness = '1';
-        const saturate = nightTime ? '100%' : '100%';
-        const contrast = nightTime ? '100%' : '100%';
-        const blur = interior ? '3px' : '0px';
-        
-        const filter = {
-            filter: `brightness(${ brightness }) saturate(${ saturate }) contrast(${ contrast }) blur(${ blur })`,
-            transition: `filter ${ transitionSpeed } linear`
+        const exterior_1 = {
+            filter: 'url(#exterior_1)'
         };
+        const exterior_2 = {
+            filter: 'url(#exterior_2)'
+        };
+        const exterior_3 = {
+            filter: 'url(#exterior_3)'
+        };
+        const exterior_4 = {
+            filter: 'url(#exterior_4)'
+        };
+        const exterior_5 = {
+            filter: 'url(#exterior_5)'
+        };
+        const exterior_6 = {
+            filter: 'url(#exterior_6)'
+        };
+        const sky = {
+            filter: 'url(#sky)',
+        }
         
         if (weather === 'rain') {}
         if (weather === 'snow') {}
         if (weather === 'storm') {}
 
         return {
-            '& div': filter
+            // '& div': filter,
+            '& .exterior_1' : exterior_1,
+            '& .exterior_2' : exterior_2,
+            '& .exterior_3' : exterior_3,
+            '& .exterior_4' : exterior_4,
+            '& .exterior_5' : exterior_5,
+            '& .exterior_6' : exterior_6,
+            '& .sky' : sky
         } 
     },
+    // exterior: ({ weather, currentSegment, focus }) => {
+    //     const isNightTime = currentSegment === 'night' || currentSegment === 'sunset';
+    //     const isInterior = focus === 'interior';
+
+    //     let brightness = '1';
+    //     let saturate = '100%';
+    //     let contrast = '100%';
+    //     let blur = '0px';
+    
+
+    //     function getFilters ({ isNightTime, isInterior }) {
+    //         const filter1 = () => {
+    //             let blur2 = isInterior ? '1px' : '0px';
+    //             return {
+    //                 filter: `brightness(${ brightness }) saturate(${ saturate }) contrast(${ contrast }) blur(${ blur2 })`,
+    //                 transition: `filter ${ transitionSpeed } linear`
+    //             }
+    //         };
+    //         const filter2 = () => {
+    //             blur = isInterior ? '2px' : '0px';
+    //             return {
+    //                 filter: `brightness(${ brightness }) saturate(${ saturate }) contrast(${ contrast }) blur(${ blur })`,
+    //                 transition: `filter ${ transitionSpeed } linear`
+    //             }
+    //         };
+    //         const filter3 = () => {
+    //             blur = isInterior ? '2px' : '0px';
+    //             return {
+    //                 filter: `brightness(${ brightness }) saturate(${ saturate }) contrast(${ contrast }) blur(${ blur })`,
+    //                 transition: `filter ${ transitionSpeed } linear`,
+    //             }
+    //         };
+    //         const filter4 = () => {
+    //             brightness = isNightTime ? '1' : '1.3';
+    //             saturate = isNightTime ? '50%' : '70%';
+    //             contrast = isNightTime ? '100%' : '50%';
+    //             blur = isInterior ? '2px' : '0px';
+    //             return {
+    //                 filter: `brightness(${ brightness }) saturate(${ saturate }) contrast(${ contrast }) blur(${ blur })`,
+    //                 transition: `filter ${ transitionSpeed } linear`,
+    //             }
+    //         };
+    //         const filter5 = () => {
+    //             let brightness2 = isNightTime ? '1' : '1.5';
+    //             let saturate2 = isNightTime ? '50%' : '100%';
+    //             let contrast2 = isNightTime ? '100%' : '20%';
+    //             let blur2 = isInterior ? '3px' : '0px';
+    //             return {
+    //                 // filter: `brightness(${ brightness2 }) saturate(${ saturate2 }) contrast(${ contrast2 }) blur(${ blur2 })`,
+    //                 filter: 'url(#exterior_5)',
+    //                 // opacity: 0.5
+    //                 // transition: `filter ${ transitionSpeed } linear`
+    //             }
+    //         };
+    //         const filter6 = () => {
+    //             blur = isInterior ? '3px' : '0px';
+    //             return {
+    //                 filter: `brightness(${ brightness }) saturate(${ saturate }) contrast(${ contrast }) blur(${ blur })`,
+    //                 transition: `filter ${ transitionSpeed } linear`
+    //             }
+    //         };
+
+    //         const filterSky = () => {
+    //             return {
+    //                 filter: 'url(#sky)',
+    //             }
+    //         }
+
+    //         return [filter1(), filter2(), filter3(), filter4(), filter5(), filter6(), filterSky()];
+    //     }
+
+    //     const [filter1, filter2, filter3, filter4, filter5, filter6, filterSky] = getFilters({ isNightTime, isInterior })
+    //     console.log("filters", isNightTime, isInterior, filter1, filter2)
+        
+    //     if (weather === 'rain') {}
+    //     if (weather === 'snow') {}
+    //     if (weather === 'storm') {}
+
+    //     return {
+    //         // '& div': filter,
+    //         '& .exterior_1' : filter1,
+    //         '& .exterior_2' : filter2,
+    //         '& .exterior_3' : filter3,
+    //         '& .exterior_4' : filter4,
+    //         '& .exterior_5' : filter5,
+    //         '& .exterior_6' : filter6,
+    //         '& .sky' : filterSky
+    //     } 
+    // },
     interior: ({ focus }) => {
         const interior = focus === 'interior';
         const blur = interior ? '0px' : '4px';
