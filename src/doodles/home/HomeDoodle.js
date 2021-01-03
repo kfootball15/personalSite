@@ -444,7 +444,7 @@ const useStyles = makeStyles(theme => ({
     },
     interior: ({ focus }) => {
         const interior = focus === 'interior';
-        const blur = interior ? '0px' : '4px';
+        const blur = interior ? '0px' : '3px';
 
         return {
             '& div': {
