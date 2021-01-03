@@ -236,8 +236,6 @@ export default function HomeDoodle (props) {
                         xlinkHref="#blur_exterior_1"
                         id="anim_blur_exterior_1" 
                         attributeName="stdDeviation"
-                        // from={ focus === 'interior' ? "0" : blur }
-                        // to={ focus === 'interior' ? blur : "0" }
                         values={focus === 'interior' ? "0;4" : "4;0"}
                         dur={ transitionDuration }
                         begin='indefinite'
@@ -253,8 +251,7 @@ export default function HomeDoodle (props) {
                         xlinkHref="#blur_exterior_2"
                         id="anim_blur_exterior_2" 
                         attributeName="stdDeviation"
-                        from={ focus === 'interior' ? "0" : blur }
-                        to={ focus === 'interior' ? blur : "0" }
+                        values={focus === 'interior' ? "0;4" : "4;0"}
                         dur={ transitionDuration }
                         begin='indefinite'
                     />
@@ -269,8 +266,7 @@ export default function HomeDoodle (props) {
                         xlinkHref="#blur_exterior_3"
                         id="anim_blur_exterior_3" 
                         attributeName="stdDeviation"
-                        from={ focus === 'interior' ? "0" : blur }
-                        to={ focus === 'interior' ? blur : "0" }
+                        values={focus === 'interior' ? "0;4" : "4;0"}
                         dur={ transitionDuration }
                         begin='indefinite'
                     />
@@ -291,8 +287,7 @@ export default function HomeDoodle (props) {
                         xlinkHref="#blur_exterior_4"
                         id="anim_blur_exterior_4" 
                         attributeName="stdDeviation"
-                        from={ focus === 'interior' ? "0" : blur }
-                        to={ focus === 'interior' ? blur : "0" }
+                        values={focus === 'interior' ? "0;4" : "4;0"}
                         dur={ transitionDuration }
                         begin='indefinite'
                     />
@@ -317,8 +312,7 @@ export default function HomeDoodle (props) {
                         xlinkHref="#blur_exterior_5"
                         id="anim_blur_exterior_5" 
                         attributeName="stdDeviation"
-                        from={ focus === 'interior' ? "0" : blur }
-                        to={ focus === 'interior' ? blur : "0" }
+                        values={focus === 'interior' ? "0;4" : "4;0"}
                         dur={ transitionDuration }
                         begin='indefinite'
                         // repeatCount="indefinite"
@@ -353,8 +347,7 @@ export default function HomeDoodle (props) {
                         xlinkHref="#blur_exterior_6"
                         id="anim_blur_exterior_6" 
                         attributeName="stdDeviation"
-                        from={ focus === 'interior' ? "0" : blur }
-                        to={ focus === 'interior' ? blur : "0" }
+                        values={focus === 'interior' ? "0;4" : "4;0"}
                         dur={ transitionDuration }
                         begin='indefinite'
                     />
@@ -449,95 +442,6 @@ const useStyles = makeStyles(theme => ({
             '& .sky' : sky
         } 
     },
-    // exterior: ({ weather, currentSegment, focus }) => {
-    //     const isNightTime = currentSegment === 'night' || currentSegment === 'sunset';
-    //     const isInterior = focus === 'interior';
-
-    //     let brightness = '1';
-    //     let saturate = '100%';
-    //     let contrast = '100%';
-    //     let blur = '0px';
-    
-
-    //     function getFilters ({ isNightTime, isInterior }) {
-    //         const filter1 = () => {
-    //             let blur2 = isInterior ? '1px' : '0px';
-    //             return {
-    //                 filter: `brightness(${ brightness }) saturate(${ saturate }) contrast(${ contrast }) blur(${ blur2 })`,
-    //                 transition: `filter ${ transitionSpeed } linear`
-    //             }
-    //         };
-    //         const filter2 = () => {
-    //             blur = isInterior ? '2px' : '0px';
-    //             return {
-    //                 filter: `brightness(${ brightness }) saturate(${ saturate }) contrast(${ contrast }) blur(${ blur })`,
-    //                 transition: `filter ${ transitionSpeed } linear`
-    //             }
-    //         };
-    //         const filter3 = () => {
-    //             blur = isInterior ? '2px' : '0px';
-    //             return {
-    //                 filter: `brightness(${ brightness }) saturate(${ saturate }) contrast(${ contrast }) blur(${ blur })`,
-    //                 transition: `filter ${ transitionSpeed } linear`,
-    //             }
-    //         };
-    //         const filter4 = () => {
-    //             brightness = isNightTime ? '1' : '1.3';
-    //             saturate = isNightTime ? '50%' : '70%';
-    //             contrast = isNightTime ? '100%' : '50%';
-    //             blur = isInterior ? '2px' : '0px';
-    //             return {
-    //                 filter: `brightness(${ brightness }) saturate(${ saturate }) contrast(${ contrast }) blur(${ blur })`,
-    //                 transition: `filter ${ transitionSpeed } linear`,
-    //             }
-    //         };
-    //         const filter5 = () => {
-    //             let brightness2 = isNightTime ? '1' : '1.5';
-    //             let saturate2 = isNightTime ? '50%' : '100%';
-    //             let contrast2 = isNightTime ? '100%' : '20%';
-    //             let blur2 = isInterior ? '3px' : '0px';
-    //             return {
-    //                 // filter: `brightness(${ brightness2 }) saturate(${ saturate2 }) contrast(${ contrast2 }) blur(${ blur2 })`,
-    //                 filter: 'url(#exterior_5)',
-    //                 // opacity: 0.5
-    //                 // transition: `filter ${ transitionSpeed } linear`
-    //             }
-    //         };
-    //         const filter6 = () => {
-    //             blur = isInterior ? '3px' : '0px';
-    //             return {
-    //                 filter: `brightness(${ brightness }) saturate(${ saturate }) contrast(${ contrast }) blur(${ blur })`,
-    //                 transition: `filter ${ transitionSpeed } linear`
-    //             }
-    //         };
-
-    //         const filterSky = () => {
-    //             return {
-    //                 filter: 'url(#sky)',
-    //             }
-    //         }
-
-    //         return [filter1(), filter2(), filter3(), filter4(), filter5(), filter6(), filterSky()];
-    //     }
-
-    //     const [filter1, filter2, filter3, filter4, filter5, filter6, filterSky] = getFilters({ isNightTime, isInterior })
-    //     console.log("filters", isNightTime, isInterior, filter1, filter2)
-        
-    //     if (weather === 'rain') {}
-    //     if (weather === 'snow') {}
-    //     if (weather === 'storm') {}
-
-    //     return {
-    //         // '& div': filter,
-    //         '& .exterior_1' : filter1,
-    //         '& .exterior_2' : filter2,
-    //         '& .exterior_3' : filter3,
-    //         '& .exterior_4' : filter4,
-    //         '& .exterior_5' : filter5,
-    //         '& .exterior_6' : filter6,
-    //         '& .sky' : filterSky
-    //     } 
-    // },
     interior: ({ focus }) => {
         const interior = focus === 'interior';
         const blur = interior ? '0px' : '4px';
