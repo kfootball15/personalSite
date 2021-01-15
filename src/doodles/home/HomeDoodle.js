@@ -286,6 +286,16 @@ const useStyles = makeStyles(theme => ({
         bottom: 0,
         right: 0,
     },
+    container: {
+        backgroundColor: '#3b3b3b',
+        position: 'absolute',
+        // bottom: 0,
+        bottom: 0,
+        right: 0,
+        height: '100%',
+        width: '100%',
+        // filter: 'blur(5px)'
+    },
     sky: ({ windowSize }) => {
 
         // 4:3 --> 0.75 //ratio of the image
@@ -352,22 +362,5 @@ const useStyles = makeStyles(theme => ({
         return largerWidthSceen
             ? { ...base }
             : { ...base }
-    },
-    // interiorContainer: {
-    //     position: 'absolute',
-    //     bottom: 0,
-    //     left: 0,
-    //     width: '100%',
-    //     height: '100%'
-    // },
-    container: {
-        backgroundColor: '#3b3b3b',
-        position: 'absolute',
-        // bottom: 0,
-        bottom: 0,
-        right: 0,
-        height: '100vh',
-        width: '100vw',
-        // filter: 'blur(5px)'
     }
 }))
