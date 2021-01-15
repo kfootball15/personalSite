@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core';
+import { gcd_two_numbers } from 'helpers';
 /** for homePage project below */
 import clsx from 'clsx';
 import INTERIOR_LOTTIE from 'assets/home/full_interior_lottie.json';
 import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
 import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
+import WINDOW_SVG from 'assets/home/window.svg';
 
 import {
 	useEventListener,
@@ -17,6 +19,7 @@ import {
 	appendAnimation
 } from 'helpers';
 import lottie from 'lottie-web';
+import { LinearScale } from '@material-ui/icons';
 
 // lottie.setQuality(2);
 
@@ -71,6 +74,8 @@ export default function HomeDoodle (props) {
     const skyRef = useRef(null);
     /** Exterior */
     const exteriorRef = useRef(null);
+    /** Window */
+    const windowSVGRef = useRef(null);    
     /** Interior */
     const interiorRef = useRef(null);
     /** SVG Animation Elements */
@@ -172,56 +177,87 @@ export default function HomeDoodle (props) {
     const transitionDuration = "1s";
 
     return (<>
-        <div className={classes.container}>
-            <div className={classes.buttons}>
-                <button className={classes.button} style={{ top: 0 }} onClick={handleToggleFocus}>Focus</button>
-                <button className={classes.button} style={{ top: 50 }} onClick={handleStop}>Stop</button>
-                <button className={classes.button} style={{ top: 100 }} onClick={handlePause}>Pause</button>
-                <button className={classes.button} style={{ top: 150 }} onClick={handleSpeed(15)}>Fast</button>
-                <button className={classes.button} style={{ top: 200 }} onClick={handleSpeed(1)}>Normal</button>
-                <button className={classes.button} style={{ top: 250 }} onClick={handleSpeed(0.15)}>Slow</button>
-                <button className={classes.button} style={{ top: 300 }} onClick={handlePlaySeg('sunrise', 1)}>Play Sunrise</button>
-                <button className={classes.button} style={{ top: 350 }} onClick={handlePlaySeg('day', 1)}>Play Day</button>
-                <button className={classes.button} style={{ top: 400 }} onClick={handlePlaySeg('sunset', 1)}>Play Sunset</button>
-                <button className={classes.button} style={{ top: 450 }} onClick={handlePlaySeg('night', 1)}>Play Night</button>
-                <button className={classes.button} style={{ top: 500 }} onClick={handleTurnOffLights}>Lights Off</button>
-                <button className={classes.button} style={{ top: 550 }} onClick={handleTurnOnLights}>Lights On</button>
-                <button className={classes.button} style={{ top: 550 }} onClick={handlePlay}>Play</button>
-            </div>
+        
+        {/* SVG Animation */}
+        <svg style={{height: 0}}>
+        <defs>
+            <filter id="exterior_filter">
+                <feGaussianBlur
+                    ref={blurExterior1Ref}
+                    id="blur_exterior_filter"
+                />
+                <animate
+                    ref={ animBlurExterior1Ref }
+                    xlinkHref="#blur_exterior_filter"
+                    id="anim_blur_exterior_filter" 
+                    attributeName="stdDeviation"
+                    values={focus === 'interior' ? `0;${blur}` : `${blur};0`}
+                    dur={ transitionDuration }
+                    begin='indefinite'
+                />
+            </filter>
+        </defs>
+        </svg>
 
-            <svg>
-            <defs>
-                <filter id="exterior_filter">
-                    <feGaussianBlur
-                        ref={blurExterior1Ref}
-                        id="blur_exterior_filter"
-                    />
-                    <animate
-                        ref={ animBlurExterior1Ref }
-                        xlinkHref="#blur_exterior_filter"
-                        id="anim_blur_exterior_filter" 
-                        attributeName="stdDeviation"
-                        values={focus === 'interior' ? `0;${blur}` : `${blur};0`}
-                        dur={ transitionDuration }
-                        begin='indefinite'
-                    />
-                </filter>
-            </defs>
-            </svg>
+        {/* Buttons */}
+        <div className={classes.buttons}>
+            <button className={classes.button} style={{ top: 0 }} onClick={handleToggleFocus}>Focus</button>
+            <button className={classes.button} style={{ top: 50 }} onClick={handleStop}>Stop</button>
+            <button className={classes.button} style={{ top: 100 }} onClick={handlePause}>Pause</button>
+            <button className={classes.button} style={{ top: 150 }} onClick={handleSpeed(15)}>Fast</button>
+            <button className={classes.button} style={{ top: 200 }} onClick={handleSpeed(1)}>Normal</button>
+            <button className={classes.button} style={{ top: 250 }} onClick={handleSpeed(0.15)}>Slow</button>
+            <button className={classes.button} style={{ top: 300 }} onClick={handlePlaySeg('sunrise', 1)}>Play Sunrise</button>
+            <button className={classes.button} style={{ top: 350 }} onClick={handlePlaySeg('day', 1)}>Play Day</button>
+            <button className={classes.button} style={{ top: 400 }} onClick={handlePlaySeg('sunset', 1)}>Play Sunset</button>
+            <button className={classes.button} style={{ top: 450 }} onClick={handlePlaySeg('night', 1)}>Play Night</button>
+            <button className={classes.button} style={{ top: 500 }} onClick={handleTurnOffLights}>Lights Off</button>
+            <button className={classes.button} style={{ top: 550 }} onClick={handleTurnOnLights}>Lights On</button>
+            <button className={classes.button} style={{ top: 550 }} onClick={handlePlay}>Play</button>
+        </div>
+        <div
+            onMouseDown={() => {lottie.pause()}}
+            onMouseUp={() => {console.log("bye")}}
+            className={classes.container}
+        >
 
+            {/* Sky */}
+            <div
+                className={clsx(
+                    classes.svgObj,
+                    classes.sky
+                )}
+                ref={skyRef}
+            />
             
-            {/* Extertior SVGs */}
-            <div className={classes.exterior}>
-                <div className={classes.svgObj} ref={skyRef}></div>
+            {/* Extertior */}
+            <div className={classes.exterior}>    
                 <div className={classes.svgObj} ref={exteriorRef}></div>
             </div>
 
-            {/* Interior SVGs */}
-            <div className={classes.interior}>
-                <div className={classes.interiorContainer}>
-                    <div className={classes.svgObj} ref={interiorRef}></div>
-                </div>
+            {/* Window / Wall */}
+            <div className={classes.window}>
+                <object
+                    className={classes.svgObj}
+                    ref={ windowSVGRef }
+                    id="window"
+                    data={ WINDOW_SVG }
+                    aria-label="window"
+                    aria-required="true"
+                    type="image/svg+xml"
+                >
+                        Window
+                </object>
             </div>
+
+            {/* Interior */}
+            <div
+                className={clsx(
+                    classes.svgObj,
+                    classes.interor
+                )}
+                ref={interiorRef}
+            />
         </div>
     </>)
 }
@@ -250,9 +286,32 @@ const useStyles = makeStyles(theme => ({
         bottom: 0,
         right: 0,
     },
+    sky: ({ windowSize }) => {
+
+        // 4:3 --> 0.75 //ratio of the image
+        // 100:200 --> 2 //example ratio of a mobile window (height > width)
+        // In this case we need our height to be 2x its width 
+        // So we get the new aspect ratio and devide(ratioW/ratioH)
+
+
+        const gcf = gcd_two_numbers(windowSize.width, windowSize.height);
+        const ratioW = windowSize.width / gcf;
+        const ratioH = windowSize.height / gcf;
+        const ratio = ratioH / ratioW;
+
+        return {
+            transform: `scale(1, ${ ratio + 1 })`, // This math isnt quite right - makes the scaleY a little too large
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: 0
+        }
+    
+    },
     exterior: ({ weather, currentSegment, focus }) => {
 
         const exterior_filter = {
+            height: 0,
             filter: 'url(#exterior_filter)' // refers to the ID of the svg <filter />
         };
         
@@ -270,6 +329,11 @@ const useStyles = makeStyles(theme => ({
 
         return {
             '& div': {
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
                 filter: `blur(${ blur })`,
                 transition: `filter ${ transitionSpeed } linear`
             }
@@ -280,27 +344,22 @@ const useStyles = makeStyles(theme => ({
         const largerWidthSceen = width > height;
 
         const base = {
-            position: 'absolute',
-            // transform: 'scale(1)',
-            // bottom: isMobile ? 0 : 0,
-            // right: isMobile ? -56 : 0,
             width: '100%',
             position: 'absolute',
             bottom: 0
         }
         
         return largerWidthSceen
-            ? { ...base, width: '100%' }
-            // : { ...base, height: '100vh' }
-            : { ...base, width: '100%' }
+            ? { ...base }
+            : { ...base }
     },
-    interiorContainer: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        width: '100%',
-        height: '100%'
-    },
+    // interiorContainer: {
+    //     position: 'absolute',
+    //     bottom: 0,
+    //     left: 0,
+    //     width: '100%',
+    //     height: '100%'
+    // },
     container: {
         backgroundColor: '#3b3b3b',
         position: 'absolute',
