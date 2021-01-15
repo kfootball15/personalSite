@@ -166,10 +166,10 @@ export default function HomeDoodle (props) {
     useEffect(() => {
         // https://properdesign.co.uk/animating-svg-with-beginelement/
         // https://stackoverflow.com/questions/8455773/svg-trigger-animation-with-event
-        const blurVal = focus === 'interior' ? "4" : "0" 
+        const exteriorBlurVal = focus === 'interior' ? "4" : "0";
         animBlurExterior1Ref.current.beginElement();
         animBlurExterior1Ref.current.onbegin = () => {
-            blurExterior1Ref.current.setStdDeviation(blurVal, blurVal); //https://developer.mozilla.org/en-US/docs/Web/API/SVGFEGaussianBlurElement
+            blurExterior1Ref.current.setStdDeviation(exteriorBlurVal, exteriorBlurVal); //https://developer.mozilla.org/en-US/docs/Web/API/SVGFEGaussianBlurElement
         }
     }, [focus])
 
@@ -215,11 +215,7 @@ export default function HomeDoodle (props) {
             <button className={classes.button} style={{ top: 550 }} onClick={handleTurnOnLights}>Lights On</button>
             <button className={classes.button} style={{ top: 550 }} onClick={handlePlay}>Play</button>
         </div>
-        <div
-            onMouseDown={() => {lottie.pause()}}
-            onMouseUp={() => {console.log("bye")}}
-            className={classes.container}
-        >
+        <div className={classes.container}>
 
             {/* Sky */}
             <div
@@ -231,33 +227,29 @@ export default function HomeDoodle (props) {
             />
             
             {/* Extertior */}
-            <div className={classes.exterior}>    
-                <div className={classes.svgObj} ref={exteriorRef}></div>
+            <div className={ classes.exterior }>    
+                <div className={ classes.svgObj } ref={ exteriorRef }></div>
             </div>
 
-            {/* Window / Wall */}
-            <div className={classes.window}>
-                <object
-                    className={classes.svgObj}
-                    ref={ windowSVGRef }
-                    id="window"
-                    data={ WINDOW_SVG }
-                    aria-label="window"
-                    aria-required="true"
-                    type="image/svg+xml"
-                >
-                        Window
-                </object>
-            </div>
 
             {/* Interior */}
-            <div
-                className={clsx(
-                    classes.svgObj,
-                    classes.interor
-                )}
-                ref={interiorRef}
-            />
+            <div className={ classes.interior }>    
+                {/* Window / Wall */}
+                <div className={clsx( classes.interior_window, 'interior_window' )}>
+                    <object
+                        className={ clsx( classes.svgObj, classes.interior_window )}
+                        ref={ windowSVGRef }
+                        id="window"
+                        data={ WINDOW_SVG }
+                        aria-label="window"
+                        aria-required="true"
+                        type="image/svg+xml"
+                    >
+                        Window
+                    </object>
+                </div>
+                <div className={ classes.svgObj } ref={ interiorRef } />
+            </div>
         </div>
     </>)
 }
@@ -338,15 +330,13 @@ const useStyles = makeStyles(theme => ({
         const blur = interior ? '0px' : '3px';
 
         return {
-            '& div': {
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                filter: `blur(${ blur })`,
-                transition: `filter ${ transitionSpeed } linear`
-            }
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            filter: `blur(${ blur })`,
+            transition: `filter ${ transitionSpeed } linear`,
         }
     },
     svgObj: ({ windowSize, isMobile }) => {
@@ -357,7 +347,7 @@ const useStyles = makeStyles(theme => ({
             width: '100%',
             position: 'absolute',
             bottom: 0
-        }
+        };
         
         return largerWidthSceen
             ? { ...base }
