@@ -7,6 +7,7 @@ import INTERIOR_LOTTIE from 'assets/home/full_interior_lottie.json';
 import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
 import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
 import WINDOW_SVG from 'assets/home/window.svg';
+import CHARACTER_GIF from 'assets/home/character.gif';
 
 import {
 	useEventListener,
@@ -70,17 +71,13 @@ export default function HomeDoodle (props) {
     const [currentLoop, setCurrentLoop] = useState(0); 
     const classes = useStyles({ weather, currentSegment, focus, isMobile, windowSize });
 
-    /** Sky */
+    /** SVG Refs */
     const skyRef = useRef(null);
-    /** Exterior */
     const exteriorRef = useRef(null);
-    /** Window */
     const windowSVGRef = useRef(null);    
-    /** Interior */
     const interiorRef = useRef(null);
-    /** SVG Animation Elements */
+    /** SVG Animation */
     const animBlurExterior1Ref = useRef(null);
-    /** SVG Blur Animations */
     const blurExterior1Ref = useRef(null);
 
     // Configure and instantiate Lottie Animations
@@ -109,6 +106,24 @@ export default function HomeDoodle (props) {
         interiorAnimationObject.onEnterFrame = handleSetCurrentSegment(setCurrentSegment);
         interiorAnimationObject.onLoopComplete = () => {setCurrentLoop(currentLoop + 1)};
     }, []);
+
+    /** Replace Placeholder Character with animation */
+    useEffect(() => {
+        if (DOMReady) {
+            
+            const elem = interiorRef.current.querySelector('[id^="chair_back"]');
+            
+            var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
+            svgimg.setAttribute('height','100%');
+            svgimg.setAttribute('width','100%');
+            svgimg.setAttribute('id','character');
+            svgimg.setAttribute("href", CHARACTER_GIF);
+            elem.appendChild(svgimg);
+
+            hideElement('character_placeholder', document)
+
+        }
+    }, [DOMReady])
 
     // Listens for dom ready - can use SVGs
     useEventListener('load', function() {
@@ -234,6 +249,7 @@ export default function HomeDoodle (props) {
 
             {/* Interior */}
             <div className={ classes.interior }>    
+
                 {/* Window / Wall */}
                 <div className={clsx( classes.interior_window, 'interior_window' )}>
                     <object
@@ -248,7 +264,13 @@ export default function HomeDoodle (props) {
                         Window
                     </object>
                 </div>
-                <div className={ classes.svgObj } ref={ interiorRef } />
+
+                {/* Desk / Character */}
+                <div
+                    className={ classes.svgObj }
+                    ref={ interiorRef }
+                />
+
             </div>
         </div>
     </>)
@@ -302,7 +324,7 @@ const useStyles = makeStyles(theme => ({
         const ratio = ratioH / ratioW;
 
         return {
-            transform: `scale(1, ${ ratio + 1 })`, // This math isnt quite right - makes the scaleY a little too large
+            transform: `scale(${ ratio + 1 })`, // This math isnt quite right - makes the scaleY a little too large
             width: '100%',
             height: '100%',
             position: 'absolute',
@@ -352,5 +374,9 @@ const useStyles = makeStyles(theme => ({
         return largerWidthSceen
             ? { ...base }
             : { ...base }
+    },
+    interior_window: {
+        width: '100%',
+        height: '100%'
     }
 }))
