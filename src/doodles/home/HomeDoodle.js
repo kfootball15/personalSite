@@ -7,6 +7,7 @@ import INTERIOR_LOTTIE from 'assets/home/full_interior_lottie.json';
 import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
 import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
 import WINDOW_SVG from 'assets/home/window.svg';
+import WINDOW_TOP_SVG from 'assets/home/window_top.svg';
 import CHARACTER_GIF from 'assets/home/character.gif';
 
 import {
@@ -75,6 +76,7 @@ export default function HomeDoodle (props) {
     const skyRef = useRef(null);
     const exteriorRef = useRef(null);
     const windowSVGRef = useRef(null);    
+    const windowTopSVGRef = useRef(null);    
     const interiorRef = useRef(null);
     /** SVG Animation */
     const animBlurExterior1Ref = useRef(null);
@@ -250,10 +252,25 @@ export default function HomeDoodle (props) {
             {/* Interior */}
             <div className={ classes.interior }>    
 
-                {/* Window / Wall */}
-                <div className={clsx( classes.interior_window, 'interior_window' )}>
+                {/* Window / Wall TOP */}
+                <div className={clsx( classes.interior_window_top )}>
                     <object
-                        className={ clsx( classes.svgObj, classes.interior_window )}
+                        className={ clsx( classes.svgObj )}
+                        ref={ windowTopSVGRef }
+                        id="window_top"
+                        data={ WINDOW_TOP_SVG }
+                        aria-label="window_top"
+                        aria-required="true"
+                        type="image/svg+xml"
+                    >
+                        Window
+                    </object>
+                </div>
+
+                {/* Window / Wall */}
+                <div className={clsx( classes.interior_window )}>
+                    <object
+                        className={ clsx( classes.svgObj )}
                         ref={ windowSVGRef }
                         id="window"
                         data={ WINDOW_SVG }
@@ -376,7 +393,15 @@ const useStyles = makeStyles(theme => ({
             : { ...base }
     },
     interior_window: {
-        width: '100%',
-        height: '100%'
+        bottom: 0,
+        '& object': {
+            bottom: 0
+        }
+    },
+    interior_window_top: {
+        top: 0,
+        '& object': {
+            top: 0
+        }
     }
 }))
