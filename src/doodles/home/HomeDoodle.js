@@ -8,6 +8,7 @@ import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
 import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
 import WINDOW_SVG from 'assets/home/window.svg';
 import WINDOW_TOP_SVG from 'assets/home/window_top.svg';
+import DESK_SVG from 'assets/home/desk.svg';
 import CHARACTER_GIF from 'assets/home/character.gif';
 
 import {
@@ -76,6 +77,7 @@ export default function HomeDoodle (props) {
     const skyRef = useRef(null);
     const exteriorRef = useRef(null);
     const windowSVGRef = useRef(null);    
+    const deskSVGRef = useRef(null);    
     const windowTopSVGRef = useRef(null);    
     const interiorRef = useRef(null);
     /** SVG Animation */
@@ -169,8 +171,10 @@ export default function HomeDoodle (props) {
     const handleSpeed = speed => () => {
         lottie.setSpeed(speed);
     }
-    const handleToggleFocus = () => {
-        const newFocus = focus === 'interior' ? 'exterior' : 'interior';
+    const handleToggleFocus = (val) => {
+        const newFocus = focus === 'interior'
+                ? 'exterior'
+                : 'interior';
         setFocus(newFocus);
     }
     
@@ -217,7 +221,7 @@ export default function HomeDoodle (props) {
         </svg>
 
         {/* Buttons */}
-        <div className={classes.buttons}>
+        {/* <div className={classes.buttons}>
             <button className={classes.button} style={{ top: 0 }} onClick={handleToggleFocus}>Focus</button>
             <button className={classes.button} style={{ top: 50 }} onClick={handleStop}>Stop</button>
             <button className={classes.button} style={{ top: 100 }} onClick={handlePause}>Pause</button>
@@ -231,8 +235,19 @@ export default function HomeDoodle (props) {
             <button className={classes.button} style={{ top: 500 }} onClick={handleTurnOffLights}>Lights Off</button>
             <button className={classes.button} style={{ top: 550 }} onClick={handleTurnOnLights}>Lights On</button>
             <button className={classes.button} style={{ top: 550 }} onClick={handlePlay}>Play</button>
-        </div>
+        </div> */}
+
+        {/* Main Content */}
         <div className={classes.container}>
+
+            <a 
+                className={ classes.contactButton }
+                href="mailto:fenster.js@gmail.com"
+                target="_blank">
+                Contact Mensh.
+                914.582.4299
+            </a>
+                
 
             {/* Sky */}
             <div
@@ -245,7 +260,10 @@ export default function HomeDoodle (props) {
             
             {/* Extertior */}
             <div className={ classes.exterior }>    
-                <div className={ classes.svgObj } ref={ exteriorRef }></div>
+                <div
+                    className={ classes.svgObj }
+                    ref={ exteriorRef }>    
+                </div>
             </div>
 
 
@@ -281,14 +299,30 @@ export default function HomeDoodle (props) {
                         Window
                     </object>
                 </div>
+                
+                {/* Desk */}
+                <div className={clsx( )}>
+                    <object
+                        className={ clsx( classes.svgObj )}
+                        ref={ deskSVGRef }
+                        id="desk"
+                        data={ DESK_SVG }
+                        aria-label="desk"
+                        aria-required="true"
+                        type="image/svg+xml"
+                    >
+                        Desk
+                    </object>
+                </div>
 
-                {/* Desk / Character */}
+                {/* Chair / Character */}
                 <div
                     className={ classes.svgObj }
                     ref={ interiorRef }
                 />
 
             </div>
+
         </div>
     </>)
 }
@@ -304,6 +338,25 @@ const useStyles = makeStyles(theme => ({
         zIndex: 100,
         position: 'absolute',
         left: 0
+    },
+    contactButton: {
+        borderRadius: 200,
+        backgroundColor: '#fff816',
+        color: 'blue',
+        width: 200,
+        height: 200,
+        marginRight: -50,
+        marginTop: -50,
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        border: 'none',
+        zIndex: 100,
+        '&:hover': {
+            width: 250,
+            height: 250,
+            cursor: 'pointer'
+        }
     },
     show: {
         opacity: 100,
