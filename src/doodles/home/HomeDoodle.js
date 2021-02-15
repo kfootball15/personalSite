@@ -5,6 +5,8 @@ import { gcd_two_numbers } from 'helpers';
 import clsx from 'clsx';
 import INTERIOR_LOTTIE from 'assets/home/full_interior_lottie.json';
 import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
+import EXTERIOR_LOTTIE_GIF from 'assets/home/full_exterior_lottie.gif';
+import EXTERIOR_LOTTIE_MP4 from 'assets/home/exterior.mp4';
 import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
 import WINDOW_SVG from 'assets/home/window.svg';
 import WINDOW_TOP_SVG from 'assets/home/window_top.svg';
@@ -104,11 +106,13 @@ export default function HomeDoodle (props) {
             ...defaultAnimationObjectSettings,
             container: exteriorRef.current,
             name: "exterior", // Name for future reference. Optional.
-            animationData: EXTERIOR_LOTTIE
+            animationData: EXTERIOR_LOTTIE,
+            // animationData: null
         });
+        
         // This will set the current segment by checking every frame of an animation (can append this handler to any of the layers)
         interiorAnimationObject.onEnterFrame = handleSetCurrentSegment(setCurrentSegment);
-        interiorAnimationObject.onLoopComplete = () => {setCurrentLoop(currentLoop + 1)};
+        // interiorAnimationObject.onLoopComplete = () => {setCurrentLoop(currentLoop + 1)};
     }, []);
 
     /** Replace Placeholder Character with animation */
@@ -181,6 +185,8 @@ export default function HomeDoodle (props) {
     /** Runs when segment changes - day,sunset,night,sunrise (in future, maybe change segment to keyframes so we can be more granular about when animations play) */
     useEffect(() => {
         console.log("segment change: ", currentSegment);
+        if (currentSegment === 'sunset') handleToggleFocus()
+        if (currentSegment === 'day') handleToggleFocus()
     }, [ currentSegment ])
 
     /** Runs when Focus changes (interior/exterior) */
@@ -264,6 +270,21 @@ export default function HomeDoodle (props) {
                     className={ classes.svgObj }
                     ref={ exteriorRef }>    
                 </div>
+                {/* <img
+                    className={ classes.svgObj }
+                    ref={ exteriorRef }
+                    src={ EXTERIOR_LOTTIE_GIF }
+                /> */}
+                {/* <video
+                    autoPlay
+                    className={ classes.svgObj }
+                    // ref={ exteriorRef }
+                >
+                    <source
+                        src={ EXTERIOR_LOTTIE_MP4 }
+                        type="video/mp4">
+                    </source>
+                </video> */}
             </div>
 
 
@@ -286,22 +307,21 @@ export default function HomeDoodle (props) {
                 </div>
 
                 {/* Window / Wall */}
-                <div className={clsx( classes.interior_window )}>
-                    <object
-                        className={ clsx( classes.svgObj )}
-                        ref={ windowSVGRef }
-                        id="window"
-                        data={ WINDOW_SVG }
-                        aria-label="window"
-                        aria-required="true"
-                        type="image/svg+xml"
-                    >
-                        Window
-                    </object>
-                </div>
-                
-                {/* Desk */}
-                <div className={clsx( )}>
+                <object
+                    className={ clsx( classes.interior_window, classes.svgObj )}
+                    ref={ windowSVGRef }
+                    id="window"
+                    data={ WINDOW_SVG }
+                    aria-label="window"
+                    aria-required="true"
+                    type="image/svg+xml"
+                >
+                    Window
+                </object>
+                    
+                {/* Interior */}
+                <div className={ classes.interior_room }>
+                    {/* Desk */}
                     <object
                         className={ clsx( classes.svgObj )}
                         ref={ deskSVGRef }
@@ -313,13 +333,13 @@ export default function HomeDoodle (props) {
                     >
                         Desk
                     </object>
-                </div>
 
-                {/* Chair / Character */}
-                <div
-                    className={ classes.svgObj }
-                    ref={ interiorRef }
-                />
+                    {/* Chair / Character */}
+                    <div
+                        // className={ classes.svgObj }
+                        ref={ interiorRef }
+                    />
+                </div>
 
             </div>
 
@@ -431,6 +451,24 @@ const useStyles = makeStyles(theme => ({
             transition: `filter ${ transitionSpeed } linear`,
         }
     },
+    interior_room: ({ isMobile }) => ({
+        width: isMobile ? '126%' : '100%',
+        position: 'absolute',
+        bottom: 0,
+        right: isMobile ? '2%' : 0
+    }),
+    interior_window: {
+        bottom: 0,
+        '& object': {
+            bottom: 0
+        }
+    },
+    interior_window_top: {
+        top: 0,
+        '& object': {
+            top: 0
+        }
+    },
     svgObj: ({ windowSize, isMobile }) => {
         const { height, width } = windowSize
         const largerWidthSceen = width > height;
@@ -444,17 +482,5 @@ const useStyles = makeStyles(theme => ({
         return largerWidthSceen
             ? { ...base }
             : { ...base }
-    },
-    interior_window: {
-        bottom: 0,
-        '& object': {
-            bottom: 0
-        }
-    },
-    interior_window_top: {
-        top: 0,
-        '& object': {
-            top: 0
-        }
     }
 }))
