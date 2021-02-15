@@ -33,7 +33,10 @@ let skyAnimationObject = null;
 let interiorAnimationObject = null;
 let exteriorAnimationObject = null;
 
+
 /** transition config */
+const blur = "8";
+const transitionDuration = "1s";
 const fps = 30;
 const animationSegments = {
     'sunrise': 0 * fps,
@@ -186,22 +189,21 @@ export default function HomeDoodle (props) {
     useEffect(() => {
         console.log("segment change: ", currentSegment);
         if (currentSegment === 'sunset') handleToggleFocus()
-        if (currentSegment === 'day') handleToggleFocus()
+        // if (currentSegment === 'day') handleToggleFocus()
     }, [ currentSegment ])
 
     /** Runs when Focus changes (interior/exterior) */
     useEffect(() => {
         // https://properdesign.co.uk/animating-svg-with-beginelement/
         // https://stackoverflow.com/questions/8455773/svg-trigger-animation-with-event
-        const exteriorBlurVal = focus === 'interior' ? "4" : "0";
+        const exteriorBlurVal = focus === 'interior' ? blur : "0";
         animBlurExterior1Ref.current.beginElement();
         animBlurExterior1Ref.current.onbegin = () => {
             blurExterior1Ref.current.setStdDeviation(exteriorBlurVal, exteriorBlurVal); //https://developer.mozilla.org/en-US/docs/Web/API/SVGFEGaussianBlurElement
         }
     }, [focus])
 
-    const blur = "3";
-    const transitionDuration = "1s";
+
 
     return (<>
         
