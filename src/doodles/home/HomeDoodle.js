@@ -5,8 +5,8 @@ import { gcd_two_numbers } from 'helpers';
 import clsx from 'clsx';
 import INTERIOR_LOTTIE from 'assets/home/full_interior_lottie.json';
 import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
-import EXTERIOR_LOTTIE_GIF from 'assets/home/full_exterior_lottie.gif';
-import EXTERIOR_LOTTIE_MP4 from 'assets/home/exterior.mp4';
+// import EXTERIOR_LOTTIE_GIF from 'assets/home/full_exterior_lottie.gif';
+// import EXTERIOR_LOTTIE_MP4 from 'assets/home/exterior.mp4';
 import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
 import WINDOW_SVG from 'assets/home/window.svg';
 import WINDOW_TOP_SVG from 'assets/home/window_top.svg';
@@ -109,7 +109,7 @@ export default function HomeDoodle (props) {
             animationData: EXTERIOR_LOTTIE,
             // animationData: null
         });
-        
+
         // This will set the current segment by checking every frame of an animation (can append this handler to any of the layers)
         interiorAnimationObject.onEnterFrame = handleSetCurrentSegment(setCurrentSegment);
         // interiorAnimationObject.onLoopComplete = () => {setCurrentLoop(currentLoop + 1)};
