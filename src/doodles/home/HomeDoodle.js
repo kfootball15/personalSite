@@ -5,9 +5,7 @@ import { gcd_two_numbers } from 'helpers';
 import clsx from 'clsx';
 import INTERIOR_LOTTIE from 'assets/home/full_interior_lottie.json';
 import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
-// import EXTERIOR_LOTTIE_GIF from 'assets/home/exterior.gif';
-// import EXTERIOR_LOTTIE_MOV from 'assets/home/full_exterior_lottie_2.mov';
-// import EXTERIOR_LOTTIE_MP4 from 'assets/home/exterior.mp4';
+import LOGO_TEXT_SVG from 'assets/home/logo_text.svg';
 import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
 import WINDOW_SVG from 'assets/home/window.svg';
 import WINDOW_TOP_SVG from 'assets/home/window_top.svg';
@@ -25,7 +23,6 @@ import {
 	appendAnimation
 } from 'helpers';
 import lottie from 'lottie-web';
-import { LinearScale } from '@material-ui/icons';
 
 // lottie.setQuality(2);
 
@@ -34,11 +31,11 @@ let skyAnimationObject = null;
 let interiorAnimationObject = null;
 let exteriorAnimationObject = null;
 
-
 /** transition config */
 const blur = "8";
 const transitionDuration = "1s";
 const fps = 30;
+const speed = 2;
 const animationSegments = {
     'sunrise': 0 * fps,
     'day': 6 * fps,
@@ -59,6 +56,15 @@ const defaultAnimationObjectSettings = {
     loop: true, // Optional
     autoplay: true, // Optional
     // setSubframe: false // if false, respects original AE file fps
+    rendererSettings: {
+        // context: canvasContext, // the canvas context, only support "2d" context
+        // preserveAspectRatio: 'xMinYMin slice', // Supports the same options as the svg element's preserveAspectRatio property
+        // clearCanvas: false,
+        progressiveLoad: false, // Boolean, only svg renderer, loads dom elements when needed. Might speed up initialization for large number of elements.
+        // hideOnTransparent: true, //Boolean, only svg renderer, hides elements when opacity reaches 0 (defaults to true)
+        // className: 'some-css-class-name',
+        // id: 'some-id',
+    }
 };
 
 const handleSetCurrentSegment = setCurrentSegment => e => {
@@ -83,6 +89,7 @@ export default function HomeDoodle (props) {
     const skyRef = useRef(null);
     const exteriorRef = useRef(null);
     const windowSVGRef = useRef(null);    
+    const logoSVGRef = useRef(null);    
     const deskSVGRef = useRef(null);    
     const windowTopSVGRef = useRef(null);    
     const interiorRef = useRef(null);
@@ -92,7 +99,8 @@ export default function HomeDoodle (props) {
 
     // Configure and instantiate Lottie Animations
     useEffect(() => {
-        console.log("instantiate animations")
+        console.log("instantiate lottie animations");
+        
         // Animation Settings
         skyAnimationObject = lottie.loadAnimation({
             ...defaultAnimationObjectSettings,
@@ -115,8 +123,11 @@ export default function HomeDoodle (props) {
         });
 
         // This will set the current segment by checking every frame of an animation (can append this handler to any of the layers)
-        interiorAnimationObject.onEnterFrame = handleSetCurrentSegment(setCurrentSegment);
-        // interiorAnimationObject.onLoopComplete = () => {setCurrentLoop(currentLoop + 1)};
+        interiorAnimationObject.onEnterFrame = handleSetCurrentSegment( setCurrentSegment );
+        interiorAnimationObject.onLoopComplete = () => { setCurrentLoop( currentLoop + 1 ) };
+
+        /** Set Animation speed (find a better place for this?) */
+        lottie.setSpeed(speed);
     }, []);
 
     /** Replace Placeholder Character with animation */
@@ -139,9 +150,23 @@ export default function HomeDoodle (props) {
 
     // Listens for dom ready - can use SVGs
     useEventListener('load', function() {
-        console.log("dom loaded");
+        console.log("dom loaded", isMobile);
         setDOMReady(true);
     });
+
+    useEffect(() => {
+        if (DOMReady) {
+            /** Make sure lottie animation pauses when user tries to scroll on mobile for smoother experience  */
+            document.addEventListener('touchstart', () => {
+                console.log("touch start");
+                lottie.pause();
+            })
+            document.addEventListener('touchend', () => {
+                console.log("toucendh");
+                lottie.play();
+            })
+        }
+    }, [DOMReady])
 
     /** Lottie Animation buttons */
     const handleTurnBuilding1Light = (on=true) => {
@@ -189,8 +214,7 @@ export default function HomeDoodle (props) {
     /** Runs when segment changes - day,sunset,night,sunrise (in future, maybe change segment to keyframes so we can be more granular about when animations play) */
     useEffect(() => {
         console.log("segment change: ", currentSegment);
-        if (currentSegment === 'sunset') handleToggleFocus()
-        // if (currentSegment === 'day') handleToggleFocus()
+        if (currentSegment === 'sunset') handleToggleFocus();
     }, [ currentSegment ])
 
     /** Runs when Focus changes (interior/exterior) */
@@ -203,7 +227,6 @@ export default function HomeDoodle (props) {
             blurExterior1Ref.current.setStdDeviation(exteriorBlurVal, exteriorBlurVal); //https://developer.mozilla.org/en-US/docs/Web/API/SVGFEGaussianBlurElement
         }
     }, [focus])
-
 
 
     return (<>
@@ -249,21 +272,47 @@ export default function HomeDoodle (props) {
         {/* Main Content */}
         <div className={classes.container}>
 
-            <a 
+            {/* <a 
                 className={ classes.contactButton }
                 href="mailto:fenster.js@gmail.com"
                 target="_blank">
                 Contact Mensh.
                 914.582.4299
-            </a>
+            </a> */}
+
+            {/* <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: '-10%',
+                zIndex: 100000,
+                fontSize: '2000%',
+                color: '#f5deb3',
+            }}>
+                MENSH
+            </div> */}
+                
+            <div className={ classes.logoWrapper }>
+                <object
+                    style={{ width: '100%' }}
+                    ref={ logoSVGRef }
+                    id="logo"
+                    data={ LOGO_TEXT_SVG }
+                    aria-label="logo"
+                    aria-required="true"
+                    type="image/svg+xml"
+                >
+                    MENSH
+                </object>
+            </div>
                 
 
             {/* Sky */}
             <div
-                className={clsx(
-                    classes.svgObj,
-                    classes.sky
-                )}
+                className={clsx( classes.svgObj, classes.sky )}
                 ref={skyRef}
             />
             
@@ -273,26 +322,11 @@ export default function HomeDoodle (props) {
                     className={ classes.svgObj }
                     ref={ exteriorRef }>    
                 </div>
-                {/* <img
-                    className={ classes.svgObj }
-                    ref={ exteriorRef }
-                    src={ EXTERIOR_LOTTIE_GIF }
-                /> */}
-                {/* <video
-                    autoPlay
-                    className={ classes.svgObj }
-                    // ref={ exteriorRef }
-                >
-                    <source
-                        src={ EXTERIOR_LOTTIE_MP4 }
-                        type="video/mp4">
-                    </source>
-                </video> */}
             </div>
 
 
             {/* Interior */}
-            <div className={ classes.interior }>    
+            <div className={ classes.interior } >    
 
                 {/* Window / Wall TOP */}
                 <div className={clsx( classes.interior_window_top )}>
@@ -338,10 +372,7 @@ export default function HomeDoodle (props) {
                     </object>
 
                     {/* Chair / Character */}
-                    <div
-                        // className={ classes.svgObj }
-                        ref={ interiorRef }
-                    />
+                    <div ref={ interiorRef } />
                 </div>
 
             </div>
@@ -355,6 +386,30 @@ const transitionSpeed = '2s';
 
 const useStyles = makeStyles(theme => ({
     buttons: {},
+    logoWrapper: ({ isMobile}) => {
+        const base = {
+            position: 'absolute',
+            left: 0,
+            display: 'flex',
+            justifyContent: 'center',
+            zIndex: 1,
+            width: '100%',
+            overflow: 'hidden',
+            cursor: 'pointer'
+        }
+
+        if (isMobile) {
+            return {
+                ...base,
+                top: 2,
+            }
+        }
+
+        return {
+            ...base,
+            top: '-1%'
+        }
+    },
     button: {
         width: 50,
         height: 50,
@@ -397,8 +452,8 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: '#3b3b3b',
         position: 'absolute',
         // bottom: 0,
-        bottom: 0,
-        right: 0,
+        top: 0,
+        left: 0,
         height: '100%',
         width: '100%',
         // filter: 'blur(5px)'
