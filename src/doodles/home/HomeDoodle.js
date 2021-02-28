@@ -55,7 +55,7 @@ const defaultAnimationObjectSettings = {
     renderer: 'svg', // Required
     loop: true, // Optional
     autoplay: true, // Optional
-    // setSubframe: false // if false, respects original AE file fps
+    // setSubframe: false, // if false, respects original AE file fps
     rendererSettings: {
         // context: canvasContext, // the canvas context, only support "2d" context
         // preserveAspectRatio: 'xMinYMin slice', // Supports the same options as the svg element's preserveAspectRatio property
@@ -272,44 +272,6 @@ export default function HomeDoodle (props) {
         {/* Main Content */}
         <div className={classes.container}>
 
-            {/* <a 
-                className={ classes.contactButton }
-                href="mailto:fenster.js@gmail.com"
-                target="_blank">
-                Contact Mensh.
-                914.582.4299
-            </a> */}
-
-            {/* <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                marginTop: '-10%',
-                zIndex: 100000,
-                fontSize: '2000%',
-                color: '#f5deb3',
-            }}>
-                MENSH
-            </div> */}
-                
-            <div className={ classes.logoWrapper }>
-                <object
-                    style={{ width: '100%' }}
-                    ref={ logoSVGRef }
-                    id="logo"
-                    data={ LOGO_TEXT_SVG }
-                    aria-label="logo"
-                    aria-required="true"
-                    type="image/svg+xml"
-                >
-                    MENSH
-                </object>
-            </div>
-                
-
             {/* Sky */}
             <div
                 className={clsx( classes.svgObj, classes.sky )}
@@ -355,6 +317,21 @@ export default function HomeDoodle (props) {
                 >
                     Window
                 </object>
+
+                <div className={ classes.logoWrapper }>
+                <object
+                    style={{ width: '100%' }}
+                    ref={ logoSVGRef }
+                    id="logo"
+                    data={ LOGO_TEXT_SVG }
+                    aria-label="logo"
+                    aria-required="true"
+                    type="image/svg+xml"
+                >
+                    MENSH
+                </object>
+            </div>
+                
                     
                 {/* Interior */}
                 <div className={ classes.interior_room }>
@@ -392,7 +369,6 @@ const useStyles = makeStyles(theme => ({
             left: 0,
             display: 'flex',
             justifyContent: 'center',
-            zIndex: 1,
             width: '100%',
             overflow: 'hidden',
             cursor: 'pointer'
@@ -407,7 +383,7 @@ const useStyles = makeStyles(theme => ({
 
         return {
             ...base,
-            top: '-1%'
+            top: '28%'
         }
     },
     button: {
