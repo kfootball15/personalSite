@@ -2,6 +2,7 @@ import React from 'react';
 import { WeatherDoodle, HomeDoodle } from 'doodles';
 import { makeStyles } from '@material-ui/core';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import lottie from 'lottie-web';
 
 
 const SwiperUpper = () => {
@@ -25,14 +26,18 @@ export default function HomePage (props) {
             // pagination={{ clickable: true }}
             scrollbar={{ draggable: true }}
             // onSwiper={(swiper) => console.log(swiper)}
-            // onSlideChange={() => console.log('slide change')}
+            onSlideChange={(x) => {
+				console.log('slide change');
+			}}
         >
             {/* <SwiperSlide className={classes.slide}>
             	<WeatherDoodle />
 				<SwiperUpper />
             </SwiperSlide> */}
             <SwiperSlide className={classes.slide}>
-				<HomeDoodle />
+			{({ isActive }) => (
+				<HomeDoodle isActive={isActive} />
+			)}
 			</SwiperSlide>
             <SwiperSlide className={classes.slide2}> Slide 2 </SwiperSlide>
 			<SwiperSlide className={classes.slide}> Slide 3 </SwiperSlide>

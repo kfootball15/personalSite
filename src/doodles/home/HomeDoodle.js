@@ -75,7 +75,7 @@ const handleSetCurrentSegment = setCurrentSegment => e => {
     if ( curr > segments.night[0] && curr <= segments.night[1] ) setCurrentSegment('night');
 };
 
-export default function HomeDoodle (props) {
+export default function HomeDoodle ({ isActive }) {
     const [DOMReady, setDOMReady] = useState(false);
     const windowSize = useWindowSize();
     const isMobile = windowSize.width <= 480
@@ -97,120 +97,83 @@ export default function HomeDoodle (props) {
     const animBlurExterior1Ref = useRef(null);
     const blurExterior1Ref = useRef(null);
 
-    // Configure and instantiate Lottie Animations
-    useEffect(() => {
-        console.log("instantiate lottie animations");
-        
-        // Animation Settings
-        skyAnimationObject = lottie.loadAnimation({
-            ...defaultAnimationObjectSettings,
-            container: skyRef.current,
-            name: "sky", // Name for future reference. Optional.
-            animationData: SKY_LOTTIE
-        });
-        interiorAnimationObject = lottie.loadAnimation({
-            ...defaultAnimationObjectSettings,
-            container: interiorRef.current,
-            name: "interior", // Name for future reference. Optional.
-            animationData: INTERIOR_LOTTIE
-        });
-        exteriorAnimationObject = lottie.loadAnimation({
-            ...defaultAnimationObjectSettings,
-            container: exteriorRef.current,
-            name: "exterior", // Name for future reference. Optional.
-            animationData: EXTERIOR_LOTTIE,
-            // animationData: null
-        });
-
-        // This will set the current segment by checking every frame of an animation (can append this handler to any of the layers)
-        interiorAnimationObject.onEnterFrame = handleSetCurrentSegment( setCurrentSegment );
-        interiorAnimationObject.onLoopComplete = () => { setCurrentLoop( currentLoop + 1 ) };
-
-        /** Set Animation speed (find a better place for this?) */
-        lottie.setSpeed(speed);
-    }, []);
-
-    /** Replace Placeholder Character with animation */
-    useEffect(() => {
-        if (DOMReady) {
-            
-            const elem = interiorRef.current.querySelector('[id^="chair_back"]');
-            
-            var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
-            svgimg.setAttribute('height','100%');
-            svgimg.setAttribute('width','100%');
-            svgimg.setAttribute('id','character');
-            svgimg.setAttribute("href", CHARACTER_GIF);
-            elem.appendChild(svgimg);
-
-            hideElement('character_placeholder', document)
-
-        }
-    }, [DOMReady])
-
-    // Listens for dom ready - can use SVGs
-    useEventListener('load', function() {
-        console.log("dom loaded", isMobile);
-        setDOMReady(true);
-    });
-
-    useEffect(() => {
-        if (DOMReady) {
-            /** Make sure lottie animation pauses when user tries to scroll on mobile for smoother experience  */
-            document.addEventListener('touchstart', () => {
-                console.log("touch start");
-                lottie.pause();
-            })
-            document.addEventListener('touchend', () => {
-                console.log("toucendh");
-                lottie.play();
-            })
-        }
-    }, [DOMReady])
-
-    /** Lottie Animation buttons */
-    const handleTurnBuilding1Light = (on=true) => {
-        const func = on ? showElement : hideElement;
-        func('parent_building1-layer_windowsON-side_a', document);
-        func('parent_building1-layer_windowsON-side_b', document);
-    }
-    const handleTurnOffLights = () => {
-        handleTurnBuilding1Light(false);
-    }
-    const handleTurnOnLights = () => {
-        handleTurnBuilding1Light(true);
-    }
-    const handlePlaySeg = (segment, duration=1, loop=false) => () => {
-        const animationObjects = [
-            skyAnimationObject,
-            interiorAnimationObject,
-            exteriorAnimationObject,
-        ];
-        animationObjects.forEach( obj => {
-            obj.setSpeed(duration);
-            obj.playSegments(segments[segment], true);
-            obj.loop = loop;
-        })
-    }
-    const handleStop = () => {
-        lottie.stop();
-    }
-    const handlePlay = () => {
-        lottie.play();
-    }
-    const handlePause = () => {
-        lottie.pause();
-    }
-    const handleSpeed = speed => () => {
-        lottie.setSpeed(speed);
-    }
     const handleToggleFocus = (val) => {
         const newFocus = focus === 'interior'
                 ? 'exterior'
                 : 'interior';
         setFocus(newFocus);
     }
+
+    // Configure and instantiate Lottie Animations
+    useEffect(() => {
+        console.log("instantiate lottie animations", isActive);
+        
+        if (isActive) {
+            // Animation Settings
+            skyAnimationObject = lottie.loadAnimation({
+                ...defaultAnimationObjectSettings,
+                container: skyRef.current,
+                name: "sky", // Name for future reference. Optional.
+                animationData: SKY_LOTTIE
+            });
+            interiorAnimationObject = lottie.loadAnimation({
+                ...defaultAnimationObjectSettings,
+                container: interiorRef.current,
+                name: "interior", // Name for future reference. Optional.
+                animationData: INTERIOR_LOTTIE
+            });
+            exteriorAnimationObject = lottie.loadAnimation({
+                ...defaultAnimationObjectSettings,
+                container: exteriorRef.current,
+                name: "exterior", // Name for future reference. Optional.
+                animationData: EXTERIOR_LOTTIE,
+                // animationData: null
+            });
     
+            // This will set the current segment by checking every frame of an animation (can append this handler to any of the layers)
+            interiorAnimationObject.onEnterFrame = handleSetCurrentSegment( setCurrentSegment );
+            interiorAnimationObject.onLoopComplete = () => { setCurrentLoop( currentLoop + 1 ) };
+    
+            /** Set Animation speed (find a better place for this?) */
+            lottie.setSpeed(speed);
+
+            /** Replace Placeholder Character with animation */
+            const elem = interiorRef.current.querySelector('[id^="chair_back"]');
+            var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
+            svgimg.setAttribute('height','100%');
+            svgimg.setAttribute('width','100%');
+            svgimg.setAttribute('id','character');
+            svgimg.setAttribute("href", CHARACTER_GIF);
+            elem.appendChild(svgimg);
+            hideElement('character_placeholder', document)
+        } else {
+            
+            /** Destory animation - destroys lottie animations after slide change to free up resoucres */
+            if (skyAnimationObject) skyAnimationObject.destroy();
+            if (interiorAnimationObject) interiorAnimationObject.destroy();
+            if (exteriorAnimationObject) exteriorAnimationObject.destroy();
+        }
+    }, [isActive]);
+
+
+    // Listens for dom ready - can use SVGs
+    useEventListener('load', function() {
+        console.log("dom loaded", isMobile);
+        setDOMReady(true);
+    });
+    
+    // Listens for touchstart events (mobile only)
+    useEventListener('touchstart', function() {
+        console.log("touch start", isActive);
+        lottie.pause();
+    });
+    
+    // Listens for touchend events (mobile only)
+    useEventListener('touchend', function() {
+        console.log("touch end", isActive);
+        if (isActive) lottie.play();
+    });
+
     /** Runs when segment changes - day,sunset,night,sunrise (in future, maybe change segment to keyframes so we can be more granular about when animations play) */
     useEffect(() => {
         console.log("segment change: ", currentSegment);
@@ -227,7 +190,6 @@ export default function HomeDoodle (props) {
             blurExterior1Ref.current.setStdDeviation(exteriorBlurVal, exteriorBlurVal); //https://developer.mozilla.org/en-US/docs/Web/API/SVGFEGaussianBlurElement
         }
     }, [focus])
-
 
     return (<>
         
