@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 // Start import swiper styles
 import 'swiper/swiper.scss';
 import 'swiper/components/navigation/navigation.scss';
 import 'swiper/components/pagination/pagination.scss';
 import 'swiper/components/scrollbar/scrollbar.scss';
+import './index.css';
 // End import swiper styles
 import App from './App.js';
 import * as serviceWorker from './serviceWorker';

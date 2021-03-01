@@ -75,10 +75,9 @@ const handleSetCurrentSegment = setCurrentSegment => e => {
     if ( curr > segments.night[0] && curr <= segments.night[1] ) setCurrentSegment('night');
 };
 
-export default function HomeDoodle ({ isActive }) {
+export default function HomeDoodle ({ isActive, isMobile }) {
     const [DOMReady, setDOMReady] = useState(false);
     const windowSize = useWindowSize();
-    const isMobile = windowSize.width <= 480
     const [weather, setWeather] = useState('clear'); 
     const [focus, setFocus] = useState('interior'); 
     const [currentSegment, setCurrentSegment] = useState(''); 
@@ -106,8 +105,6 @@ export default function HomeDoodle ({ isActive }) {
 
     // Configure and instantiate Lottie Animations
     useEffect(() => {
-        console.log("instantiate lottie animations", isActive);
-        
         if (isActive) {
             // Animation Settings
             skyAnimationObject = lottie.loadAnimation({
@@ -145,9 +142,8 @@ export default function HomeDoodle ({ isActive }) {
             svgimg.setAttribute('id','character');
             svgimg.setAttribute("href", CHARACTER_GIF);
             elem.appendChild(svgimg);
-            hideElement('character_placeholder', document)
+            hideElement('character_placeholder', document);
         } else {
-            
             /** Destory animation - destroys lottie animations after slide change to free up resoucres */
             if (skyAnimationObject) skyAnimationObject.destroy();
             if (interiorAnimationObject) interiorAnimationObject.destroy();
@@ -267,7 +263,7 @@ export default function HomeDoodle ({ isActive }) {
                     </object>
                 </div>
 
-                {/* Window / Wall */}
+                {/* Window / Wall BOTTOM */}
                 <object
                     className={ clsx( classes.interior_window, classes.svgObj )}
                     ref={ windowSVGRef }
@@ -281,18 +277,18 @@ export default function HomeDoodle ({ isActive }) {
                 </object>
 
                 <div className={ classes.logoWrapper }>
-                <object
-                    style={{ width: '100%' }}
-                    ref={ logoSVGRef }
-                    id="logo"
-                    data={ LOGO_TEXT_SVG }
-                    aria-label="logo"
-                    aria-required="true"
-                    type="image/svg+xml"
-                >
-                    MENSH
-                </object>
-            </div>
+                    <object
+                        style={{ width: '100%' }}
+                        ref={ logoSVGRef }
+                        id="logo"
+                        data={ LOGO_TEXT_SVG }
+                        aria-label="logo"
+                        aria-required="true"
+                        type="image/svg+xml"
+                    >
+                        MENSH
+                    </object>
+                </div>
                 
                     
                 {/* Interior */}
@@ -355,25 +351,6 @@ const useStyles = makeStyles(theme => ({
         position: 'absolute',
         left: 0
     },
-    contactButton: {
-        borderRadius: 200,
-        backgroundColor: '#fff816',
-        color: 'blue',
-        width: 200,
-        height: 200,
-        marginRight: -50,
-        marginTop: -50,
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        border: 'none',
-        zIndex: 100,
-        '&:hover': {
-            width: 250,
-            height: 250,
-            cursor: 'pointer'
-        }
-    },
     show: {
         opacity: 100,
         filter: 'alpha(opacity=100)'
@@ -387,14 +364,12 @@ const useStyles = makeStyles(theme => ({
         right: 0,
     },
     container: {
-        backgroundColor: '#3b3b3b',
-        position: 'absolute',
-        // bottom: 0,
-        top: 0,
-        left: 0,
-        height: '100%',
-        width: '100%',
-        // filter: 'blur(5px)'
+            backgroundColor: '#3b3b3b',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            height: '100%',
+            width: '100%',
     },
     sky: ({ windowSize }) => {
 

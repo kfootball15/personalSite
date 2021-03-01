@@ -2,7 +2,7 @@ import React from 'react';
 import { WeatherDoodle, HomeDoodle } from 'doodles';
 import { makeStyles } from '@material-ui/core';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import lottie from 'lottie-web';
+import { useWindowSize } from 'helpers';
 
 
 const SwiperUpper = () => {
@@ -14,14 +14,16 @@ const SwiperUpper = () => {
 
 
 export default function HomePage (props) {
-	const classes = useStyles();
+	const windowSize = useWindowSize();
+	const isMobile = windowSize.width <= 480;
+	const classes = useStyles({ windowSize, isMobile });
+	
 	return (
-        // <div className={classes.wrapper}>
         <Swiper
-			className={classes.wrapper}
+			className={classes.container}
             spaceBetween={0}
-            slidesPerView={1}
-            // navigation
+			slidesPerView={1}
+			// navigation
             direction='vertical'
             // pagination={{ clickable: true }}
             scrollbar={{ draggable: true }}
@@ -36,7 +38,7 @@ export default function HomePage (props) {
             </SwiperSlide> */}
             <SwiperSlide className={classes.slide}>
 			{({ isActive }) => (
-				<HomeDoodle isActive={isActive} />
+				<HomeDoodle isActive={isActive} isMobile={isMobile} />
 			)}
 			</SwiperSlide>
             <SwiperSlide className={classes.slide2}> Slide 2 </SwiperSlide>
@@ -44,17 +46,18 @@ export default function HomePage (props) {
 			<SwiperSlide className={classes.slide2}> Slide 4 </SwiperSlide>
 			<SwiperSlide className={classes.slide}> Slide 5 </SwiperSlide>
 		</Swiper>
-        // </div>
 	)
 }
 
 const useStyles = makeStyles(theme => ({
-	wrapper: {
-		height: '100vh'
+	container: ({ windowSize }) => {
+		return {
+			height: '100vh'
+		}
 	},
-	slide: {
-		backgroundColor: 'blue'
-	},
+	slide: ({ windowSize, isMobile }) => ({
+		backgroundColor: 'blue',
+	}),
 	slide2: {
 		backgroundColor: 'red'
 	},
