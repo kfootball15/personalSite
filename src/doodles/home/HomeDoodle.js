@@ -210,23 +210,6 @@ export default function HomeDoodle ({ isActive, isMobile }) {
         </defs>
         </svg>
 
-        {/* Buttons */}
-        {/* <div className={classes.buttons}>
-            <button className={classes.button} style={{ top: 0 }} onClick={handleToggleFocus}>Focus</button>
-            <button className={classes.button} style={{ top: 50 }} onClick={handleStop}>Stop</button>
-            <button className={classes.button} style={{ top: 100 }} onClick={handlePause}>Pause</button>
-            <button className={classes.button} style={{ top: 150 }} onClick={handleSpeed(15)}>Fast</button>
-            <button className={classes.button} style={{ top: 200 }} onClick={handleSpeed(1)}>Normal</button>
-            <button className={classes.button} style={{ top: 250 }} onClick={handleSpeed(0.15)}>Slow</button>
-            <button className={classes.button} style={{ top: 300 }} onClick={handlePlaySeg('sunrise', 1)}>Play Sunrise</button>
-            <button className={classes.button} style={{ top: 350 }} onClick={handlePlaySeg('day', 1)}>Play Day</button>
-            <button className={classes.button} style={{ top: 400 }} onClick={handlePlaySeg('sunset', 1)}>Play Sunset</button>
-            <button className={classes.button} style={{ top: 450 }} onClick={handlePlaySeg('night', 1)}>Play Night</button>
-            <button className={classes.button} style={{ top: 500 }} onClick={handleTurnOffLights}>Lights Off</button>
-            <button className={classes.button} style={{ top: 550 }} onClick={handleTurnOnLights}>Lights On</button>
-            <button className={classes.button} style={{ top: 550 }} onClick={handlePlay}>Play</button>
-        </div> */}
-
         {/* Main Content */}
         <div className={classes.container}>
 
@@ -297,7 +280,7 @@ export default function HomeDoodle ({ isActive, isMobile }) {
                     <object
                         className={ clsx( classes.svgObj )}
                         ref={ deskSVGRef }
-                        id="desk"
+                        id="interior_desk"
                         data={ DESK_SVG }
                         aria-label="desk"
                         aria-required="true"
@@ -307,7 +290,7 @@ export default function HomeDoodle ({ isActive, isMobile }) {
                     </object>
 
                     {/* Chair / Character */}
-                    <div ref={ interiorRef } />
+                    <div id="interior_chair" ref={ interiorRef } />
                 </div>
 
             </div>
@@ -320,16 +303,19 @@ export default function HomeDoodle ({ isActive, isMobile }) {
 const transitionSpeed = '2s';
 
 const useStyles = makeStyles(theme => ({
-    buttons: {},
+    container: {
+        backgroundColor: '#3b3b3b',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        height: '100%',
+        width: '100%',
+    },
     logoWrapper: ({ isMobile}) => {
         const base = {
             position: 'absolute',
             left: 0,
-            display: 'flex',
-            justifyContent: 'center',
             width: '100%',
-            overflow: 'hidden',
-            cursor: 'pointer'
         }
 
         if (isMobile) {
@@ -341,7 +327,7 @@ const useStyles = makeStyles(theme => ({
 
         return {
             ...base,
-            top: '2%'
+            top: 2
         }
     },
     button: {
@@ -362,14 +348,6 @@ const useStyles = makeStyles(theme => ({
     characterContainer: {
         bottom: 0,
         right: 0,
-    },
-    container: {
-            backgroundColor: '#3b3b3b',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            height: '100%',
-            width: '100%',
     },
     sky: ({ windowSize }) => {
 

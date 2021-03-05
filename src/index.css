@@ -1,3 +1,9 @@
+html,
+body {
+  position: relative;
+  height: 100%;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -8,9 +14,15 @@ body {
   
   /* Strictly for Swiper.js */
   margin: 0;
-  height: 100%;
-  overflow: hidden
+  /* height: 100%; */
+  /* overflow: hidden */
+  padding: 0;
 
+}
+
+/* Very Important for Swiper - lets vertical scroll take up full screen */
+#root{
+  height: 100%;
 }
 
 code {

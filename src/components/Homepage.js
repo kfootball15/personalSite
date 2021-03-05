@@ -22,7 +22,7 @@ export default function HomePage (props) {
 	
 	return (
         <Swiper
-			className={classes.container}
+			className={classes.swiperContainer}
             spaceBetween={0}
 			slidesPerView={1}
             direction='vertical'
@@ -30,16 +30,12 @@ export default function HomePage (props) {
             // pagination={{ clickable: true }}
 			scrollbar={{ draggable: true }}
 			grabCursor
-            // onSwiper={(swiper) => console.log(swiper)}
+			autoHeight
         >
-            {/* <SwiperSlide className={classes.slide}>
-            	<WeatherDoodle />
-				<SwiperUpper />
-            </SwiperSlide> */}
             <SwiperSlide className={classes.slide}>
-			{({ isActive }) => (
-				<HomeDoodle isActive={isActive} isMobile={isMobile} />
-			)}
+				{({ isActive }) => (
+					<HomeDoodle isActive={isActive} isMobile={isMobile} />
+				)}
 			</SwiperSlide>
             <SwiperSlide className={classes.slide2}>
 				<Swiper
@@ -64,7 +60,8 @@ export default function HomePage (props) {
 const useStyles = makeStyles(theme => ({
 	container: ({ windowSize }) => {
 		return {
-			height: '100vh'
+			width: '100%',
+      		height: '100%',
 		}
 	},
 	swiperContainer: {
