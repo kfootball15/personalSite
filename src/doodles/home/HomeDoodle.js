@@ -327,7 +327,7 @@ const useStyles = makeStyles(theme => ({
 
         return {
             ...base,
-            top: 2
+            top: '8%'
         }
     },
     button: {
