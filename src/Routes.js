@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import HomePage from './components/HomePage';
+import HomePage from './components/Homepage';
 import Navbar from './components/Navbar';
 /** @TODO */
 // import NotFoundPage from './components/NotFoundPage';
