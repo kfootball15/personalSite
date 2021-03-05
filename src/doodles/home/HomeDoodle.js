@@ -225,13 +225,8 @@ export default function HomeDoodle ({ isActive, isMobile }) {
                     className={ classes.svgObj }
                     ref={ exteriorRef }>    
                 </div>
-            </div>
 
-
-            {/* Interior */}
-            <div className={ classes.interior } >    
-
-                {/* Window / Wall TOP */}
+                {/* Window / Wall Top */}
                 <div className={clsx( classes.interior_window_top )}>
                     <object
                         className={ clsx( classes.svgObj )}
@@ -246,11 +241,11 @@ export default function HomeDoodle ({ isActive, isMobile }) {
                     </object>
                 </div>
 
-                {/* Window / Wall BOTTOM */}
+                {/* Window / Wall Bottom */}
                 <object
                     className={ clsx( classes.interior_window, classes.svgObj )}
                     ref={ windowSVGRef }
-                    id="window"
+                    id="window_bottom"
                     data={ WINDOW_SVG }
                     aria-label="window"
                     aria-required="true"
@@ -258,10 +253,15 @@ export default function HomeDoodle ({ isActive, isMobile }) {
                 >
                     Window
                 </object>
+            </div>
 
+
+            {/* Interior */}
+            <div className={ classes.interior } >    
+
+                {/* Logo */}
                 <div className={ classes.logoWrapper }>
                     <object
-                        style={{ width: '100%' }}
                         ref={ logoSVGRef }
                         id="logo"
                         data={ LOGO_TEXT_SVG }
@@ -273,7 +273,6 @@ export default function HomeDoodle ({ isActive, isMobile }) {
                     </object>
                 </div>
                 
-                    
                 {/* Interior */}
                 <div className={ classes.interior_room }>
                     {/* Desk */}
@@ -316,19 +315,21 @@ const useStyles = makeStyles(theme => ({
             position: 'absolute',
             left: 0,
             width: '100%',
-        }
-
-        if (isMobile) {
-            return {
-                ...base,
+            [theme.breakpoints.down('sm')]: {
                 top: 2,
-            }
+            },
+            [theme.breakpoints.only('md')]: {
+                top: '4%'
+            },
+            [theme.breakpoints.only('lg')]: {
+                top: '15%' 
+            },
+            [theme.breakpoints.up('xl')]: {
+                bottom: '40%' 
+            },
         }
 
-        return {
-            ...base,
-            top: '8%'
-        }
+        return { ...base }
     },
     button: {
         width: 50,
