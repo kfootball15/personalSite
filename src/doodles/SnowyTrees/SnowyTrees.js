@@ -24,7 +24,7 @@ export default function SnowyTrees ({ isActive, isMobile }) {
         {/* Main Content */}
         <div className={classes.container}>
 
-            <Placeholder classes={classes} ref={refPlaceholder} />
+            <Placeholder ref={refPlaceholder} />
 
             <LazyLoad style={{
                 width: '100%',
