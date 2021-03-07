@@ -10,6 +10,7 @@ import {
 
 export default function HomePage (props) {
 	const [DOMReady, setDOMReady] = useState(false);
+	const [isTransitioning, setTransitioning] = useState(false);
 	const windowSize = useWindowSize();
 	const isMobile = windowSize.width <= 480;
 	const showVerticalNavigation = false;
@@ -24,7 +25,15 @@ export default function HomePage (props) {
 	// Code that runs on DOMReady should go here
 	useEffect(() => {
 		console.log("DOMReady:", DOMReady)
-	}, [DOMReady])
+	}, [DOMReady]);
+
+	const handleSlideChangeTransitionStart = () => {
+		setTransitioning(true);
+	};
+	
+	const handleSlideChangeTransitionEnd = () => {
+		setTransitioning(false);
+	};
 	
 	return (
         <Swiper
@@ -33,14 +42,19 @@ export default function HomePage (props) {
 			slidesPerView={1}
             direction='vertical'
 			navigation={showVerticalNavigation}
-            // pagination={{ clickable: true }}
 			scrollbar={{ draggable: true }}
 			grabCursor
 			autoHeight
+			onSlideChangeTransitionStart={handleSlideChangeTransitionStart}
+			onSlideChangeTransitionEnd={handleSlideChangeTransitionEnd}
         >
             <SwiperSlide className={classes.slide}>
 				{({ isActive }) => (
-					<HomeDoodle isActive={isActive} isMobile={isMobile} />
+					<HomeDoodle
+						isTransitioning={isTransitioning}
+						isActive={isActive}
+						isMobile={isMobile}
+					/>
 				)}
 			</SwiperSlide>
 			<SwiperSlide className={classes.snowyTreesSlide}> 

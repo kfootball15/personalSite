@@ -28,7 +28,7 @@ let exteriorAnimationObject = null;
 const blur = "8";
 const transitionDuration = "1s";
 const fps = 30;
-const speed = 2;
+const speed = 1.5;
 const animationSegments = {
     'sunrise': 0 * fps,
     'day': 6 * fps,
@@ -48,12 +48,12 @@ const defaultAnimationObjectSettings = {
     renderer: 'svg', // Required
     loop: true, // Optional
     autoplay: true, // Optional
-    // setSubframe: false, // if false, respects original AE file fps
+    setSubframe: true, // if false, respects original AE file fps
     rendererSettings: {
         // context: canvasContext, // the canvas context, only support "2d" context
         // preserveAspectRatio: 'xMinYMin slice', // Supports the same options as the svg element's preserveAspectRatio property
         // clearCanvas: false,
-        progressiveLoad: false, // Boolean, only svg renderer, loads dom elements when needed. Might speed up initialization for large number of elements.
+        progressiveLoad: true, // Boolean, only svg renderer, loads dom elements when needed. Might speed up initialization for large number of elements.
         // hideOnTransparent: true, //Boolean, only svg renderer, hides elements when opacity reaches 0 (defaults to true)
         // className: 'some-css-class-name',
         // id: 'some-id',
@@ -68,7 +68,77 @@ const handleSetCurrentSegment = setCurrentSegment => e => {
     if ( curr > segments.night[0] && curr <= segments.night[1] ) setCurrentSegment('night');
 };
 
-export default function HomeDoodle ({ isActive, isMobile }) {
+function Logo () {
+    return (
+        <object
+            id="logo"
+            data={ LOGO_TEXT_SVG }
+            aria-label="logo"
+            aria-required="true"
+            type="image/svg+xml"
+        >
+            MENSH
+        </object>
+    )
+}
+
+function WindowTop () {
+    return (
+        <object
+            style={{ 
+                position: 'absolute',
+                width: '100%'
+            }}
+            id="window_top"
+            data={ WINDOW_TOP_SVG }
+            aria-label="window_top"
+            aria-required="true"
+            type="image/svg+xml"
+        >
+            Window
+        </object>
+    )
+}
+
+function WindowBottom () {
+    return (
+        <object
+            style={{
+                width: '100%',
+                position: 'absolute',
+                bottom: 0
+            }}
+            id="window_bottom"
+            data={ WINDOW_SVG }
+            aria-label="window"
+            aria-required="true"
+            type="image/svg+xml"
+        >
+            Window
+        </object>
+    )
+}
+
+function Desk () {
+    return (
+        <object
+            style={{
+              width: '100%',
+              position: 'absolute',
+              bottom: 0
+            }}
+            id="interior_desk"
+            data={ DESK_SVG }
+            aria-label="desk"
+            aria-required="true"
+            type="image/svg+xml"
+        >
+            Desk
+        </object>
+    )
+}
+
+export default function HomeDoodle ({ isActive, isMobile, isTransitioning }) {
     const windowSize = useWindowSize();
     const [weather] = useState('clear'); 
     const [focus, setFocus] = useState('interior'); 
@@ -76,15 +146,10 @@ export default function HomeDoodle ({ isActive, isMobile }) {
     const classes = useStyles({ weather, currentSegment, focus, isMobile, windowSize });
 
     /** SVG Refs */
-    const mainRef = useRef(null);
     const skyRef = useRef(null);
     const exteriorRef = useRef(null);
-    const windowSVGRef = useRef(null);    
-    const logoSVGRef = useRef(null);    
-    const deskSVGRef = useRef(null);    
-    const windowTopSVGRef = useRef(null);    
     const interiorRef = useRef(null);
-    /** SVG Animation */
+    /** SVG Animation Refs */
     const animBlurExterior1Ref = useRef(null);
     const blurExterior1Ref = useRef(null);
 
@@ -95,55 +160,56 @@ export default function HomeDoodle ({ isActive, isMobile }) {
         setFocus(newFocus);
     }, [focus]);
 
-    // Configure and instantiate Lottie Animations
     useEffect(() => {
-        if (isActive) {
-            // Animation Settings
-            skyAnimationObject = lottie.loadAnimation({
+        skyAnimationObject = lottie.loadAnimation({
                 ...defaultAnimationObjectSettings,
                 container: skyRef.current,
                 name: "sky", // Name for future reference. Optional.
                 animationData: SKY_LOTTIE
             });
-            interiorAnimationObject = lottie.loadAnimation({
+        interiorAnimationObject = lottie.loadAnimation({
                 ...defaultAnimationObjectSettings,
                 container: interiorRef.current,
                 name: "interior", // Name for future reference. Optional.
                 animationData: INTERIOR_LOTTIE
             });
-            exteriorAnimationObject = lottie.loadAnimation({
+        exteriorAnimationObject = lottie.loadAnimation({
                 ...defaultAnimationObjectSettings,
                 container: exteriorRef.current,
                 name: "exterior", // Name for future reference. Optional.
                 animationData: EXTERIOR_LOTTIE,
-                // animationData: null
             });
-    
-            // This will set the current segment by checking every frame of an animation (can append this handler to any of the layers)
-            interiorAnimationObject.onEnterFrame = handleSetCurrentSegment( setCurrentSegment );
+        
+        // To count loops, uncomment
+        // interiorAnimationObject.onLoopComplete = () => { setCurrentLoop( currentLoop + 1 ) };
 
-            // To count loops, uncomment
-            // interiorAnimationObject.onLoopComplete = () => { setCurrentLoop( currentLoop + 1 ) };
-    
-            /** Set Animation speed (find a better place for this?) */
-            lottie.setSpeed(speed);
+        /** Set Animation speed (find a better place for this?) */
+        lottie.setSpeed(speed);
 
-            /** Replace Placeholder Character with animation */
-            const elem = interiorRef.current.querySelector('[id^="chair_back"]');
-            var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
-            svgimg.setAttribute('height','100%');
-            svgimg.setAttribute('width','100%');
-            svgimg.setAttribute('id','character');
-            svgimg.setAttribute("href", CHARACTER_GIF);
-            elem.appendChild(svgimg);
-            hideElement('character_placeholder', document);
+        /** Replace Placeholder Character with animation */
+        const elem = interiorRef.current.querySelector('[id^="chair_back"]');
+        var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
+        svgimg.setAttribute('height','100%');
+        svgimg.setAttribute('width','100%');
+        svgimg.setAttribute('id','character');
+        svgimg.setAttribute("href", CHARACTER_GIF);
+        elem.appendChild(svgimg);
+        hideElement('character_placeholder', document);
+            
+        // This will set the current segment by checking every frame of an animation (can append this handler to any of the layers)
+        interiorAnimationObject.onEnterFrame = handleSetCurrentSegment( setCurrentSegment );
+    }, [])
+
+    // Configure and instantiate Lottie Animations
+    useEffect(() => {
+        if (isActive && !isTransitioning) {
+            if (skyAnimationObject) skyAnimationObject.play();
+            if (exteriorAnimationObject) exteriorAnimationObject.play()
         } else {
-            /** Destory animation - destroys lottie animations after slide change to free up resoucres */
-            if (skyAnimationObject) skyAnimationObject.destroy();
-            if (interiorAnimationObject) interiorAnimationObject.destroy();
-            if (exteriorAnimationObject) exteriorAnimationObject.destroy();
+            if (skyAnimationObject) skyAnimationObject.pause();
+            if (exteriorAnimationObject) exteriorAnimationObject.pause()
         }
-    }, [isActive]);
+    }, [isActive, isTransitioning]);
     
     // Listens for touchstart events (mobile only)
     useEventListener('touchstart', function() {
@@ -198,7 +264,7 @@ export default function HomeDoodle ({ isActive, isMobile }) {
         </svg>
 
         {/* Main Content */}
-        <div className={classes.container} ref={mainRef}>
+        <div className={classes.container} >
         
             {/* Sky */}
             <div
@@ -216,32 +282,10 @@ export default function HomeDoodle ({ isActive, isMobile }) {
                 </div>
 
                 {/* Window / Wall Top */}
-                <div className={clsx( classes.interior_window_top )}>
-                    <object
-                        className={ clsx( classes.svgObj )}
-                        ref={ windowTopSVGRef }
-                        id="window_top"
-                        data={ WINDOW_TOP_SVG }
-                        aria-label="window_top"
-                        aria-required="true"
-                        type="image/svg+xml"
-                    >
-                        Window
-                    </object>
-                </div>
+                <WindowTop />
 
                 {/* Window / Wall Bottom */}
-                <object
-                    className={ clsx( classes.interior_window, classes.svgObj )}
-                    ref={ windowSVGRef }
-                    id="window_bottom"
-                    data={ WINDOW_SVG }
-                    aria-label="window"
-                    aria-required="true"
-                    type="image/svg+xml"
-                >
-                    Window
-                </object>
+                <WindowBottom />
             
             </div>
 
@@ -251,36 +295,20 @@ export default function HomeDoodle ({ isActive, isMobile }) {
 
                 {/* Logo */}
                 <div className={ classes.logoWrapper }>
-                    <object
-                        ref={ logoSVGRef }
-                        id="logo"
-                        data={ LOGO_TEXT_SVG }
-                        aria-label="logo"
-                        aria-required="true"
-                        type="image/svg+xml"
-                    >
-                        MENSH
-                    </object>
+                    <Logo />
                 </div>
                 
                 {/* Interior */}
                 <div className={ classes.interior_room }>
                     
                     {/* Desk */}
-                    <object
-                        className={ clsx( classes.svgObj )}
-                        ref={ deskSVGRef }
-                        id="interior_desk"
-                        data={ DESK_SVG }
-                        aria-label="desk"
-                        aria-required="true"
-                        type="image/svg+xml"
-                    >
-                        Desk
-                    </object>
+                    <Desk />
 
                     {/* Chair / Character */}
-                    <div id="interior_chair" ref={ interiorRef } />
+                    <div
+                        id="interior_chair"
+                        ref={ interiorRef }
+                    />
                 
                 </div>
 
@@ -381,7 +409,7 @@ const useStyles = makeStyles(theme => ({
     },
     interior: ({ focus }) => {
         const interior = focus === 'interior';
-        const blur = interior ? '0px' : '3px';
+        const blur = interior ? '0px' : '6px';
 
         return {
             position: 'absolute',
