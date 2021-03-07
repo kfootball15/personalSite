@@ -220,7 +220,9 @@ export default function HomeDoodle ({ isActive, isMobile }) {
             />
             
             {/* Extertior */}
-            <div className={ classes.exterior }>    
+            <div className={ classes.exterior }>
+                
+                {/* Buildings  */}
                 <div
                     className={ classes.svgObj }
                     ref={ exteriorRef }>    
@@ -253,6 +255,7 @@ export default function HomeDoodle ({ isActive, isMobile }) {
                 >
                     Window
                 </object>
+            
             </div>
 
 
@@ -275,6 +278,7 @@ export default function HomeDoodle ({ isActive, isMobile }) {
                 
                 {/* Interior */}
                 <div className={ classes.interior_room }>
+                    
                     {/* Desk */}
                     <object
                         className={ clsx( classes.svgObj )}
@@ -290,6 +294,7 @@ export default function HomeDoodle ({ isActive, isMobile }) {
 
                     {/* Chair / Character */}
                     <div id="interior_chair" ref={ interiorRef } />
+                
                 </div>
 
             </div>
@@ -310,7 +315,7 @@ const useStyles = makeStyles(theme => ({
         height: '100%',
         width: '100%',
     },
-    logoWrapper: ({ isMobile}) => {
+    logoWrapper: ({ isMobile }) => {
         const base = {
             position: 'absolute',
             left: 0,

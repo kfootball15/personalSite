@@ -1,5 +1,5 @@
 import React from 'react';
-import { WeatherDoodle, HomeDoodle } from 'doodles';
+import { WeatherDoodle, HomeDoodle, SnowyTrees } from 'doodles';
 import { makeStyles } from '@material-ui/core';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useWindowSize } from 'helpers';
@@ -17,7 +17,7 @@ export default function HomePage (props) {
 	const windowSize = useWindowSize();
 	const isMobile = windowSize.width <= 480;
 	const showVerticalNavigation = false;
-	const showHorizontalNavigation = false;
+	const showHorizontalNavigation = isMobile ? false : true;
 	const classes = useStyles({ windowSize, isMobile });
 	
 	return (
@@ -35,6 +35,11 @@ export default function HomePage (props) {
             <SwiperSlide className={classes.slide}>
 				{({ isActive }) => (
 					<HomeDoodle isActive={isActive} isMobile={isMobile} />
+				)}
+			</SwiperSlide>
+			<SwiperSlide className={classes.slide}> 
+				{({ isActive }) => (
+					<SnowyTrees isActive={isActive} isMobile={isMobile} />
 				)}
 			</SwiperSlide>
             <SwiperSlide className={classes.slide2}>
