@@ -1,9 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, lazy } from 'react';
 import { makeStyles } from '@material-ui/core';
 import SNOWY_TREES_MOV from 'assets/snowyTrees/snowy_trees.mp4';
 import Placeholder from 'components/Placeholder';
 import LazyLoad from 'react-lazyload';
-// import SNOWY_TREES_GIF from 'assets/snowyTrees/snowy_trees.gif';
+import SNOWY_TREES_GIF from 'assets/snowyTrees/snowy_trees.gif';
 
 import { useWindowSize } from 'helpers';
 
@@ -33,30 +33,31 @@ export default function SnowyTrees ({ isActive, isMobile }) {
                 justifyContent: 'center',
                 alignItems: 'center'
             }}>
-
-                {/* MP4 */}
-                <video
-                    onLoadedData={removePlaceholder}
-                    onError={removePlaceholder}
-                    autoPlay
-                    loop
-                    muted
-                    className={ classes.vid }
-                    ref={ ref }
-                >
-                    <source
-                        src={ SNOWY_TREES_MOV }
-                        type="video/mp4">
-                    </source>
-                </video>
-
-                {/* GIF */}
-                {/* <img
-                    className={ classes.gif }
-                    ref={ ref }
-                    src={ SNOWY_TREES_GIF }
-                /> */}
-
+                {/* @TODO - Lazy Load / Code Split */}
+                {
+                    isMobile
+                        ? <img
+                            onLoad={removePlaceholder}
+                            onError={removePlaceholder}
+                            className={ classes.gif }
+                            ref={ ref }
+                            src={ SNOWY_TREES_GIF }
+                        />
+                        : <video
+                            onLoadedData={removePlaceholder}
+                            onError={removePlaceholder}
+                            autoPlay
+                            loop
+                            muted
+                            className={ classes.vid }
+                            ref={ ref }
+                        >
+                            <source
+                                src={ SNOWY_TREES_MOV }
+                                type="video/mp4">
+                            </source>
+                        </video>
+                }
             </LazyLoad>
         </div>
     </>)
