@@ -5,7 +5,7 @@ import { hideElement, showElement, setCursor, appendAnimation } from "helpers";
 import clsx from 'clsx';
 import base from "assets/character/base.svg";
 import character from 'assets/character/character.json';
-// import snow from './assets/snow.json';
+// import snow from 'assets/snow.json';
 
 function WeatherDoodle () {
     const classes = useStyles();

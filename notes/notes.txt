@@ -1,0 +1,44 @@
+Illustrator:
+    1. Select Layer you want to merge paths for
+    2. Open Pathfinder window (windows > pathfinder) 
+    3. Merge Paths
+    4. Reduce path points by selection objects and: object > path > simplify
+    4. Release Layers to Seqence
+    5. drag layers to root and delete empty layer
+
+After Effects:
+    Import:
+        File > Import > File
+        Select .ai file
+        Import as composition
+    Windows On:
+        Change fill color -> select entire shape layer and change fill in top menu
+        Apply Night Light expression
+            - copy script from AE_scripts.js,
+            - apply to the opacity of a single group,
+            - right click > copy expression,
+            - Select rest of the groups and cmd + v 
+        Convert Expression to keyframes
+            - Filter for opacity properties in that search bar thing
+            - Drag up to select all of the opacity layers
+            - Right Click > Convert Expression to keyframes
+        Reduce Keyframes
+            - With layers still selected from previous step...
+            - apply File > Scripts > Reduce Keyframes (JF)
+            - wait
+            - Select all keyframes and make sure you toggle hold so they dont fade
+        
+
+Transparent Gif:
+    https://www.youtube.com/watch?v=V8yuOhuhMG4&ab_channel=BrookerFilms
+    *Max 500 frames - have to break up larger gifs
+    Also must use noise dither for any hope of it looking decent
+
+
+Checklist
+    [x] Fix CSS on macbook/wide screens (wide screen still ooks bad) (HIGH)
+    [] Loading should happen more gracefully (LOW)
+    [] Swipe left/right (click on Desktop) to chagne time of day - otherwise backgorund remains static. 
+        Remember to show prmpt to let user know to swipe left/right (HIGH)
+    [x] Destory or just puase the svg when scrolling to new project (HIGH)
+    [] Try reducing frame rate so it plays smoother

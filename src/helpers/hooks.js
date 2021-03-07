@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /** @TODO - break these out into files eventually bro */
 //Hooks
@@ -15,8 +15,7 @@ export const useEventListener = (eventName, handler, element = window) => {
         savedHandler.current = handler;
     }, [handler]);
 
-    useEffect(
-        () => {
+    useEffect(() => {
             // Make sure element supports addEventListener
             const isSupported = element && element.addEventListener;
             if (!isSupported) {
@@ -34,9 +33,7 @@ export const useEventListener = (eventName, handler, element = window) => {
             return () => {
                 element.removeEventListener(eventName, eventListener);
             };
-        },
-        [eventName, element] // Re-run if eventName or element changes
-    );
+        }, [eventName, element] ); // Re-run if eventName or element changes
 };
 
 // Hook

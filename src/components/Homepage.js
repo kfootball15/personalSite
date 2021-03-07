@@ -1,24 +1,30 @@
-import React from 'react';
-import { WeatherDoodle, HomeDoodle, SnowyTrees } from 'doodles';
+import React, {useState, useEffect} from 'react';
+import { HomeDoodle, SnowyTrees } from 'doodles';
 import { makeStyles } from '@material-ui/core';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { useWindowSize } from 'helpers';
-
-
-const SwiperUpper = () => {
-	const classes = useSwiperStyles();
-	return (
-		<div className={classes.root} > ^  </div>
-	);
-}
+import {
+	useEventListener,
+    useWindowSize
+} from 'helpers';
 
 
 export default function HomePage (props) {
+	const [DOMReady, setDOMReady] = useState(false);
 	const windowSize = useWindowSize();
 	const isMobile = windowSize.width <= 480;
 	const showVerticalNavigation = false;
 	const showHorizontalNavigation = isMobile ? false : true;
 	const classes = useStyles({ windowSize, isMobile });
+
+	// Listens for dom ready - can use SVGs
+	useEventListener('load', function() {
+		setDOMReady(true);
+	});
+
+	// Code that runs on DOMReady should go here
+	useEffect(() => {
+		console.log("DOMReady:", DOMReady)
+	}, [DOMReady])
 	
 	return (
         <Swiper
@@ -37,9 +43,9 @@ export default function HomePage (props) {
 					<HomeDoodle isActive={isActive} isMobile={isMobile} />
 				)}
 			</SwiperSlide>
-			<SwiperSlide className={classes.slide}> 
+			<SwiperSlide className={classes.snowyTreesSlide}> 
 				{({ isActive }) => (
-					<SnowyTrees isActive={isActive} isMobile={isMobile} />
+					isActive && <SnowyTrees isActive={isActive} isMobile={isMobile} />
 				)}
 			</SwiperSlide>
             <SwiperSlide className={classes.slide2}>
@@ -78,6 +84,9 @@ const useStyles = makeStyles(theme => ({
 	slide2: {
 		backgroundColor: 'red',
 	},
+	snowyTreesSlide: {
+		backgroundColor: '#cecdce'
+	},
 	swiperUpper: {
 		backgroundColor: 'pink',
 		width: 100,
@@ -85,17 +94,4 @@ const useStyles = makeStyles(theme => ({
 		position: 'absolute',
 		bottom: 0
 	}
-}))
-
-const useSwiperStyles = makeStyles(theme => ({
-	root: {
-		backgroundColor: 'pink',
-		width: 100,
-		height: 100,
-		position: 'absolute',
-		bottom: 0,
-		left: 'calc(50vw - 50px)',
-		textAlign: 'center',
-		cursor: 'grab' // or 'grabbing'
-	}
-}))
+}));

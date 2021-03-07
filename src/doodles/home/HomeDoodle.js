@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { gcd_two_numbers } from 'helpers';
-/** for homePage project below */
 import clsx from 'clsx';
 import INTERIOR_LOTTIE from 'assets/home/full_interior_lottie.json';
 import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
@@ -11,16 +10,10 @@ import WINDOW_SVG from 'assets/home/window.svg';
 import WINDOW_TOP_SVG from 'assets/home/window_top.svg';
 import DESK_SVG from 'assets/home/desk.svg';
 import CHARACTER_GIF from 'assets/home/character.gif';
-
 import {
 	useEventListener,
     useWindowSize,
-    fillElement,
 	hideElement,
-    showElement,
-    transitionFill,
-	setCursor,
-	appendAnimation
 } from 'helpers';
 import lottie from 'lottie-web';
 
@@ -76,15 +69,14 @@ const handleSetCurrentSegment = setCurrentSegment => e => {
 };
 
 export default function HomeDoodle ({ isActive, isMobile }) {
-    const [DOMReady, setDOMReady] = useState(false);
     const windowSize = useWindowSize();
-    const [weather, setWeather] = useState('clear'); 
+    const [weather] = useState('clear'); 
     const [focus, setFocus] = useState('interior'); 
     const [currentSegment, setCurrentSegment] = useState(''); 
-    const [currentLoop, setCurrentLoop] = useState(0); 
     const classes = useStyles({ weather, currentSegment, focus, isMobile, windowSize });
 
     /** SVG Refs */
+    const mainRef = useRef(null);
     const skyRef = useRef(null);
     const exteriorRef = useRef(null);
     const windowSVGRef = useRef(null);    
@@ -96,12 +88,12 @@ export default function HomeDoodle ({ isActive, isMobile }) {
     const animBlurExterior1Ref = useRef(null);
     const blurExterior1Ref = useRef(null);
 
-    const handleToggleFocus = (val) => {
+    const handleToggleFocus = useCallback(() => {
         const newFocus = focus === 'interior'
                 ? 'exterior'
                 : 'interior';
         setFocus(newFocus);
-    }
+    }, [focus]);
 
     // Configure and instantiate Lottie Animations
     useEffect(() => {
@@ -129,7 +121,9 @@ export default function HomeDoodle ({ isActive, isMobile }) {
     
             // This will set the current segment by checking every frame of an animation (can append this handler to any of the layers)
             interiorAnimationObject.onEnterFrame = handleSetCurrentSegment( setCurrentSegment );
-            interiorAnimationObject.onLoopComplete = () => { setCurrentLoop( currentLoop + 1 ) };
+
+            // To count loops, uncomment
+            // interiorAnimationObject.onLoopComplete = () => { setCurrentLoop( currentLoop + 1 ) };
     
             /** Set Animation speed (find a better place for this?) */
             lottie.setSpeed(speed);
@@ -150,13 +144,6 @@ export default function HomeDoodle ({ isActive, isMobile }) {
             if (exteriorAnimationObject) exteriorAnimationObject.destroy();
         }
     }, [isActive]);
-
-
-    // Listens for dom ready - can use SVGs
-    useEventListener('load', function() {
-        console.log("dom loaded", isMobile);
-        setDOMReady(true);
-    });
     
     // Listens for touchstart events (mobile only)
     useEventListener('touchstart', function() {
@@ -211,8 +198,8 @@ export default function HomeDoodle ({ isActive, isMobile }) {
         </svg>
 
         {/* Main Content */}
-        <div className={classes.container}>
-
+        <div className={classes.container} ref={mainRef}>
+        
             {/* Sky */}
             <div
                 className={clsx( classes.svgObj, classes.sky )}
