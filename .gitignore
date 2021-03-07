@@ -18,7 +18,7 @@
 .env.test.local
 .env.production.local
 /PROJECT_FILES
-notes
+notes_and_files
 
 npm-debug.log*
 yarn-debug.log*
