@@ -409,7 +409,7 @@ const useStyles = makeStyles(theme => ({
     },
     interior: ({ focus }) => {
         const interior = focus === 'interior';
-        const blur = interior ? '0px' : '6px';
+        const blur = interior ? '0px' : '4px';
 
         return {
             position: 'absolute',

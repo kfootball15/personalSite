@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { HomeDoodle, SnowyTrees, SnowyTrees2 } from 'doodles';
+import { HomeDoodle, SketchWoot, SnowyTrees, SnowyTrees2 } from 'doodles';
 import { makeStyles } from '@material-ui/core';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import clsx from 'clsx';
 import {
 	useEventListener,
     useWindowSize
@@ -48,7 +49,7 @@ export default function HomePage (props) {
 			onSlideChangeTransitionStart={handleSlideChangeTransitionStart}
 			onSlideChangeTransitionEnd={handleSlideChangeTransitionEnd}
         >
-            <SwiperSlide className={classes.slide}>
+            <SwiperSlide className={ clsx(classes.slide) }>
 				{({ isActive }) => (
 					<HomeDoodle
 						isTransitioning={isTransitioning}
@@ -57,7 +58,7 @@ export default function HomePage (props) {
 					/>
 				)}
 			</SwiperSlide>
-			<SwiperSlide> 
+			<SwiperSlide className={ clsx(classes.slide) }> 
 				{({ isActive }) => (
 					isActive && 
 					<Swiper
@@ -65,30 +66,31 @@ export default function HomePage (props) {
 						spaceBetween={0}
 						slidesPerView={1}
 					>
-						<SwiperSlide className={classes.snowyTreesSlide}>
+						<SwiperSlide className={ clsx(classes.slide, classes.snowyTreesSlide) }>
 							<SnowyTrees isActive={isActive} isMobile={isMobile} />
 						</SwiperSlide>
-						<SwiperSlide className={classes.snowyTreesSlide}>
+						<SwiperSlide className={ clsx(classes.slide, classes.snowyTreesSlide) }>
 							<SnowyTrees2 isActive={isActive} isMobile={isMobile} />
 						</SwiperSlide>
 					</Swiper>
 				)}
 			</SwiperSlide>
-            <SwiperSlide className={classes.slide2}>
+            <SwiperSlide className={classes.sketchSlide}>
 				<Swiper
 					navigation={showHorizontalNavigation}
-					className={classes.swiperContainer}
 					spaceBetween={50}
 					slidesPerView={1}
 				>
-					<SwiperSlide className={classes.slide2}> Slide 1a </SwiperSlide>
-					<SwiperSlide className={classes.slide}> Slide 1b </SwiperSlide>
-					<SwiperSlide className={classes.slide2}> Slide 1c </SwiperSlide>
-					<SwiperSlide className={classes.slide}> Slide 1d </SwiperSlide>
+					<SwiperSlide className={clsx(classes.slide, classes.sketchSlide) }>
+						<SketchWoot />
+					</SwiperSlide>
+					{/* <SwiperSlide className={classes.slide}> Slide 1b </SwiperSlide>
+					<SwiperSlide className={classes.slide}> Slide 1c </SwiperSlide>
+					<SwiperSlide className={classes.slide}> Slide 1d </SwiperSlide> */}
 				</Swiper>
 			</SwiperSlide>
 			<SwiperSlide className={classes.slide}> Slide 3 </SwiperSlide>
-			<SwiperSlide className={classes.slide2}> Slide 4 </SwiperSlide>
+			<SwiperSlide className={classes.slide}> Slide 4 </SwiperSlide>
 			<SwiperSlide className={classes.slide}> Slide 5 </SwiperSlide>
 		</Swiper>
 	)
@@ -105,16 +107,20 @@ const useStyles = makeStyles(theme => ({
 		height: '100%'
 	},
 	slide: ({ windowSize, isMobile }) => ({
-		backgroundColor: 'blue',
+		width: '100%',
+		height: '100%',
+		overflow: 'hidden'
 	}),
-	slide2: {
-		backgroundColor: 'red',
-	},
 	snowyTreesSlide: {
 		backgroundColor: '#cecdce',
 		overflow: 'hidden',
 		height: '100%',
-		height: '100%',
+	},
+	sketchSlide: {
+		backgroundColor: 'white',
+		overflow: 'hidden',
+		display: 'flex',
+		alignItems: 'center',
 	},
 	swiperUpper: {
 		backgroundColor: 'pink',
