@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { HomeDoodle, SketchWoot, SnowyTrees, SnowyTrees2 } from 'doodles';
+import { HomeDoodle, SketchWoot, SketchFruit, SnowyTrees, SnowyTrees2 } from 'doodles';
 import { makeStyles } from '@material-ui/core';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import clsx from 'clsx';
@@ -83,6 +83,9 @@ export default function HomePage (props) {
 				>
 					<SwiperSlide className={clsx(classes.slide, classes.sketchSlide) }>
 						<SketchWoot />
+					</SwiperSlide>
+					<SwiperSlide className={clsx(classes.slide, classes.sketchSlide) }>
+						<SketchFruit />
 					</SwiperSlide>
 					{/* <SwiperSlide className={classes.slide}> Slide 1b </SwiperSlide>
 					<SwiperSlide className={classes.slide}> Slide 1c </SwiperSlide>
