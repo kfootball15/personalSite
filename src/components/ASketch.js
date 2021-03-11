@@ -14,7 +14,13 @@ function DateDisplay ({ date }) {
     )
 }
 
-export default function ASketch ({ SKETCH, date, isActive, isMobile }) {
+export default function ASketch ({
+    SKETCH,
+    date,
+    isActive,
+    isMobile,
+    type
+}) {
     const ref = useRef();
     const refPlaceholder  = useRef();
     const {height, width} = useWindowSize();
@@ -25,6 +31,54 @@ export default function ASketch ({ SKETCH, date, isActive, isMobile }) {
         console.log("removePlaceholder runs")
         refPlaceholder.current.remove();
     };
+
+    const renderSwitch = (type) => {
+        switch(type) {
+            case 'image':
+                return (
+                    <img
+                        className={ classes.image }
+                        onLoad={removePlaceholder}
+                        onError={removePlaceholder}
+                        ref={ ref }
+                        src={ SKETCH }
+                    />
+                )
+            case 'video':
+                return (
+                    <video
+                        onLoadedData={removePlaceholder}
+                        onError={removePlaceholder}
+                        autoPlay
+                        loop
+                        muted
+                        className={ classes.video }
+                        ref={ ref }
+                    >
+                        <source
+                            src={ SKETCH }
+                            type="video/mp4">
+                        </source>
+                    </video>
+                )
+            case 'gif':
+                return (
+                    <img
+                        onLoad={removePlaceholder}
+                        onError={removePlaceholder}
+                        className={ classes.gif }
+                        ref={ ref }
+                        src={ SKETCH }
+                    />
+                );
+            case 'svg':
+                return 'bar';
+            case 'lottie':
+                return 'bar';
+            default:
+                return null;
+        }
+    }
 
     return (<>
 
@@ -45,14 +99,7 @@ export default function ASketch ({ SKETCH, date, isActive, isMobile }) {
             }>
                 {/* @TODO - Lazy Load / Code Split */}
                 {
-                    
-                    <img
-                        className={ classes.img }
-                        onLoad={removePlaceholder}
-                        onError={removePlaceholder}
-                        ref={ ref }
-                        src={ SKETCH }
-                    />
+                    renderSwitch(type)
                 }
             </LazyLoad>
         </div>
@@ -68,10 +115,36 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
         height: '100%',
     },
-    img: ({ isPortrait }) => {
+    image: ({ isPortrait }) => {
         return {
             width: '100%',
             height: '100%'
+        }
+    },
+    video: ({ isPortrait }) => {
+        const base = {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        }
+
+        if (isPortrait) return {
+            ...base,
+            height: '100%'
+        }
+
+        return {
+            ...base,
+            width: '100%'
+        }
+    },
+    gif: ({ isPortrait }) => {
+        if (isPortrait) return {
+            height: '100%'
+        }
+
+        return {
+            width: '100%'
         }
     }
 }));

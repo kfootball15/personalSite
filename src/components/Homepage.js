@@ -1,12 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import { HomeDoodle, SnowyTrees, SnowyTrees2 } from 'doodles';
+import { HomeDoodle } from 'doodles';
 import { makeStyles } from '@material-ui/core';
 import { ASketch } from 'components';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SKETCH_FRUIT from 'assets/sketches/fruit.png';
 import SKETCH_HANDS from 'assets/sketches/hands.png';
 import SKETCH_WOOT from 'assets/sketches/woot.png';
-import clsx from 'clsx';
+import SNOWY_TREES2_MOV from 'assets/snowyTrees2/snowyTrees2.mp4';
+import SNOWY_TREES2_GIF from 'assets/snowyTrees2/snowyTrees2.gif';
+import SNOWY_TREES_MOV from 'assets/snowyTrees/snowy_trees.mp4';
+import SNOWY_TREES_GIF from 'assets/snowyTrees/snowy_trees.gif';
 import {
 	useEventListener,
     useWindowSize
@@ -52,7 +55,7 @@ export default function HomePage (props) {
 			onSlideChangeTransitionStart={handleSlideChangeTransitionStart}
 			onSlideChangeTransitionEnd={handleSlideChangeTransitionEnd}
         >
-            <SwiperSlide>
+            <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<HomeDoodle
 						isTransitioning={isTransitioning}
@@ -70,11 +73,19 @@ export default function HomePage (props) {
 						spaceBetween={0}
 						slidesPerView={1}
 					>
-						<SwiperSlide className={ clsx(classes.slide, classes.snowyTreesSlide) }>
-							<SnowyTrees isActive={isActive} isMobile={isMobile} />
+						<SwiperSlide>
+							<ASketch
+								type={isMobile ? 'gif' : 'video'}
+								date={'3/06/20'}
+								SKETCH={isMobile ? SNOWY_TREES_GIF : SNOWY_TREES_MOV}
+							/>
 						</SwiperSlide>
-						<SwiperSlide className={ clsx(classes.slide, classes.snowyTreesSlide) }>
-							<SnowyTrees2 isActive={isActive} isMobile={isMobile} />
+						<SwiperSlide>
+							<ASketch
+								type={isMobile ? 'gif' : 'video'}
+								date={'3/07/20'}
+								SKETCH={isMobile ? SNOWY_TREES2_GIF : SNOWY_TREES2_MOV}
+							/>
 						</SwiperSlide>
 					</Swiper>
 				)}
@@ -87,13 +98,13 @@ export default function HomePage (props) {
 					slidesPerView={1}
 				>
 					<SwiperSlide>
-						<ASketch date={'3/08/20'} SKETCH={SKETCH_WOOT} />
+						<ASketch type={'image'} date={'3/08/20'} SKETCH={SKETCH_WOOT} />
 					</SwiperSlide>
 					<SwiperSlide>
-						<ASketch date={'3/10/20'} SKETCH={SKETCH_HANDS} />
+						<ASketch type={'image'} date={'3/09/20'} SKETCH={SKETCH_FRUIT} />
 					</SwiperSlide>
 					<SwiperSlide>
-						<ASketch date={'3/09/20'} SKETCH={SKETCH_FRUIT} />
+						<ASketch type={'image'} date={'3/10/20'} SKETCH={SKETCH_HANDS} />
 					</SwiperSlide>
 				</Swiper>
 			</SwiperSlide>
@@ -105,6 +116,9 @@ export default function HomePage (props) {
 }
 
 const useStyles = makeStyles(theme => ({
+	homeSlide: {
+		overflow: 'hidden'
+	},
 	swiperContainer: {
 		height: '100%',
 		overflow: 'hidden'
