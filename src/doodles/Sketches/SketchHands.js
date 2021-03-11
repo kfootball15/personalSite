@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, lazy } from 'react';
 import { makeStyles } from '@material-ui/core';
-import SKETCH from 'assets/sketches/fruit.png';
+import SKETCH from 'assets/sketches/hands.png';
 import Placeholder from 'components/Placeholder';
 import LazyLoad from 'react-lazyload';
 
 import { useWindowSize } from 'helpers';
 
-export default function SketchFruit ({ isActive, isMobile }) {
+export default function SketchHands ({ isActive, isMobile }) {
     const ref = useRef();
     const refPlaceholder  = useRef();
     const {height, width} = useWindowSize();

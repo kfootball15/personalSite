@@ -25,13 +25,7 @@ export default function SketchWoot ({ isActive, isMobile }) {
 
             <Placeholder ref={refPlaceholder} />
 
-            <LazyLoad style={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}>
+            <LazyLoad>
                 {/* @TODO - Lazy Load / Code Split */}
                 {
                     <img
