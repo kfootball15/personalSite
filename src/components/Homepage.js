@@ -1,7 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import { HomeDoodle, SketchWoot, SketchFruit, SnowyTrees, SnowyTrees2, SketchHands } from 'doodles';
 import { makeStyles } from '@material-ui/core';
+import { ASketch } from 'components';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import SKETCH_FRUIT from 'assets/sketches/fruit.png';
+import SKETCH_HANDS from 'assets/sketches/hands.png';
+import SKETCH_WOOT from 'assets/sketches/woot.png';
 import clsx from 'clsx';
 import {
 	useEventListener,
@@ -82,17 +86,14 @@ export default function HomePage (props) {
 					slidesPerView={1}
 				>
 					<SwiperSlide className={clsx(classes.slide, classes.sketchSlide) }>
-						<SketchWoot />
+						<ASketch date={'3/08/20'} SKETCH={SKETCH_WOOT} />
 					</SwiperSlide>
 					<SwiperSlide className={clsx(classes.slide, classes.sketchSlide) }>
-						<SketchFruit />
+						<ASketch date={'3/09/20'} SKETCH={SKETCH_HANDS} />
 					</SwiperSlide>
 					<SwiperSlide className={clsx(classes.slide, classes.sketchSlide) }>
-						<SketchHands />
+						<ASketch date={'3/10/20'} SKETCH={SKETCH_FRUIT} />
 					</SwiperSlide>
-					{/* <SwiperSlide className={classes.slide}> Slide 1b </SwiperSlide>
-					<SwiperSlide className={classes.slide}> Slide 1c </SwiperSlide>
-					<SwiperSlide className={classes.slide}> Slide 1d </SwiperSlide> */}
 				</Swiper>
 			</SwiperSlide>
 			<SwiperSlide className={classes.slide}> Slide 3 </SwiperSlide>
@@ -118,15 +119,10 @@ const useStyles = makeStyles(theme => ({
 		overflow: 'hidden'
 	}),
 	snowyTreesSlide: {
-		backgroundColor: '#cecdce',
-		overflow: 'hidden',
-		height: '100%',
+		backgroundColor: '#cecdce'
 	},
 	sketchSlide: {
 		backgroundColor: 'white',
-		overflow: 'hidden',
-		display: 'flex',
-		alignItems: 'center',
 	},
 	swiperUpper: {
 		backgroundColor: 'pink',
