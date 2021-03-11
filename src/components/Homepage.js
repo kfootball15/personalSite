@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { HomeDoodle, SketchWoot, SketchFruit, SnowyTrees, SnowyTrees2, SketchHands } from 'doodles';
+import { HomeDoodle, SnowyTrees, SnowyTrees2 } from 'doodles';
 import { makeStyles } from '@material-ui/core';
 import { ASketch } from 'components';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -19,7 +19,7 @@ export default function HomePage (props) {
 	const windowSize = useWindowSize();
 	const isMobile = windowSize.width <= 480;
 	const showVerticalNavigation = false;
-	const showHorizontalNavigation = isMobile ? false : true;
+	const showHorizontalNavigation = true;
 	const classes = useStyles({ windowSize, isMobile });
 
 	// Listens for dom ready - can use SVGs
@@ -49,11 +49,10 @@ export default function HomePage (props) {
 			navigation={showVerticalNavigation}
 			scrollbar={{ draggable: true }}
 			grabCursor
-			autoHeight
 			onSlideChangeTransitionStart={handleSlideChangeTransitionStart}
 			onSlideChangeTransitionEnd={handleSlideChangeTransitionEnd}
         >
-            <SwiperSlide className={ clsx(classes.slide) }>
+            <SwiperSlide>
 				{({ isActive }) => (
 					<HomeDoodle
 						isTransitioning={isTransitioning}
@@ -62,10 +61,11 @@ export default function HomePage (props) {
 					/>
 				)}
 			</SwiperSlide>
-			<SwiperSlide className={ clsx(classes.slide) }> 
+			<SwiperSlide> 
 				{({ isActive }) => (
 					isActive && 
 					<Swiper
+						className={classes.swiperContainer}
 						navigation={showHorizontalNavigation}
 						spaceBetween={0}
 						slidesPerView={1}
@@ -79,20 +79,21 @@ export default function HomePage (props) {
 					</Swiper>
 				)}
 			</SwiperSlide>
-            <SwiperSlide className={classes.sketchSlide}>
+            <SwiperSlide>
 				<Swiper
+					className={classes.swiperContainer}
 					navigation={showHorizontalNavigation}
 					spaceBetween={50}
 					slidesPerView={1}
 				>
-					<SwiperSlide className={clsx(classes.slide, classes.sketchSlide) }>
+					<SwiperSlide>
 						<ASketch date={'3/08/20'} SKETCH={SKETCH_WOOT} />
 					</SwiperSlide>
-					<SwiperSlide className={clsx(classes.slide, classes.sketchSlide) }>
-						<ASketch date={'3/09/20'} SKETCH={SKETCH_HANDS} />
+					<SwiperSlide>
+						<ASketch date={'3/10/20'} SKETCH={SKETCH_HANDS} />
 					</SwiperSlide>
-					<SwiperSlide className={clsx(classes.slide, classes.sketchSlide) }>
-						<ASketch date={'3/10/20'} SKETCH={SKETCH_FRUIT} />
+					<SwiperSlide>
+						<ASketch date={'3/09/20'} SKETCH={SKETCH_FRUIT} />
 					</SwiperSlide>
 				</Swiper>
 			</SwiperSlide>
@@ -104,14 +105,9 @@ export default function HomePage (props) {
 }
 
 const useStyles = makeStyles(theme => ({
-	container: ({ windowSize }) => {
-		return {
-			width: '100%',
-      		height: '100%',
-		}
-	},
 	swiperContainer: {
-		height: '100%'
+		height: '100%',
+		overflow: 'hidden'
 	},
 	slide: ({ windowSize, isMobile }) => ({
 		width: '100%',
@@ -120,15 +116,5 @@ const useStyles = makeStyles(theme => ({
 	}),
 	snowyTreesSlide: {
 		backgroundColor: '#cecdce'
-	},
-	sketchSlide: {
-		backgroundColor: 'white',
-	},
-	swiperUpper: {
-		backgroundColor: 'pink',
-		width: 100,
-		height: 100,
-		position: 'absolute',
-		bottom: 0
 	}
 }));

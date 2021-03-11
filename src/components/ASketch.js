@@ -35,14 +35,21 @@ export default function ASketch ({ SKETCH, date, isActive, isMobile }) {
 
             <Placeholder ref={refPlaceholder} />
 
-            <LazyLoad>
+            <LazyLoad style={isMobile
+                ? {
+                    height: '100%',
+                }
+                : {
+                    width: '100%'
+                }
+            }>
                 {/* @TODO - Lazy Load / Code Split */}
                 {
                     
                     <img
+                        className={ classes.img }
                         onLoad={removePlaceholder}
                         onError={removePlaceholder}
-                        className={ classes.png }
                         ref={ ref }
                         src={ SKETCH }
                     />
@@ -54,16 +61,17 @@ export default function ASketch ({ SKETCH, date, isActive, isMobile }) {
 
 const useStyles = makeStyles(theme => ({
     container: {
-        position: 'relative',
+        // position: 'relative',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
         height: '100%',
     },
-    png: ({ isPortrait }) => {
+    img: ({ isPortrait }) => {
         return {
-            width: '100%'
+            width: '100%',
+            height: '100%'
         }
     }
 }));
