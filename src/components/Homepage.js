@@ -6,6 +6,10 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import SKETCH_FRUIT from 'assets/sketches/fruit.png';
 import SKETCH_HANDS from 'assets/sketches/hands.png';
 import SKETCH_WOOT from 'assets/sketches/woot.png';
+import SKETCH_AFRICAN from 'assets/sketches/african.png';
+import SKETCH_BBALL from 'assets/sketches/bball.gif';
+import SKETCH_DRFENSTER from 'assets/sketches/drfenster.png';
+import SKETCH_MARVELOUS from 'assets/sketches/marvelous.png';
 import SNOWY_TREES2_MOV from 'assets/snowyTrees2/snowyTrees2.mp4';
 import SNOWY_TREES2_GIF from 'assets/snowyTrees2/snowyTrees2.gif';
 import SNOWY_TREES_MOV from 'assets/snowyTrees/snowy_trees.mp4';
@@ -64,6 +68,40 @@ export default function HomePage (props) {
 					/>
 				)}
 			</SwiperSlide>
+			
+			{/* Static Images */}
+			<SwiperSlide>
+				<Swiper
+					className={classes.swiperContainer}
+					navigation={showHorizontalNavigation}
+					spaceBetween={50}
+					slidesPerView={1}
+				>
+					<SwiperSlide>
+						<ASketch type={'image'} date={'3/14/20'} SKETCH={SKETCH_DRFENSTER} />
+					</SwiperSlide>
+					<SwiperSlide>
+						<ASketch type={'image'} date={'3/13/20'} SKETCH={SKETCH_MARVELOUS} />
+					</SwiperSlide>
+					<SwiperSlide>
+						<ASketch type={'gif'} date={'3/12/20'} SKETCH={SKETCH_BBALL} />
+					</SwiperSlide>
+					<SwiperSlide>
+						<ASketch type={'image'} date={'3/11/20'} SKETCH={SKETCH_AFRICAN} />
+					</SwiperSlide>
+					<SwiperSlide>
+						<ASketch type={'image'} date={'3/10/20'} SKETCH={SKETCH_HANDS} />
+					</SwiperSlide>
+					<SwiperSlide>
+						<ASketch type={'image'} date={'3/09/20'} SKETCH={SKETCH_FRUIT} />
+					</SwiperSlide>
+					<SwiperSlide>
+						<ASketch type={'image'} date={'3/08/20'} SKETCH={SKETCH_WOOT} />
+					</SwiperSlide>
+				</Swiper>
+			</SwiperSlide>
+			
+			{/* Animations */}
 			<SwiperSlide> 
 				{({ isActive }) => (
 					isActive && 
@@ -76,37 +114,19 @@ export default function HomePage (props) {
 						<SwiperSlide>
 							<ASketch
 								type={isMobile ? 'gif' : 'video'}
-								date={'3/06/20'}
-								SKETCH={isMobile ? SNOWY_TREES_GIF : SNOWY_TREES_MOV}
+								date={'3/07/20'}
+								SKETCH={isMobile ? SNOWY_TREES2_GIF : SNOWY_TREES2_MOV}
 							/>
 						</SwiperSlide>
 						<SwiperSlide>
 							<ASketch
 								type={isMobile ? 'gif' : 'video'}
-								date={'3/07/20'}
-								SKETCH={isMobile ? SNOWY_TREES2_GIF : SNOWY_TREES2_MOV}
+								date={'3/06/20'}
+								SKETCH={isMobile ? SNOWY_TREES_GIF : SNOWY_TREES_MOV}
 							/>
 						</SwiperSlide>
 					</Swiper>
 				)}
-			</SwiperSlide>
-            <SwiperSlide>
-				<Swiper
-					className={classes.swiperContainer}
-					navigation={showHorizontalNavigation}
-					spaceBetween={50}
-					slidesPerView={1}
-				>
-					<SwiperSlide>
-						<ASketch type={'image'} date={'3/08/20'} SKETCH={SKETCH_WOOT} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<ASketch type={'image'} date={'3/09/20'} SKETCH={SKETCH_FRUIT} />
-					</SwiperSlide>
-					<SwiperSlide>
-						<ASketch type={'image'} date={'3/10/20'} SKETCH={SKETCH_HANDS} />
-					</SwiperSlide>
-				</Swiper>
 			</SwiperSlide>
 			<SwiperSlide className={classes.slide}> Slide 3 </SwiperSlide>
 			<SwiperSlide className={classes.slide}> Slide 4 </SwiperSlide>
