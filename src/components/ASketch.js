@@ -139,12 +139,9 @@ const useStyles = makeStyles(theme => ({
         }
     },
     gif: ({ isPortrait }) => {
-        if (isPortrait) return {
-            height: '100%'
-        }
-
         return {
-            width: '100%'
+            width: '100%',
+            height: '100%'
         }
     }
 }));
