@@ -48,7 +48,7 @@ const defaultAnimationObjectSettings = {
     renderer: 'svg', // Required
     loop: true, // Optional
     autoplay: true, // Optional
-    setSubframe: true, // if false, respects original AE file fps
+    setSubframe: false, // if false, respects original AE file fps
     rendererSettings: {
         // context: canvasContext, // the canvas context, only support "2d" context
         // preserveAspectRatio: 'xMinYMin slice', // Supports the same options as the svg element's preserveAspectRatio property
@@ -183,6 +183,9 @@ export default function HomeDoodle ({ isActive, isMobile, isTransitioning }) {
         // To count loops, uncomment
         // interiorAnimationObject.onLoopComplete = () => { setCurrentLoop( currentLoop + 1 ) };
 
+        skyAnimationObject.setSubframe(false);
+        interiorAnimationObject.setSubframe(false);
+        exteriorAnimationObject.setSubframe(false);
         /** Set Animation speed (find a better place for this?) */
         lottie.setSpeed(speed);
 
