@@ -3,12 +3,14 @@ import { makeStyles } from '@material-ui/core';
 import { gcd_two_numbers } from 'helpers';
 import clsx from 'clsx';
 import INTERIOR_LOTTIE from 'assets/home/full_interior_lottie.json';
-import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
+// import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
 import LOGO_TEXT_SVG from 'assets/home/logo_text.svg';
 import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
 import WINDOW_SVG from 'assets/home/window.svg';
 import WINDOW_TOP_SVG from 'assets/home/window_top.svg';
 import DESK_SVG from 'assets/home/desk.svg';
+import BG_VIDEO_CHROME_webm from 'assets/home/full_exterior_all_1.webm';
+import BG_VIDEO_SAFARI_mov from 'assets/home/full_exterior_all.mov';
 import CHARACTER_GIF from 'assets/home/character.gif';
 import {
 	useEventListener,
@@ -22,13 +24,12 @@ import lottie from 'lottie-web';
 // https://josephkhan.me/lottie-web/
 let skyAnimationObject = null;
 let interiorAnimationObject = null;
-let exteriorAnimationObject = null;
 
 /** transition config */
 const blur = "8";
 const transitionDuration = "1s";
 const fps = 30;
-const speed = 1.5;
+const speed = 1;
 const animationSegments = {
     'sunrise': 0 * fps,
     'day': 6 * fps,
@@ -147,11 +148,14 @@ export default function HomeDoodle ({ isActive, isMobile, isTransitioning }) {
 
     /** SVG Refs */
     const skyRef = useRef(null);
-    const exteriorRef = useRef(null);
     const interiorRef = useRef(null);
+    
     /** SVG Animation Refs */
     const animBlurExterior1Ref = useRef(null);
     const blurExterior1Ref = useRef(null);
+
+    /** Video Ref **/
+    const exteriorVideoRef = useRef(null)
 
     const handleToggleFocus = useCallback(() => {
         const newFocus = focus === 'interior'
@@ -160,32 +164,36 @@ export default function HomeDoodle ({ isActive, isMobile, isTransitioning }) {
         setFocus(newFocus);
     }, [focus]);
 
+    const play = () => {
+        lottie.play();
+        exteriorVideoRef.current.play();
+    };
+
+    const pause = () => {
+        lottie.pause();
+        exteriorVideoRef.current.pause();
+    };
+
     useEffect(() => {
         skyAnimationObject = lottie.loadAnimation({
-                ...defaultAnimationObjectSettings,
-                container: skyRef.current,
-                name: "sky", // Name for future reference. Optional.
-                animationData: SKY_LOTTIE
-            });
+            ...defaultAnimationObjectSettings,
+            container: skyRef.current,
+            name: "sky", // Name for future reference. Optional.
+            animationData: SKY_LOTTIE
+        });
         interiorAnimationObject = lottie.loadAnimation({
-                ...defaultAnimationObjectSettings,
-                container: interiorRef.current,
-                name: "interior", // Name for future reference. Optional.
-                animationData: INTERIOR_LOTTIE
-            });
-        exteriorAnimationObject = lottie.loadAnimation({
-                ...defaultAnimationObjectSettings,
-                container: exteriorRef.current,
-                name: "exterior", // Name for future reference. Optional.
-                animationData: EXTERIOR_LOTTIE,
-            });
+            ...defaultAnimationObjectSettings,
+            container: interiorRef.current,
+            name: "interior", // Name for future reference. Optional.
+            animationData: INTERIOR_LOTTIE
+        });
         
         // To count loops, uncomment
         // interiorAnimationObject.onLoopComplete = () => { setCurrentLoop( currentLoop + 1 ) };
 
         skyAnimationObject.setSubframe(false);
         interiorAnimationObject.setSubframe(false);
-        exteriorAnimationObject.setSubframe(false);
+
         /** Set Animation speed (find a better place for this?) */
         lottie.setSpeed(speed);
 
@@ -207,23 +215,23 @@ export default function HomeDoodle ({ isActive, isMobile, isTransitioning }) {
     useEffect(() => {
         if (isActive && !isTransitioning) {
             if (skyAnimationObject) skyAnimationObject.play();
-            if (exteriorAnimationObject) exteriorAnimationObject.play()
+            if (exteriorVideoRef) exteriorVideoRef.current.play()
         } else {
             if (skyAnimationObject) skyAnimationObject.pause();
-            if (exteriorAnimationObject) exteriorAnimationObject.pause()
+            if (exteriorVideoRef) exteriorVideoRef.current.pause()
         }
     }, [isActive, isTransitioning]);
     
     // Listens for touchstart events (mobile only)
     useEventListener('touchstart', function() {
         console.log("touch start", isActive);
-        lottie.pause();
+        pause();
     });
     
     // Listens for touchend events (mobile only)
     useEventListener('touchend', function() {
         console.log("touch end", isActive);
-        if (isActive) lottie.play();
+        if (isActive) play();
     });
 
     /** Runs when segment changes - day,sunset,night,sunrise (in future, maybe change segment to keyframes so we can be more granular about when animations play) */
@@ -277,12 +285,37 @@ export default function HomeDoodle ({ isActive, isMobile, isTransitioning }) {
             
             {/* Extertior */}
             <div className={ classes.exterior }>
-                
-                {/* Buildings  */}
-                <div
+
+                {/* Video */} 
+                {/* For Transparent Videos (https://www.rotato.app/read/transparent-videos-for-the-web)
+                        Safari supports HEVC with alpha (.mp4, .mov) (AE export: Quicktime - Apple ProRes4444 with Alpha) 
+                        Chrome supports VP9 (.webm) (AE export: WebM)
+                    Neither browsers supports the other type, so we need to export both WITH transparency
+                    from AE (make sur webM plugin is installed: https://www.fnordware.com/WebM/
+                */}
+                <video
+                    id="myvideo"
+                    autoPlay 
+                    loop 
+                    muted
+                    playsInline
                     className={ classes.svgObj }
-                    ref={ exteriorRef }>    
-                </div>
+                    ref={ exteriorVideoRef }
+                >
+                   
+                    {/* Safari - BROKEN CURRENTLY, does not display */}
+                    <source
+                        src={ BG_VIDEO_SAFARI_mov }
+                        type='video/mp4; codecs="hvc1"'
+                    />
+
+                    {/* Chrome */}
+                    <source
+                        src={ BG_VIDEO_CHROME_webm }
+                        type="video/webm" 
+                    />
+
+                </video>
 
                 {/* Window / Wall Top */}
                 <WindowTop />
