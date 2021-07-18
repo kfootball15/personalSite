@@ -9,8 +9,8 @@ import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
 import WINDOW_SVG from 'assets/home/window.svg';
 import WINDOW_TOP_SVG from 'assets/home/window_top.svg';
 import DESK_SVG from 'assets/home/desk.svg';
-import BG_VIDEO_CHROME_webm from 'assets/home/full_exterior_all_1.webm';
-import BG_VIDEO_SAFARI_mov from 'assets/home/full_exterior_all.mov';
+import BG_VIDEO_CHROME from 'assets/home/full_exterior_all.webm';
+import BG_VIDEO_SAFARI from 'assets/home/full_mobile.mp4';
 import CHARACTER_GIF from 'assets/home/character.gif';
 import {
 	useEventListener,
@@ -48,7 +48,7 @@ const segments = {
 const defaultAnimationObjectSettings = {
     renderer: 'svg', // Required
     loop: true, // Optional
-    autoplay: true, // Optional
+    autoplay: false, // Optional
     setSubframe: false, // if false, respects original AE file fps
     rendererSettings: {
         // context: canvasContext, // the canvas context, only support "2d" context
@@ -139,7 +139,7 @@ function Desk () {
     )
 }
 
-export default function HomeDoodle ({ isActive, isMobile, isTransitioning }) {
+export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransitioning:isTransitioningSlides }) {
     const windowSize = useWindowSize();
     const [weather] = useState('clear'); 
     const [focus, setFocus] = useState('interior'); 
@@ -165,15 +165,29 @@ export default function HomeDoodle ({ isActive, isMobile, isTransitioning }) {
     }, [focus]);
 
     const play = () => {
+        console.log("play")
         lottie.play();
         exteriorVideoRef.current.play();
     };
 
     const pause = () => {
+        console.log("pause")
         lottie.pause();
         exteriorVideoRef.current.pause();
     };
 
+    const addCharacterGIF = () => {
+        const elem = interiorRef.current.querySelector('[id^="chair_back"]');
+        var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
+        svgimg.setAttribute('height','100%');
+        svgimg.setAttribute('width','100%');
+        svgimg.setAttribute('id','character');
+        svgimg.setAttribute("href", CHARACTER_GIF);
+        elem.appendChild(svgimg);
+        hideElement('character_placeholder', document);
+    }
+
+    // Configure and instantiate Lottie Animations
     useEffect(() => {
         skyAnimationObject = lottie.loadAnimation({
             ...defaultAnimationObjectSettings,
@@ -187,51 +201,38 @@ export default function HomeDoodle ({ isActive, isMobile, isTransitioning }) {
             name: "interior", // Name for future reference. Optional.
             animationData: INTERIOR_LOTTIE
         });
+
+        /** Replace Placeholder Character with animation */
+        addCharacterGIF();
         
         // To count loops, uncomment
         // interiorAnimationObject.onLoopComplete = () => { setCurrentLoop( currentLoop + 1 ) };
 
-        skyAnimationObject.setSubframe(false);
-        interiorAnimationObject.setSubframe(false);
-
         /** Set Animation speed (find a better place for this?) */
         lottie.setSpeed(speed);
 
-        /** Replace Placeholder Character with animation */
-        const elem = interiorRef.current.querySelector('[id^="chair_back"]');
-        var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
-        svgimg.setAttribute('height','100%');
-        svgimg.setAttribute('width','100%');
-        svgimg.setAttribute('id','character');
-        svgimg.setAttribute("href", CHARACTER_GIF);
-        elem.appendChild(svgimg);
-        hideElement('character_placeholder', document);
-            
         // This will set the current segment by checking every frame of an animation (can append this handler to any of the layers)
         interiorAnimationObject.onEnterFrame = handleSetCurrentSegment( setCurrentSegment );
     }, [])
 
-    // Configure and instantiate Lottie Animations
+    // Play/Pause when changing slides
     useEffect(() => {
-        if (isActive && !isTransitioning) {
-            if (skyAnimationObject) skyAnimationObject.play();
-            if (exteriorVideoRef) exteriorVideoRef.current.play()
-        } else {
-            if (skyAnimationObject) skyAnimationObject.pause();
-            if (exteriorVideoRef) exteriorVideoRef.current.pause()
-        }
-    }, [isActive, isTransitioning]);
+        if (isActiveSlide && !isTransitioningSlides)
+            play();
+        else if (!isActiveSlide && isTransitioningSlides)
+            pause();
+    }, [isActiveSlide, isTransitioningSlides]);
     
     // Listens for touchstart events (mobile only)
     useEventListener('touchstart', function() {
-        console.log("touch start", isActive);
+        console.log("touch start", isActiveSlide);
         pause();
     });
     
     // Listens for touchend events (mobile only)
     useEventListener('touchend', function() {
-        console.log("touch end", isActive);
-        if (isActive) play();
+        console.log("touch end", isActiveSlide);
+        if (isActiveSlide) play();
     });
 
     /** Runs when segment changes - day,sunset,night,sunrise (in future, maybe change segment to keyframes so we can be more granular about when animations play) */
@@ -281,7 +282,7 @@ export default function HomeDoodle ({ isActive, isMobile, isTransitioning }) {
             <div
                 className={clsx( classes.svgObj, classes.sky )}
                 ref={skyRef}
-            />
+            ></div>
             
             {/* Extertior */}
             <div className={ classes.exterior }>
@@ -294,40 +295,39 @@ export default function HomeDoodle ({ isActive, isMobile, isTransitioning }) {
                     from AE (make sur webM plugin is installed: https://www.fnordware.com/WebM/
                 */}
                 <video
-                    id="myvideo"
-                    autoPlay 
+                    // autoPlay
                     loop 
                     muted
                     playsInline
-                    className={ classes.svgObj }
+                    className={ isMobile ? classes.mobileVideo : classes.svgObj }
                     ref={ exteriorVideoRef }
                 >
+                
+                    {/* Chrome */}
+                    <source
+                        src={ BG_VIDEO_CHROME }
+                        type="video/webm" 
+                    />
                    
                     {/* Safari - BROKEN CURRENTLY, does not display */}
                     <source
-                        src={ BG_VIDEO_SAFARI_mov }
-                        type='video/mp4; codecs="hvc1"'
-                    />
-
-                    {/* Chrome */}
-                    <source
-                        src={ BG_VIDEO_CHROME_webm }
-                        type="video/webm" 
+                        src={ BG_VIDEO_SAFARI }
+                        type='video/mp4'
                     />
 
                 </video>
+            
+            </div>
+
+
+            {/* Interior */}
+            <div className={ classes.interior } >  
 
                 {/* Window / Wall Top */}
                 <WindowTop />
 
                 {/* Window / Wall Bottom */}
                 <WindowBottom />
-            
-            </div>
-
-
-            {/* Interior */}
-            <div className={ classes.interior } >    
 
                 {/* Logo */}
                 <div className={ classes.logoWrapper }>
@@ -488,5 +488,26 @@ const useStyles = makeStyles(theme => ({
         return largerWidthSceen
             ? { ...base }
             : { ...base }
+    },
+    mobileVideo: ({ windowSize, isMobile }) => {
+        const { height, width } = windowSize
+        const largerWidthSceen = width > height;
+
+        const widerImage = {
+            width: '100%',
+            position: 'absolute',
+            bottom: 0
+        };
+
+        const tallerImage = {
+            height: '100%',
+            position: 'absolute',
+            bottom: 0,
+            right: '-35%'
+        }
+        
+        return largerWidthSceen
+            ? { ...widerImage }
+            : { ...tallerImage }
     }
 }))
