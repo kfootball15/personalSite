@@ -3,17 +3,17 @@ import { HomeDoodle } from 'doodles';
 import { makeStyles } from '@material-ui/core';
 import { ASketch } from 'components';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import SKETCH_FRUIT from 'assets/sketches/fruit.png';
-import SKETCH_HANDS from 'assets/sketches/hands.png';
-import SKETCH_WOOT from 'assets/sketches/woot.png';
-import SKETCH_AFRICAN from 'assets/sketches/african.png';
-import SKETCH_BBALL from 'assets/sketches/bball.gif';
-import SKETCH_DRFENSTER from 'assets/sketches/drfenster.png';
-import SKETCH_MARVELOUS from 'assets/sketches/marvelous.png';
-import SNOWY_TREES2_MOV from 'assets/snowyTrees2/snowyTrees2.mp4';
-import SNOWY_TREES2_GIF from 'assets/snowyTrees2/snowyTrees2.gif';
-import SNOWY_TREES_MOV from 'assets/snowyTrees/snowy_trees.mp4';
-import SNOWY_TREES_GIF from 'assets/snowyTrees/snowy_trees.gif';
+// import SKETCH_FRUIT from 'assets/sketches/fruit.png';
+// import SKETCH_HANDS from 'assets/sketches/hands.png';
+// import SKETCH_WOOT from 'assets/sketches/woot.png';
+// import SKETCH_AFRICAN from 'assets/sketches/african.png';
+// import SKETCH_BBALL from 'assets/sketches/bball.gif';
+// import SKETCH_DRFENSTER from 'assets/sketches/drfenster.png';
+// import SKETCH_MARVELOUS from 'assets/sketches/marvelous.png';
+// import SNOWY_TREES2_MOV from 'assets/snowyTrees2/snowyTrees2.mp4';
+// import SNOWY_TREES2_GIF from 'assets/snowyTrees2/snowyTrees2.gif';
+// import SNOWY_TREES_MOV from 'assets/snowyTrees/snowy_trees.mp4';
+// import SNOWY_TREES_GIF from 'assets/snowyTrees/snowy_trees.gif';
 import {
 	useEventListener,
     useWindowSize
@@ -70,7 +70,7 @@ export default function HomePage (props) {
 			</SwiperSlide>
 			
 			{/* Static Images */}
-			<SwiperSlide>
+			{/* <SwiperSlide>
 				<Swiper
 					className={classes.swiperContainer}
 					navigation={showHorizontalNavigation}
@@ -99,10 +99,10 @@ export default function HomePage (props) {
 						<ASketch type={'image'} date={'3/08/20'} SKETCH={SKETCH_WOOT} />
 					</SwiperSlide>
 				</Swiper>
-			</SwiperSlide>
+			</SwiperSlide> */}
 			
 			{/* Animations */}
-			<SwiperSlide> 
+			{/* <SwiperSlide> 
 				{({ isActive }) => (
 					isActive && 
 					<Swiper
@@ -127,10 +127,12 @@ export default function HomePage (props) {
 						</SwiperSlide>
 					</Swiper>
 				)}
-			</SwiperSlide>
-			<SwiperSlide className={classes.slide}> Slide 3 </SwiperSlide>
-			<SwiperSlide className={classes.slide}> Slide 4 </SwiperSlide>
-			<SwiperSlide className={classes.slide}> Slide 5 </SwiperSlide>
+			</SwiperSlide> */}
+
+			{/* Extra blank Slides  */}
+			{/* <SwiperSlide className={classes.slide}> Slide 3 </SwiperSlide> */}
+			{/* <SwiperSlide className={classes.slide}> Slide 4 </SwiperSlide> */}
+			{/* <SwiperSlide className={classes.slide}> Slide 5 </SwiperSlide> */}
 		</Swiper>
 	)
 }
