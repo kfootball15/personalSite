@@ -25,6 +25,9 @@ import lottie from 'lottie-web';
 let skyAnimationObject = null;
 let interiorAnimationObject = null;
 
+/** This move the video and window bottom down on wide screens */
+const wideScreenDisplacement = '-35%';
+
 /** transition config */
 const blur = "8";
 const transitionDuration = "1s";
@@ -101,13 +104,13 @@ function WindowTop () {
     )
 }
 
-function WindowBottom () {
+function WindowBottom ({ wideScreen }) {
     return (
         <object
             style={{
                 width: '100%',
                 position: 'absolute',
-                bottom: 0
+                bottom: wideScreen ? wideScreenDisplacement : 0
             }}
             id="window_bottom"
             data={ WINDOW_SVG }
@@ -144,7 +147,8 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransi
     const [weather] = useState('clear'); 
     const [focus, setFocus] = useState('interior'); 
     const [currentSegment, setCurrentSegment] = useState(''); 
-    const classes = useStyles({ weather, currentSegment, focus, isMobile, windowSize });
+    const wideScreen = windowSize.width > windowSize.height;
+    const classes = useStyles({ weather, currentSegment, focus, isMobile, windowSize, wideScreen });
 
     /** SVG Refs */
     const skyRef = useRef(null);
@@ -299,7 +303,7 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransi
                     loop 
                     muted
                     playsInline
-                    className={ isMobile ? classes.mobileVideo : classes.svgObj }
+                    className={ isMobile ? classes.mobileVideo : classes.desktopVideo }
                     ref={ exteriorVideoRef }
                 >
                 
@@ -327,7 +331,7 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransi
                 <WindowTop />
 
                 {/* Window / Wall Bottom */}
-                <WindowBottom />
+                <WindowBottom wideScreen={wideScreen}/>
 
                 {/* Logo */}
                 <div className={ classes.logoWrapper }>
@@ -378,10 +382,15 @@ const useStyles = makeStyles(theme => ({
                 top: '4%'
             },
             [theme.breakpoints.only('lg')]: {
-                top: '15%' 
+                top: '15%',
+                width: '28%',
+                left: '5%'
             },
             [theme.breakpoints.up('xl')]: {
-                bottom: '40%' 
+                // bottom: '40%' 
+                top: '15%',
+                width: '28%',
+                left: '5%'
             },
         }
 
@@ -475,9 +484,7 @@ const useStyles = makeStyles(theme => ({
             top: 0
         }
     },
-    svgObj: ({ windowSize, isMobile }) => {
-        const { height, width } = windowSize
-        const largerWidthSceen = width > height;
+    svgObj: ({ wideScreen }) => {
 
         const base = {
             width: '100%',
@@ -485,13 +492,23 @@ const useStyles = makeStyles(theme => ({
             bottom: 0
         };
         
-        return largerWidthSceen
+        return wideScreen
             ? { ...base }
             : { ...base }
     },
-    mobileVideo: ({ windowSize, isMobile }) => {
-        const { height, width } = windowSize
-        const largerWidthSceen = width > height;
+    desktopVideo: ({ wideScreen }) => {
+
+        const base = {
+            width: '100%',
+            position: 'absolute',
+            bottom: wideScreen ? wideScreenDisplacement : 0
+        };
+        
+        return wideScreen
+            ? { ...base }
+            : { ...base }
+    },
+    mobileVideo: ({ wideScreen }) => {
 
         const widerImage = {
             width: '100%',
@@ -506,7 +523,7 @@ const useStyles = makeStyles(theme => ({
             right: '-35%'
         }
         
-        return largerWidthSceen
+        return wideScreen
             ? { ...widerImage }
             : { ...tallerImage }
     }
