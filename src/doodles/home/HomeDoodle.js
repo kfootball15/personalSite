@@ -26,6 +26,8 @@ import lottie from 'lottie-web';
 let skyAnimationObject = null;
 let interiorAnimationObject = null;
 
+const windowDisplacement = '-35%';
+
 /** transition config */
 const blur = "8";
 const transitionDuration = "1s";
@@ -498,15 +500,21 @@ const useStyles = makeStyles(theme => ({
     },
     desktopVideo: ({ wideScreen }) => {
 
-        const base = {
+        const widerImage = {
             width: '100%',
             position: 'absolute',
-            bottom: 0
+            bottom: '-25%'
+        };
+
+        const tallerImage = {
+            width: '100%',
+            position: 'absolute',
+            bottom: '-15%'
         };
         
         return wideScreen
-            ? { ...base }
-            : { ...base }
+            ? { ...widerImage }
+            : { ...tallerImage }
     },
     mobileVideo: ({ wideScreen }) => {
 
