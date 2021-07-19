@@ -6,7 +6,8 @@ import INTERIOR_LOTTIE from 'assets/home/full_interior_lottie.json';
 // import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
 import LOGO_TEXT_SVG from 'assets/home/logo_text.svg';
 import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
-import WINDOW_SVG from 'assets/home/window.svg';
+import WINDOW_SVG_MOBILE from 'assets/home/window_bottom_mobile.svg';
+import WINDOW_SVG_DESKTOP from 'assets/home/window_bottom_desktop.svg';
 import WINDOW_TOP_SVG from 'assets/home/window_top.svg';
 import DESK_SVG from 'assets/home/desk.svg';
 import BG_VIDEO_CHROME from 'assets/home/full_exterior_all.webm';
@@ -24,9 +25,6 @@ import lottie from 'lottie-web';
 // https://josephkhan.me/lottie-web/
 let skyAnimationObject = null;
 let interiorAnimationObject = null;
-
-/** This move the video and window bottom down on wide screens */
-const wideScreenDisplacement = '-35%';
 
 /** transition config */
 const blur = "8";
@@ -104,16 +102,18 @@ function WindowTop () {
     )
 }
 
-function WindowBottom ({ wideScreen }) {
+function WindowBottom ({ isMobile, wideScreen }) {
     return (
         <object
             style={{
                 width: '100%',
                 position: 'absolute',
-                bottom: wideScreen ? wideScreenDisplacement : 0
+                bottom: 0,
+                borderTop: 'solid 1000px transparent',
+                overflow: 'hidden'
             }}
             id="window_bottom"
-            data={ WINDOW_SVG }
+            data={ isMobile ? WINDOW_SVG_MOBILE : WINDOW_SVG_DESKTOP }
             aria-label="window"
             aria-required="true"
             type="image/svg+xml"
@@ -331,7 +331,7 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransi
                 <WindowTop />
 
                 {/* Window / Wall Bottom */}
-                <WindowBottom wideScreen={wideScreen}/>
+                <WindowBottom isMobile={isMobile} wideScreen={wideScreen}/>
 
                 {/* Logo */}
                 <div className={ classes.logoWrapper }>
@@ -501,7 +501,7 @@ const useStyles = makeStyles(theme => ({
         const base = {
             width: '100%',
             position: 'absolute',
-            bottom: wideScreen ? wideScreenDisplacement : 0
+            bottom: 0
         };
         
         return wideScreen
