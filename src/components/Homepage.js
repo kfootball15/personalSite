@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { HomeDoodle } from 'doodles';
+import { HomeDoodle, RipplesDoodle } from 'doodles';
 import { makeStyles } from '@material-ui/core';
 import { ASketch } from 'components';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -54,14 +54,24 @@ export default function HomePage (props) {
 			slidesPerView={1}
             direction='vertical'
 			navigation={showVerticalNavigation}
+			allowTouchMove={false}
 			scrollbar={{ draggable: true }}
-			grabCursor
+			// grabCursor
 			onSlideChangeTransitionStart={handleSlideChangeTransitionStart}
 			onSlideChangeTransitionEnd={handleSlideChangeTransitionEnd}
         >
             <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<HomeDoodle
+						isTransitioning={isTransitioning}
+						isActive={isActive}
+						isMobile={isMobile}
+					/>
+				)}
+			</SwiperSlide>
+            <SwiperSlide className={classes.homeSlide} >
+				{({ isActive }) => (
+					<RipplesDoodle
 						isTransitioning={isTransitioning}
 						isActive={isActive}
 						isMobile={isMobile}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { gcd_two_numbers } from 'helpers';
+import { SocialIcon } from 'react-social-icons';
 import clsx from 'clsx';
 import INTERIOR_LOTTIE from 'assets/home/full_interior_lottie.json';
 // import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
@@ -26,9 +27,7 @@ import lottie from 'lottie-web';
 let skyAnimationObject = null;
 let interiorAnimationObject = null;
 
-const windowDisplacement = '-35%';
-
-/** transition config */
+/** config */
 const blur = "8";
 const transitionDuration = "1s";
 const fps = 30;
@@ -72,17 +71,24 @@ const handleSetCurrentSegment = setCurrentSegment => e => {
     if ( curr > segments.night[0] && curr <= segments.night[1] ) setCurrentSegment('night');
 };
 
-function Logo () {
+function Logo ({ classes }) {
     return (
-        <object
-            id="logo"
-            data={ LOGO_TEXT_SVG }
-            aria-label="logo"
-            aria-required="true"
-            type="image/svg+xml"
-        >
-            MENSH
-        </object>
+        <div className={ classes.logoContainer}>
+            <object
+                id="logo"
+                data={ LOGO_TEXT_SVG }
+                aria-label="logo"
+                aria-required="true"
+                type="image/svg+xml"
+            >
+                MENSH
+            </object>
+            <div className={ classes.socialContainer }>
+                <SocialIcon target="_blank" className={classes.social} url="https://twitter.com/menshguy" />
+                <SocialIcon target="_blank" className={classes.social} url="https://github.com/menshguy" />
+                <SocialIcon target="_blank" className={classes.social} url="mailto:fenster.js@gmail.com" />
+            </div>
+        </div>
     )
 }
 
@@ -337,7 +343,7 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransi
 
                 {/* Logo */}
                 <div className={ classes.logoWrapper }>
-                    <Logo />
+                    <Logo classes={classes} />
                 </div>
                 
                 {/* Interior */}
@@ -397,6 +403,20 @@ const useStyles = makeStyles(theme => ({
         }
 
         return { ...base }
+    },
+    logoContainer:{
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    socialContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        zIndex: 100,
+        marginTop: 10
+    },
+    social: {
+        margin: '0 10px 0 10px'
     },
     button: {
         width: 50,
