@@ -69,7 +69,7 @@ export default function HomePage (props) {
 					/>
 				)}
 			</SwiperSlide>
-            <SwiperSlide className={classes.homeSlide} >
+            {/* <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<RipplesDoodle
 						isTransitioning={isTransitioning}
@@ -77,7 +77,7 @@ export default function HomePage (props) {
 						isMobile={isMobile}
 					/>
 				)}
-			</SwiperSlide>
+			</SwiperSlide> */}
 			
 			{/* Static Images */}
 			{/* <SwiperSlide>

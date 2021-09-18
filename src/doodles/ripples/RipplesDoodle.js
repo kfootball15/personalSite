@@ -36,38 +36,43 @@ export default function RipplesDoodle ({
 
     // This uses p5's instance mode for sketch creation and namespacing
     const Sketch = useCallback( p5 => {
-
         let bg;
         let cols;
         let rows;
         let current; // = new float[cols][rows];
         let previous; // = new float[cols][rows];
 
-        let dampening = 0.99;
+        let dampening = 0.99; // a lower dampening value will cause the ripples to fade quciker
 
-        p5.preload = () => {
-            bg = p5.loadImage(BG_IMAGE);
-        }
+        // p5.preload = () => {
+        //     bg = p5.loadImage(BG_IMAGE);
+        // }
 
         p5.mouseDragged = () => {
             previous[p5.mouseX][p5.mouseY] = 2500;
         }
 
         p5.setup = () => {
-            p5.pixelDensity(1);
+            p5.pixelDensity(1)
             // p5.createCanvas(windowSize.width, windowSize.height);
             p5.createCanvas(windowSize.width, windowSize.height);
-            bg.loadPixels();
+            // bg.loadPixels();
             cols = p5.width;
             rows = p5.height;
+
             // The following line initializes a 2D cols-by-rows array with zeroes
             // in every array cell, and is equivalent to this Processing line:
             // current = new float[cols][rows];
+
             // let pixelsData = to2DArray(bg.pixels, bg.width, bg.height)
             // current = pixelsData;
             // previous = pixelsData;
-            current = new Array(cols).fill(0).map(n => new Array(rows).fill(0));
-            previous = new Array(cols).fill(0).map(n => new Array(rows).fill(0));
+
+            // current = bg.pixels;
+            // previous = bg.pixels;
+
+            current = new Array(cols).fill(0).map(n => new Array(rows).fill(0));;
+            previous = new Array(cols).fill(0).map(n => new Array(rows).fill(0));;
         }
 
         p5.draw = () => {
@@ -78,12 +83,12 @@ export default function RipplesDoodle ({
             for (let i = 1; i < cols - 1; i++) {
                 for (let j = 1; j < rows - 1; j++) {
                     current[i][j] =
-                    (previous[i - 1][j] +
-                        previous[i + 1][j] +
-                        previous[i][j - 1] +
-                        previous[i][j + 1]) /
-                        2 -
-                    current[i][j];
+                        (previous[i - 1][j]
+                        + previous[i + 1][j]
+                        + previous[i][j - 1]
+                        + previous[i][j + 1] )
+                        /
+                        2 - current[i][j];
                     current[i][j] = current[i][j] * dampening;
                     // Unlike in Processing, the pixels array in p5.js has 4 entries
                     // for each pixel, so we have to multiply the index by 4 and then
@@ -92,10 +97,27 @@ export default function RipplesDoodle ({
                     p5.pixels[index + 0] = current[i][j];
                     p5.pixels[index + 1] = current[i][j];
                     p5.pixels[index + 2] = current[i][j];
+
+                    // Where i left things last night:
+                    // let currentIndex = (bg.width * j) + i; //
+                    // current[currentIndex] =
+                    //     (   previous[ (bg.width * j) + (i - 1) ] +
+                    //         previous[ (bg.width * j) + (i + 1) ] +
+                    //         previous[ (bg.width * (j - 1)) + i ] +
+                    //         previous[ (bg.width * (j + 1)) + i ] ) /
+                    //         2 - current[currentIndex];
+                    // current[currentIndex] = current[currentIndex] * dampening;
+                    // // Unlike in Processing, the pixels array in p5.js has 4 entries
+                    // // for each pixel, so we have to multiply the index by 4 and then
+                    // // set the entries for each color component separately.
+                    // let index = (currentIndex);
+                    // p5.pixels[index + 0] = current[currentIndex];
+                    // p5.pixels[index + 1] = current[currentIndex];
+                    // p5.pixels[index + 2] = current[currentIndex];
                 }
             }
             p5.updatePixels();
-    
+
             let temp = previous;
             previous = current;
             current = temp;
