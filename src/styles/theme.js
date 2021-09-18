@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 
 /**
  * Theme properties
@@ -18,7 +18,7 @@ const errorColor = '#FF5E5E';
 const errorColorLight = '#FFADAD';
 const errorColorDark = '#C01717';
 
-export default createMuiTheme({
+export default createTheme({
     mixins: {
         toolbar: {
           '@media (min-width:0px) and (orientation: landscape)': {

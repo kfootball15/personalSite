@@ -7,6 +7,7 @@ import {
     useWindowSize,
 	hideElement,
 } from 'helpers';
+import { prev } from 'dom7';
 
 function to2DArray (pixels, width, height) {
     let pixelsCopy = [...pixels]
@@ -42,86 +43,96 @@ export default function RipplesDoodle ({
         let current; // = new float[cols][rows];
         let previous; // = new float[cols][rows];
 
-        let dampening = 0.99; // a lower dampening value will cause the ripples to fade quciker
+        /**
+         * Dampening
+         *      lower values --> ripples dissapear faster
+         *      higher values --> ripples dissapear slower
+         */
+        let dampening = 0.9; 
+        /** 
+         *  Press Value: This number will ultimately be effected by dampening. 
+         *      lower values --> smaller/faster ripples
+         *      higher values --> larger/slower ripples
+         * **/
+        let pressValue = 5000; 
 
         // p5.preload = () => {
         //     bg = p5.loadImage(BG_IMAGE);
         // }
 
         p5.mouseDragged = () => {
-            previous[p5.mouseX][p5.mouseY] = 2500;
+            previous[p5.mouseX][p5.mouseY] = pressValue
+        }
+        
+        p5.mousePressed = () => {
+            previous[p5.mouseX][p5.mouseY] = pressValue
         }
 
         p5.setup = () => {
-            p5.pixelDensity(1)
-            // p5.createCanvas(windowSize.width, windowSize.height);
+            p5.pixelDensity(1) // ciritcal we set this to 1, but not sure why yet
             p5.createCanvas(windowSize.width, windowSize.height);
-            // bg.loadPixels();
             cols = p5.width;
             rows = p5.height;
+            current = new Array(cols).fill(0).map(n => new Array(rows).fill(0));
+            previous = new Array(cols).fill(0).map(n => new Array(rows).fill(0));
 
-            // The following line initializes a 2D cols-by-rows array with zeroes
-            // in every array cell, and is equivalent to this Processing line:
-            // current = new float[cols][rows];
+            /** Test: Sets all pixels to color 100 */
+            // for (let x = 0; x < cols; x++) {
+            //     for (let y = 0; y < rows; y++) {
+            //         current[x][y] = 100
+            //         previous[x][y] = 100
+            //     }
+            // }
 
-            // let pixelsData = to2DArray(bg.pixels, bg.width, bg.height)
-            // current = pixelsData;
-            // previous = pixelsData;
-
-            // current = bg.pixels;
-            // previous = bg.pixels;
-
-            current = new Array(cols).fill(0).map(n => new Array(rows).fill(0));;
-            previous = new Array(cols).fill(0).map(n => new Array(rows).fill(0));;
+            /** Test: sets to pixel to 100 to tigger the ripple algo */
+            // previous[100][100] = 100
         }
 
         p5.draw = () => {
-            p5.background(0)
-            // p5.image(bg,0,0);
 
+            p5.background(0);
             p5.loadPixels();
-            for (let i = 1; i < cols - 1; i++) {
-                for (let j = 1; j < rows - 1; j++) {
-                    current[i][j] =
-                        (previous[i - 1][j]
-                        + previous[i + 1][j]
-                        + previous[i][j - 1]
-                        + previous[i][j + 1] )
-                        /
-                        2 - current[i][j];
-                    current[i][j] = current[i][j] * dampening;
-                    // Unlike in Processing, the pixels array in p5.js has 4 entries
-                    // for each pixel, so we have to multiply the index by 4 and then
-                    // set the entries for each color component separately.
-                    let index = (i + j * cols) * 4;
-                    p5.pixels[index + 0] = current[i][j];
-                    p5.pixels[index + 1] = current[i][j];
-                    p5.pixels[index + 2] = current[i][j];
+            for (let x = 1; x < cols - 1; x++) {
+                for (let y = 1; y < rows - 1; y++) {
+                    /* 
+                        This is essentially:
+                        1. Finding all the neighboring pixels of the current pixel (current[i][j]),
+                        2. Adding them all together
+                        3. Dividing them by 2
+                        4. Subtracting the value of the current pixel (current[i][j])
+                    **/
+                    current[x][y] = (
+                        previous[x - 1][y] 
+                        + previous[x + 1][y]
+                        + previous[x][y - 1]
+                        + previous[x][y + 1] )
+                        / 2 - current[x][y];
+                    current[x][y] = current[x][y] * dampening;
 
-                    // Where i left things last night:
-                    // let currentIndex = (bg.width * j) + i; //
-                    // current[currentIndex] =
-                    //     (   previous[ (bg.width * j) + (i - 1) ] +
-                    //         previous[ (bg.width * j) + (i + 1) ] +
-                    //         previous[ (bg.width * (j - 1)) + i ] +
-                    //         previous[ (bg.width * (j + 1)) + i ] ) /
-                    //         2 - current[currentIndex];
-                    // current[currentIndex] = current[currentIndex] * dampening;
-                    // // Unlike in Processing, the pixels array in p5.js has 4 entries
-                    // // for each pixel, so we have to multiply the index by 4 and then
-                    // // set the entries for each color component separately.
-                    // let index = (currentIndex);
-                    // p5.pixels[index + 0] = current[currentIndex];
-                    // p5.pixels[index + 1] = current[currentIndex];
-                    // p5.pixels[index + 2] = current[currentIndex];
+                    /* 
+                        Since the pixels are being stored in a 1 dimensional array, and we are writing this algorithm as a 2 dimensional array,
+                        this algorithm will find the current pixel index in the 1 dimensional array
+
+                        Unlike in Processing, the pixels array in p5.js has 4 entries
+                        for each pixel, so we have to multiply the index by 4 and then
+                        set the entries for each color component separately.
+                    **/
+                    let pixelIndex = (x + y * cols) * 4; // pixelIdx is equal to the index of the current pixel in the 1 dimensional p5 pixel array
+                    p5.pixels[pixelIndex] = current[x][y];
+                    p5.pixels[pixelIndex + 1] = current[x][y];
+                    p5.pixels[pixelIndex + 2] = current[x][y];
+                    /** The 4th value is the alpha channel, so no need to change this **/
+                    // p5.pixels[pixelIndex + 3] = current[x][y]; 
                 }
             }
             p5.updatePixels();
-
+            
+            /** this will swap the values of previous and current */
             let temp = previous;
             previous = current;
             current = temp;
         }
+
     }, [windowSize])
 
     //We create a new p5 object on component mount, feed it

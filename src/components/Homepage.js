@@ -60,7 +60,7 @@ export default function HomePage (props) {
 			onSlideChangeTransitionStart={handleSlideChangeTransitionStart}
 			onSlideChangeTransitionEnd={handleSlideChangeTransitionEnd}
         >
-            <SwiperSlide className={classes.homeSlide} >
+            {/* <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<HomeDoodle
 						isTransitioning={isTransitioning}
@@ -68,8 +68,8 @@ export default function HomePage (props) {
 						isMobile={isMobile}
 					/>
 				)}
-			</SwiperSlide>
-            {/* <SwiperSlide className={classes.homeSlide} >
+			</SwiperSlide> */}
+            <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<RipplesDoodle
 						isTransitioning={isTransitioning}
@@ -77,7 +77,7 @@ export default function HomePage (props) {
 						isMobile={isMobile}
 					/>
 				)}
-			</SwiperSlide> */}
+			</SwiperSlide>
 			
 			{/* Static Images */}
 			{/* <SwiperSlide>
