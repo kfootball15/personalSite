@@ -19,8 +19,8 @@
     ],
     "rules": {
         "indent": ["error", 4],
-        "react/jsx-filename-extension": [1, { "allow": "as-needed" }],
+        "react/jsx-filename-extension": [1, { "allow": "always" }],
         "comma-dangle": ["error", "never"],
-        "react/jsx-indent": [true, 4]
+        "react/jsx-indent": [4]
     }
 }
