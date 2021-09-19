@@ -56,9 +56,9 @@ export default function RipplesDoodle ({
          * **/
         let pressValue = 5000; 
 
-        // p5.preload = () => {
-        //     bg = p5.loadImage(BG_IMAGE);
-        // }
+        p5.preload = () => {
+            bg = p5.loadImage(BG_IMAGE);
+        }
 
         p5.mouseDragged = () => {
             previous[p5.mouseX][p5.mouseY] = pressValue
@@ -73,8 +73,19 @@ export default function RipplesDoodle ({
             p5.createCanvas(windowSize.width, windowSize.height);
             cols = p5.width;
             rows = p5.height;
+
+            bg.loadPixels();
+
+
             current = new Array(cols).fill(0).map(n => new Array(rows).fill(0));
             previous = new Array(cols).fill(0).map(n => new Array(rows).fill(0));
+
+            // for (let x = 0; x < cols; x++) {
+            //     for (let y = 0; y < rows; y++) {
+            //         current[x][y] = bg.pixels
+            //         previous[x][y] = 100
+            //     }
+            // }
 
             /** Test: Sets all pixels to color 100 */
             // for (let x = 0; x < cols; x++) {
@@ -90,7 +101,7 @@ export default function RipplesDoodle ({
 
         p5.draw = () => {
 
-            p5.background(0);
+            p5.background(bg);
             p5.loadPixels();
             for (let x = 1; x < cols - 1; x++) {
                 for (let y = 1; y < rows - 1; y++) {
@@ -121,8 +132,7 @@ export default function RipplesDoodle ({
                     p5.pixels[pixelIndex] = current[x][y];
                     p5.pixels[pixelIndex + 1] = current[x][y];
                     p5.pixels[pixelIndex + 2] = current[x][y];
-                    /** The 4th value is the alpha channel, so no need to change this **/
-                    // p5.pixels[pixelIndex + 3] = current[x][y]; 
+                    /** The 4th value is the alpha channel, so no need to change p5.pixels[pixelIndex + 3] **/
                 }
             }
             p5.updatePixels();
