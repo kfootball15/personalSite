@@ -40,9 +40,16 @@ export default function RipplesDoodle ({
         let bg;
         let cols;
         let rows;
+        /**
+         *  Unlike in Processing, the pixels array in p5.js has 4 entries
+         *  for each pixel, so we have to multiply the index by 4 and then
+         *  set the entries for each color component separately.
+         */
+        let pixelMultiplier = 4;
+        let pixelDensity;
+        let array2D = [];
         let current; // = new float[cols][rows];
         let previous; // = new float[cols][rows];
-
         /**
          * Dampening
          *      lower values --> ripples dissapear faster
@@ -56,29 +63,78 @@ export default function RipplesDoodle ({
          * **/
         let pressValue = 5000; 
 
+        p5.mouseDragged = () => {
+            previous[p5.mouseX * pixelDensity][p5.mouseY * pixelDensity] = pressValue
+        }
+        
+        p5.mousePressed = () => {
+            previous[p5.mouseX * pixelDensity][p5.mouseY * pixelDensity] = pressValue
+        }
+
         p5.preload = () => {
             bg = p5.loadImage(BG_IMAGE);
         }
 
-        p5.mouseDragged = () => {
-            previous[p5.mouseX][p5.mouseY] = pressValue
-        }
-        
-        p5.mousePressed = () => {
-            previous[p5.mouseX][p5.mouseY] = pressValue
-        }
-
         p5.setup = () => {
             p5.pixelDensity(1) // ciritcal we set this to 1, but not sure why yet
-            p5.createCanvas(windowSize.width, windowSize.height);
-            cols = p5.width;
-            rows = p5.height;
+            pixelDensity = p5.pixelDensity();
+            console.log("pixel density", pixelDensity)
+            p5.createCanvas(bg.width, bg.height);
+            cols = bg.width;
+            rows = bg.height;
 
             bg.loadPixels();
 
+            /** Creates an array of pixel values for each row in the image */
+            let rowLength = cols * pixelMultiplier
+            // bg.pixels.map((x, i) => {
+            //     if ( i % rowLength === 0) {
+            //         let arr = [ ...bg.pixels.slice( i, i + rowLength )]
+            //         array2D.push(arr)
+            //     }
+            // })
+            let counter = 0;
+            while (counter < bg.pixels.length) {
+                // console.log("counter", counter, bg.pixels.length)
+                array2D.push(bg.pixels.slice(counter, counter + rowLength))
+                counter = counter + rowLength
+            }
 
-            current = new Array(cols).fill(0).map(n => new Array(rows).fill(0));
-            previous = new Array(cols).fill(0).map(n => new Array(rows).fill(0));
+            /** Set current and previous to array2D - we will reference this when updating pixels in our ripple algorithm */
+            current = array2D
+            previous = array2D
+
+            console.log("bg", bg.height, bg.width)
+            console.log("p5", rows, cols)
+            
+            // Setup the picture
+            p5.background(0);
+            p5.loadPixels();
+            console.log("current:", current, current.length * current[0].length)
+            console.log("bg pixels:", bg.pixels, bg.pixels.length)
+            console.log("This should be true:", current.length * current[0].length === bg.pixels.length, current.length * current[0].length - bg.pixels.length)
+
+            let c = 0
+            for (let x = 0; x < rows; x++) {
+                for (let y = 0; y < cols; y++) {
+                    // console.log(x,y) // 469, 0
+                    /** pixelIdx is equal to the index of the current pixel in the 1 dimensional p5 pixel array */
+                    // let pixelIndex = (x + y * cols) * 4;
+                    // console.log(pixelIndex)
+                    p5.pixels[c + 0] = current[x][y];
+                    p5.pixels[c + 1] = current[x][y]+1;
+                    p5.pixels[c + 2] = current[x][y]+2;
+
+                    c = c + 4
+                    /** The 4th value is the alpha channel, so no need to change p5.pixels[pixelIndex + 3] **/
+                }
+            }
+            p5.updatePixels();
+
+            
+            // Sets the 2d Array to just blank pixels 
+            // current = new Array(cols*4).fill(0).map(n => new Array(rows*4).fill(100));
+            // previous = new Array(cols*4).fill(0).map(n => new Array(rows*4).fill(100));
 
             // for (let x = 0; x < cols; x++) {
             //     for (let y = 0; y < rows; y++) {
@@ -101,10 +157,15 @@ export default function RipplesDoodle ({
 
         p5.draw = () => {
 
-            p5.background(bg);
+            // p5.background(0);
+            // p5.background(0);
             p5.loadPixels();
-            for (let x = 1; x < cols - 1; x++) {
-                for (let y = 1; y < rows - 1; y++) {
+            for (let x = 1; x < rows - 1; x++) {
+                for (let y = 1; y < cols - 1; y++) {
+
+
+                    // console.log("x,y", x, y)
+                    // console.log("current", current[x])
                     /* 
                         This is essentially:
                         1. Finding all the neighboring pixels of the current pixel (current[i][j]),
@@ -112,26 +173,22 @@ export default function RipplesDoodle ({
                         3. Dividing them by 2
                         4. Subtracting the value of the current pixel (current[i][j])
                     **/
-                    current[x][y] = (
-                        previous[x - 1][y] 
-                        + previous[x + 1][y]
-                        + previous[x][y - 1]
-                        + previous[x][y + 1] )
-                        / 2 - current[x][y];
-                    current[x][y] = current[x][y] * dampening;
+                    // current[x][y] = (
+                    //     previous[x - 1][y] 
+                    //     + previous[x + 1][y]
+                    //     + previous[x][y - 1]
+                    //     + previous[x][y + 1] )
+                    //     / 2 - current[x][y];
+                    // current[x][y] = current[x][y] * dampening;
 
                     /* 
                         Since the pixels are being stored in a 1 dimensional array, and we are writing this algorithm as a 2 dimensional array,
                         this algorithm will find the current pixel index in the 1 dimensional array
-
-                        Unlike in Processing, the pixels array in p5.js has 4 entries
-                        for each pixel, so we have to multiply the index by 4 and then
-                        set the entries for each color component separately.
                     **/
-                    let pixelIndex = (x + y * cols) * 4; // pixelIdx is equal to the index of the current pixel in the 1 dimensional p5 pixel array
-                    p5.pixels[pixelIndex] = current[x][y];
-                    p5.pixels[pixelIndex + 1] = current[x][y];
-                    p5.pixels[pixelIndex + 2] = current[x][y];
+                    // let pixelIndex = (x + y * cols) * 4; // pixelIdx is equal to the index of the current pixel in the 1 dimensional p5 pixel array
+                    // p5.pixels[pixelIndex] = current[x][y];
+                    // p5.pixels[pixelIndex + 1] = current[x][y]+1;
+                    // p5.pixels[pixelIndex + 2] = current[x][y]+2;
                     /** The 4th value is the alpha channel, so no need to change p5.pixels[pixelIndex + 3] **/
                 }
             }
