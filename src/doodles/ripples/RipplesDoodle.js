@@ -20,6 +20,7 @@ export default function RipplesDoodle ({
     //p5 instance mode requires a reference on the DOM to mount the sketch
     //So we use react's createRef function to give p5 a reference
     const sketchRef = useRef(null);
+    const imageBGRef = useRef(null);
 
     // This uses p5's instance mode for sketch creation and namespacing
     /**
@@ -99,6 +100,7 @@ export default function RipplesDoodle ({
             for (let x = 1; x < cols - 1; x++) {
                 for (let y = 1; y < rows - 1; y++) {
 
+
                     /** Single Dimension Ripple algo */
                     /** 
                      * Converted algo from required a 2D array to using 1D array
@@ -130,32 +132,107 @@ export default function RipplesDoodle ({
         }
 
     }, [windowSize])
+    
+    
+    const ImageBG = useCallback( p5_b => {
+        let cols;
+        let rows;
+        let current;
+        let previous;
+        let img;
+        let dampening = 0.99;
+        let pressValue = 2500;
+
+        p5_b.mouseDragged = () => {
+            let index = (p5_b.mouseX + p5_b.mouseY * cols) * 4;
+            previous[index] = pressValue;
+        }
+        
+        p5_b.mousePressed = () => {
+            let index = (p5_b.mouseX + p5_b.mouseY * cols) * 4;
+            previous[index] = pressValue;
+        }
+        
+        p5_b.touchStarted = () => {
+            let index = (p5_b.mouseX + p5_b.mouseY * cols) * 4;
+            previous[index] = pressValue;
+        }
+        
+        p5_b.touchMoved = () => {
+            let index = (p5_b.mouseX + p5_b.mouseY * cols) * 4;
+            previous[index] = pressValue;
+        }
+
+        p5_b.preload = () => {
+            img = p5_b.loadImage(BG_IMAGE)
+        }
+
+        p5_b.setup = () => {
+            p5_b.pixelDensity(1);
+            p5_b.createCanvas(img.width, img.height);
+            cols = p5_b.width;
+            rows = p5_b.height;
+            
+            /** Black Background */
+            current = new Array(cols * rows * 4).fill(0);
+            previous = new Array(cols * rows * 4).fill(0);
+        }
+
+        p5_b.draw = () => {
+            p5_b.background(0)
+            p5_b.loadPixels();
+            img.loadPixels();
+
+            for (let x = 0; x < cols; x++) {
+                for (let y = 0; y < rows; y++) {
+
+                    let index = (x + y * cols) * 4;
+
+                    p5_b.pixels[index] = img.pixels[index]
+                    p5_b.pixels[index+1] = img.pixels[index+1]
+                    p5_b.pixels[index+2] = img.pixels[index+2]
+                }
+            }
+            p5_b.updatePixels();
+          
+            /** Swaps the buffers */
+            let temp = previous;
+            previous = current;
+            current = temp;
+        }
+
+    }, [windowSize])
 
     //We create a new p5 object on component mount, feed it
     useEffect(() => {
         let myP5;
+        let myP5_b;
         if (isActive) myP5 = new p5(Sketch, sketchRef.current)
-        console.log("runs", isActive, myP5)
-        // else myP5 = new p5(() => {}, sketchRef.current)
+        if (isActive) myP5_b = new p5(ImageBG, imageBGRef.current)
     }, [isActive])
 
     return (
-        <>
-        <img
-            className={ classes.img }
-            src={ BG_IMAGE }
-        />
-        {/* This div will contain our p5 sketch */}
-        <div
-            className={ classes.sketch }
-            ref={ sketchRef }>
-
+        <div className={classes.container} >
+            {/* <img
+                className={ classes.img }
+                src={ BG_IMAGE }
+            /> */}
+            <div
+                className={ classes.sketch }
+                ref={ imageBGRef } 
+            />
+            {/* This div will contain our p5 sketch */}
+            <div
+                className={ classes.sketch }
+                ref={ sketchRef } 
+            />
+            
         </div>
-        </>
     )
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles( theme => ({
+    container: {},
     img: {
         /* Set rules to fill background */
         minHeight: '100%',
@@ -166,7 +243,7 @@ const useStyles = makeStyles(theme => ({
         height: 'auto',
             
         /* Set up positioning */
-        // position: 'fixed',
+        position: 'fixed',
         top: 0,
         left: 0,
     },
