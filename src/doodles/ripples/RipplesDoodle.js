@@ -3,20 +3,8 @@ import { makeStyles } from '@material-ui/core';
 import p5 from 'p5';
 import BG_IMAGE from 'assets/test.jpeg';
 import {
-	useEventListener,
     useWindowSize,
-	hideElement,
 } from 'helpers';
-import { prev } from 'dom7';
-
-function to2DArray (pixels, width, height) {
-    let pixelsCopy = [...pixels]
-    let arr = new Array(width).fill(0) // [0,0,0,0,0,0...]
-    arr = arr.map((n,idx) =>
-        pixelsCopy.splice(0, height)
-    );
-    return arr;
-}
 
 /** Using p5 with react: 
  * https://dev.to/christiankastner/integrating-p5-js-with-react-i0d
@@ -29,172 +17,113 @@ export default function RipplesDoodle ({
     const classes = useStyles();
     const windowSize = useWindowSize();
 
-    console.log("window", windowSize)
-
     //p5 instance mode requires a reference on the DOM to mount the sketch
     //So we use react's createRef function to give p5 a reference
     const sketchRef = useRef(null);
 
     // This uses p5's instance mode for sketch creation and namespacing
+    /**
+     * This Ripple alogrithm references this old web page: 
+     * https://web.archive.org/web/20160418004149/http://freespace.virgin.net/hugo.elias/graphics/x_water.htm
+     * 
+     * Original Coding train tut:
+     * https://www.youtube.com/watch?v=BZUdGqeOD0w&ab_channel=TheCodingTrain 
+     */
     const Sketch = useCallback( p5 => {
-        let bg;
         let cols;
         let rows;
-        /**
-         *  Unlike in Processing, the pixels array in p5.js has 4 entries
-         *  for each pixel, so we have to multiply the index by 4 and then
-         *  set the entries for each color component separately.
-         */
-        let pixelMultiplier = 4;
-        let pixelDensity;
-        let array2D = [];
-        let current; // = new float[cols][rows];
-        let previous; // = new float[cols][rows];
-        /**
-         * Dampening
-         *      lower values --> ripples dissapear faster
-         *      higher values --> ripples dissapear slower
-         */
-        let dampening = 0.9; 
-        /** 
-         *  Press Value: This number will ultimately be effected by dampening. 
-         *      lower values --> smaller/faster ripples
-         *      higher values --> larger/slower ripples
-         * **/
-        let pressValue = 5000; 
+        let current;
+        let previous;
+        let timer = 0;
+        let dampening = 0.99;
+        let pressValue = 2500;
+        let rainInterval = 100; //ms
 
         p5.mouseDragged = () => {
-            previous[p5.mouseX * pixelDensity][p5.mouseY * pixelDensity] = pressValue
+            let index = (p5.mouseX + p5.mouseY * cols) * 4;
+            previous[index] = pressValue;
         }
         
         p5.mousePressed = () => {
-            previous[p5.mouseX * pixelDensity][p5.mouseY * pixelDensity] = pressValue
+            let index = (p5.mouseX + p5.mouseY * cols) * 4;
+            previous[index] = pressValue;
+        }
+        
+        p5.touchStarted = () => {
+            let index = (p5.mouseX + p5.mouseY * cols) * 4;
+            previous[index] = pressValue;
+        }
+        
+        p5.touchMoved = () => {
+            let index = (p5.mouseX + p5.mouseY * cols) * 4;
+            previous[index] = pressValue;
         }
 
-        p5.preload = () => {
-            bg = p5.loadImage(BG_IMAGE);
-        }
+        /** @TODO Get window resize to work */
+        // p5.windowResized = () => {
+        //     cols = windowSize.width;
+        //     rows = windowSize.height;
+        //     current = new Array(cols * rows * 4).fill(0);
+        //     previous = new Array(cols * rows * 4).fill(0);
+        //     p5.resizeCanvas(windowSize.width, windowSize.height);
+        // }
 
         p5.setup = () => {
-            p5.pixelDensity(1) // ciritcal we set this to 1, but not sure why yet
-            pixelDensity = p5.pixelDensity();
-            console.log("pixel density", pixelDensity)
-            p5.createCanvas(bg.width, bg.height);
-            cols = bg.width;
-            rows = bg.height;
-
-            bg.loadPixels();
-
-            /** Creates an array of pixel values for each row in the image */
-            let rowLength = cols * pixelMultiplier
-            // bg.pixels.map((x, i) => {
-            //     if ( i % rowLength === 0) {
-            //         let arr = [ ...bg.pixels.slice( i, i + rowLength )]
-            //         array2D.push(arr)
-            //     }
-            // })
-            let counter = 0;
-            while (counter < bg.pixels.length) {
-                // console.log("counter", counter, bg.pixels.length)
-                array2D.push(bg.pixels.slice(counter, counter + rowLength))
-                counter = counter + rowLength
-            }
-
-            /** Set current and previous to array2D - we will reference this when updating pixels in our ripple algorithm */
-            current = array2D
-            previous = array2D
-
-            console.log("bg", bg.height, bg.width)
-            console.log("p5", rows, cols)
+            p5.pixelDensity(1);
+            p5.createCanvas(windowSize.width, windowSize.height);
+            cols = p5.width;
+            rows = p5.height;
             
-            // Setup the picture
-            p5.background(0);
-            p5.loadPixels();
-            console.log("current:", current, current.length * current[0].length)
-            console.log("bg pixels:", bg.pixels, bg.pixels.length)
-            console.log("This should be true:", current.length * current[0].length === bg.pixels.length, current.length * current[0].length - bg.pixels.length)
-
-            let c = 0
-            for (let x = 0; x < rows; x++) {
-                for (let y = 0; y < cols; y++) {
-                    // console.log(x,y) // 469, 0
-                    /** pixelIdx is equal to the index of the current pixel in the 1 dimensional p5 pixel array */
-                    // let pixelIndex = (x + y * cols) * 4;
-                    // console.log(pixelIndex)
-                    p5.pixels[c + 0] = current[x][y];
-                    p5.pixels[c + 1] = current[x][y]+1;
-                    p5.pixels[c + 2] = current[x][y]+2;
-
-                    c = c + 4
-                    /** The 4th value is the alpha channel, so no need to change p5.pixels[pixelIndex + 3] **/
-                }
-            }
-            p5.updatePixels();
-
-            
-            // Sets the 2d Array to just blank pixels 
-            // current = new Array(cols*4).fill(0).map(n => new Array(rows*4).fill(100));
-            // previous = new Array(cols*4).fill(0).map(n => new Array(rows*4).fill(100));
-
-            // for (let x = 0; x < cols; x++) {
-            //     for (let y = 0; y < rows; y++) {
-            //         current[x][y] = bg.pixels
-            //         previous[x][y] = 100
-            //     }
-            // }
-
-            /** Test: Sets all pixels to color 100 */
-            // for (let x = 0; x < cols; x++) {
-            //     for (let y = 0; y < rows; y++) {
-            //         current[x][y] = 100
-            //         previous[x][y] = 100
-            //     }
-            // }
-
-            /** Test: sets to pixel to 100 to tigger the ripple algo */
-            // previous[100][100] = 100
+            /** Black Background */
+            current = new Array(cols * rows * 4).fill(0);
+            previous = new Array(cols * rows * 4).fill(0);
         }
 
         p5.draw = () => {
-
-            // p5.background(0);
-            // p5.background(0);
+            p5.background(0)
             p5.loadPixels();
-            for (let x = 1; x < rows - 1; x++) {
-                for (let y = 1; y < cols - 1; y++) {
 
+            /** brightness/flashlight: https://p5js.org/examples/image-brightness.html **/ 
 
-                    // console.log("x,y", x, y)
-                    // console.log("current", current[x])
-                    /* 
-                        This is essentially:
-                        1. Finding all the neighboring pixels of the current pixel (current[i][j]),
-                        2. Adding them all together
-                        3. Dividing them by 2
-                        4. Subtracting the value of the current pixel (current[i][j])
-                    **/
-                    // current[x][y] = (
-                    //     previous[x - 1][y] 
-                    //     + previous[x + 1][y]
-                    //     + previous[x][y - 1]
-                    //     + previous[x][y + 1] )
-                    //     / 2 - current[x][y];
-                    // current[x][y] = current[x][y] * dampening;
+            /** rain effect */
+            let interval = Math.floor( Math.random() * rainInterval )
+            if ( p5.millis() >= interval + timer ) {
+                // background(random(255),random(255),random(255));
+                let randomX = Math.floor( Math.random() * cols )
+                let randomY = Math.floor( Math.random() * rows )
+                let idx = (randomX + randomY * cols) * 4;
+                previous[idx] = pressValue;
+                timer = p5.millis();
+            }
 
-                    /* 
-                        Since the pixels are being stored in a 1 dimensional array, and we are writing this algorithm as a 2 dimensional array,
-                        this algorithm will find the current pixel index in the 1 dimensional array
-                    **/
-                    // let pixelIndex = (x + y * cols) * 4; // pixelIdx is equal to the index of the current pixel in the 1 dimensional p5 pixel array
-                    // p5.pixels[pixelIndex] = current[x][y];
-                    // p5.pixels[pixelIndex + 1] = current[x][y]+1;
-                    // p5.pixels[pixelIndex + 2] = current[x][y]+2;
-                    /** The 4th value is the alpha channel, so no need to change p5.pixels[pixelIndex + 3] **/
+            for (let x = 1; x < cols - 1; x++) {
+                for (let y = 1; y < rows - 1; y++) {
+
+                    /** Single Dimension Ripple algo */
+                    /** 
+                     * Converted algo from required a 2D array to using 1D array
+                     * This ste finds all of the neighboring pixels (not including the diagnols),
+                     * adds them up, divides by 2 and subtracts the current pixel value 
+                     * */
+                    let index = (x + y * cols) * 4;
+                    current[index] = (
+                        previous[((x-1) + y * cols) * 4] 
+                        + previous[((x+1) + y * cols) * 4]
+                        + previous[(x + (y-1) * cols) * 4]
+                        + previous[(x + (y+1) * cols) * 4]
+                        ) / 2 - current[index];
+                    current[index] = current[index] * dampening;
+                    
+                    /** Sets the r,g,b,a values of the pixels array to the current index */
+                    p5.pixels[index + 0] = current[index];
+                    p5.pixels[index + 1] = current[index];
+                    p5.pixels[index + 2] = current[index] * 2; //b - multipling by 3 makes the ripples bluer
+                    p5.pixels[index + 3] = current[index]; // Sets the value channel
                 }
             }
             p5.updatePixels();
-            
-            /** this will swap the values of previous and current */
+          
+            /** Swaps the buffers */
             let temp = previous;
             previous = current;
             current = temp;
@@ -205,45 +134,45 @@ export default function RipplesDoodle ({
     //We create a new p5 object on component mount, feed it
     useEffect(() => {
         let myP5;
-        console.log("runs", isActive, myP5)
         if (isActive) myP5 = new p5(Sketch, sketchRef.current)
+        console.log("runs", isActive, myP5)
         // else myP5 = new p5(() => {}, sketchRef.current)
     }, [isActive])
 
     return (
-        //This div will contain our p5 sketch
-        <div ref={sketchRef}>
+        <>
+        <img
+            className={ classes.img }
+            src={ BG_IMAGE }
+        />
+        {/* This div will contain our p5 sketch */}
+        <div
+            className={ classes.sketch }
+            ref={ sketchRef }>
 
         </div>
+        </>
     )
 };
 
 const useStyles = makeStyles(theme => ({
-
+    img: {
+        /* Set rules to fill background */
+        minHeight: '100%',
+        minWidth: 1024,
+            
+        /* Set up proportionate scaling */
+        width: '100%',
+        height: 'auto',
+            
+        /* Set up positioning */
+        // position: 'fixed',
+        top: 0,
+        left: 0,
+    },
+    sketch: {
+        position: 'fixed',
+        top: 0,
+        left: 0
+    }
 }));
-
-
-// 2D Water Ripples
-// The Coding Train / Daniel Shiffman
-// https://thecodingtrain.com/CodingChallenges/102-2d-water-ripple.html
-// https://youtu.be/BZUdGqeOD0w
-// https://editor.p5js.org/codingtrain/sketches/tYXtzNSl
-
-// Algorithm: https://web.archive.org/web/20160418004149/http://freespace.virgin.net/hugo.elias/graphics/x_water.htm
-
-let cols;
-let rows;
-let current; // = new float[cols][rows];
-let previous; // = new float[cols][rows];
-
-let dampening = 0.99;
-
-function setup() {
-
-}
-
-
-
-function draw() {
-
-}
