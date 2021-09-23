@@ -143,26 +143,6 @@ export default function RipplesDoodle ({
         let dampening = 0.99;
         let pressValue = 2500;
 
-        p5_b.mouseDragged = () => {
-            let index = (p5_b.mouseX + p5_b.mouseY * cols) * 4;
-            previous[index] = pressValue;
-        }
-        
-        p5_b.mousePressed = () => {
-            let index = (p5_b.mouseX + p5_b.mouseY * cols) * 4;
-            previous[index] = pressValue;
-        }
-        
-        p5_b.touchStarted = () => {
-            let index = (p5_b.mouseX + p5_b.mouseY * cols) * 4;
-            previous[index] = pressValue;
-        }
-        
-        p5_b.touchMoved = () => {
-            let index = (p5_b.mouseX + p5_b.mouseY * cols) * 4;
-            previous[index] = pressValue;
-        }
-
         p5_b.preload = () => {
             img = p5_b.loadImage(BG_IMAGE)
         }
@@ -173,16 +153,9 @@ export default function RipplesDoodle ({
             cols = p5_b.width;
             rows = p5_b.height;
             
-            /** Black Background */
-            current = new Array(cols * rows * 4).fill(0);
-            previous = new Array(cols * rows * 4).fill(0);
-        }
-
-        p5_b.draw = () => {
             p5_b.background(0)
             p5_b.loadPixels();
             img.loadPixels();
-
             for (let x = 0; x < cols; x++) {
                 for (let y = 0; y < rows; y++) {
 
@@ -194,11 +167,10 @@ export default function RipplesDoodle ({
                 }
             }
             p5_b.updatePixels();
-          
-            /** Swaps the buffers */
-            let temp = previous;
-            previous = current;
-            current = temp;
+        }
+
+        p5_b.draw = () => {
+            
         }
 
     }, [windowSize])
