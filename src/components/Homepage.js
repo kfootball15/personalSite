@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { HomeDoodle, RipplesDoodle } from 'doodles';
+import { HomeDoodle, RipplesDoodle, WaterRipplesThreeJSDoodle } from 'doodles';
 import { makeStyles } from '@material-ui/core';
 import { ASketch } from 'components';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -69,9 +69,18 @@ export default function HomePage (props) {
 					/>
 				)}
 			</SwiperSlide> */}
-            <SwiperSlide className={classes.homeSlide} >
+            {/* <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<RipplesDoodle
+						isTransitioning={isTransitioning}
+						isActive={isActive}
+						isMobile={isMobile}
+					/>
+				)}
+			</SwiperSlide> */}
+            <SwiperSlide className={classes.homeSlide} >
+				{({ isActive }) => (
+					<WaterRipplesThreeJSDoodle
 						isTransitioning={isTransitioning}
 						isActive={isActive}
 						isMobile={isMobile}

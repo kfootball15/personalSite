@@ -193,11 +193,11 @@ export default function RipplesDoodle ({
                 className={ classes.sketch }
                 ref={ imageBGRef } 
             />
-            {/* This div will contain our p5 sketch */}
-            <div
+            {/* Rain Drop Sktch */}
+            {/* <div
                 className={ classes.sketch }
                 ref={ sketchRef } 
-            />
+            /> */}
             
         </div>
     )
