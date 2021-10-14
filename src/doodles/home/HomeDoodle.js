@@ -341,10 +341,7 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransi
                 {/* Window / Wall Bottom */}
                 <WindowBottom isMobile={isMobile} wideScreen={wideScreen}/>
 
-                {/* Logo */}
-                <div className={ classes.logoWrapper }>
-                    <Logo classes={classes} />
-                </div>
+      
                 
                 {/* Interior */}
                 <div className={ classes.interior_room }>
@@ -360,6 +357,11 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransi
                 
                 </div>
 
+            </div>
+
+            {/* Logo */}
+            <div className={ classes.logoWrapper }>
+                <Logo classes={classes} />
             </div>
 
         </div>
@@ -381,18 +383,18 @@ const useStyles = makeStyles(theme => ({
     logoWrapper: ({ isMobile }) => {
         const base = {
             position: 'absolute',
-            left: 0,
             width: '100%',
             [theme.breakpoints.down('sm')]: {
-                top: 2,
+                left: 0,
+                top: '5%',
             },
             [theme.breakpoints.only('md')]: {
+                left: 0,
                 top: '4%'
             },
             [theme.breakpoints.only('lg')]: {
-                top: '15%',
-                width: '28%',
-                left: '5%'
+                top: '4%',
+                width: '100%',
             },
             [theme.breakpoints.up('xl')]: {
                 // bottom: '40%' 
