@@ -71,7 +71,7 @@ export default function RipplesDoodle ({
 
         p5.setup = () => {
             p5.pixelDensity(1);
-            p5.createCanvas(windowSize.width, windowSize.height);
+            p5.createCanvas(1000, 1000);
             cols = p5.width;
             rows = p5.height;
             
@@ -80,31 +80,42 @@ export default function RipplesDoodle ({
             previous = new Array(cols * rows * 4).fill(0);
         }
 
+        function rainEffect(toggle) {
+            if (toggle) {
+                let interval = Math.floor( Math.random() * rainInterval )
+                if ( p5.millis() >= interval + timer ) {
+                    // background(random(255),random(255),random(255));
+                    let randomX = Math.floor( Math.random() * cols )
+                    let randomY = Math.floor( Math.random() * rows )
+                    let idx = (randomX + randomY * cols) * 4;
+                    previous[idx] = pressValue;
+                    timer = p5.millis();
+                }
+            }
+        }
+
         p5.draw = () => {
-            p5.background(0)
+            p5.background(0, 0, 0)
             p5.loadPixels();
 
             /** brightness/flashlight: https://p5js.org/examples/image-brightness.html **/ 
 
             /** rain effect */
-            let interval = Math.floor( Math.random() * rainInterval )
-            if ( p5.millis() >= interval + timer ) {
-                // background(random(255),random(255),random(255));
-                let randomX = Math.floor( Math.random() * cols )
-                let randomY = Math.floor( Math.random() * rows )
-                let idx = (randomX + randomY * cols) * 4;
-                previous[idx] = pressValue;
-                timer = p5.millis();
-            }
+            rainEffect(isMobile ? true : false)
 
+            // p5.noFill();
+            // p5.stroke(255);
+            // p5.bezier(250, 250, 0, 100, 100, 0, 100, 0, 0, 0, 100, 0);
+
+            /** ripples */
             for (let x = 1; x < cols - 1; x++) {
                 for (let y = 1; y < rows - 1; y++) {
 
 
                     /** Single Dimension Ripple algo */
                     /** 
-                     * Converted algo from required a 2D array to using 1D array
-                     * This ste finds all of the neighboring pixels (not including the diagnols),
+                     * Converted algo from a 2D array to a 1D array
+                     * This code finds all of the neighboring pixels (not including the diagnols),
                      * adds them up, divides by 2 and subtracts the current pixel value 
                      * */
                     let index = (x + y * cols) * 4;
@@ -120,7 +131,7 @@ export default function RipplesDoodle ({
                     p5.pixels[index + 0] = current[index];
                     p5.pixels[index + 1] = current[index];
                     p5.pixels[index + 2] = current[index] * 2; //b - multipling by 3 makes the ripples bluer
-                    p5.pixels[index + 3] = current[index]; // Sets the value channel
+                    // p5.pixels[index + 3] = current[index]; // aplha: set to current[index] to invert
                 }
             }
             p5.updatePixels();
@@ -132,73 +143,20 @@ export default function RipplesDoodle ({
         }
 
     }, [windowSize])
-    
-    
-    const ImageBG = useCallback( p5_b => {
-        let cols;
-        let rows;
-        let current;
-        let previous;
-        let img;
-        let dampening = 0.99;
-        let pressValue = 2500;
-
-        p5_b.preload = () => {
-            img = p5_b.loadImage(BG_IMAGE)
-        }
-
-        p5_b.setup = () => {
-            p5_b.pixelDensity(1);
-            p5_b.createCanvas(img.width, img.height);
-            cols = p5_b.width;
-            rows = p5_b.height;
-            
-            p5_b.background(0)
-            p5_b.loadPixels();
-            img.loadPixels();
-            for (let x = 0; x < cols; x++) {
-                for (let y = 0; y < rows; y++) {
-
-                    let index = (x + y * cols) * 4;
-
-                    p5_b.pixels[index] = img.pixels[index]
-                    p5_b.pixels[index+1] = img.pixels[index+1]
-                    p5_b.pixels[index+2] = img.pixels[index+2]
-                }
-            }
-            p5_b.updatePixels();
-        }
-
-        p5_b.draw = () => {
-            
-        }
-
-    }, [windowSize])
 
     //We create a new p5 object on component mount, feed it
     useEffect(() => {
         let myP5;
-        let myP5_b;
         if (isActive) myP5 = new p5(Sketch, sketchRef.current)
-        if (isActive) myP5_b = new p5(ImageBG, imageBGRef.current)
     }, [isActive])
 
     return (
         <div className={classes.container} >
-            {/* <img
-                className={ classes.img }
-                src={ BG_IMAGE }
-            /> */}
+            {/* Rain Drop Sktch */}
             <div
                 className={ classes.sketch }
-                ref={ imageBGRef } 
-            />
-            {/* Rain Drop Sktch */}
-            {/* <div
-                className={ classes.sketch }
                 ref={ sketchRef } 
-            /> */}
-            
+            />
         </div>
     )
 };
@@ -220,7 +178,6 @@ const useStyles = makeStyles( theme => ({
         left: 0,
     },
     sketch: {
-        position: 'fixed',
         top: 0,
         left: 0
     }
