@@ -25,7 +25,6 @@ export default function HomePage (props) {
 	const [isTransitioning, setTransitioning] = useState(false);
 	const windowSize = useWindowSize();
 	const isMobile = windowSize.width <= 480;
-	const showVerticalNavigation = false;
 	const showHorizontalNavigation = true;
 	const classes = useStyles({ windowSize, isMobile });
 
@@ -53,14 +52,14 @@ export default function HomePage (props) {
             spaceBetween={0}
 			slidesPerView={1}
             direction='vertical'
-			navigation={showVerticalNavigation}
+			navigation={isMobile ? false : true}
 			allowTouchMove={isMobile ? true : false}
-			// scrollbar={{ draggable: true }}
+			scrollbar={{ draggable: isMobile ? false : true }}
 			// grabCursor
 			onSlideChangeTransitionStart={handleSlideChangeTransitionStart}
 			onSlideChangeTransitionEnd={handleSlideChangeTransitionEnd}
         >
-            {/* <SwiperSlide className={classes.homeSlide} >
+            <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<HomeDoodle
 						isTransitioning={isTransitioning}
@@ -68,8 +67,8 @@ export default function HomePage (props) {
 						isMobile={isMobile}
 					/>
 				)}
-			</SwiperSlide> */}
-            <SwiperSlide className={classes.homeSlide} >
+			</SwiperSlide>
+            {/* <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<RipplesDoodle
 						isTransitioning={isTransitioning}
@@ -77,7 +76,7 @@ export default function HomePage (props) {
 						isMobile={isMobile}
 					/>
 				)}
-			</SwiperSlide>
+			</SwiperSlide> */}
             {/* <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<RainDoodle

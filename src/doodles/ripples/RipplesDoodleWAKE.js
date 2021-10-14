@@ -37,18 +37,19 @@ export default function RipplesDoodle ({
         let previous;
         let timer = 0;
         let dampening = 0.99;
-        let pressValue = 2000;
+        let pressValue = 2500;
         let rainInterval = 100; //ms
 
         let p1 = { x: 100, y: 100 };
         let p2 = { x: 200, y: 200 };
+        let handle = 100;
 
         function updatePoints() {
             p1.x = p5.mouseX;
             p1.y = p5.mouseY;
             
             p2.x = p5.mouseX;
-            p2.y = p5.mouseY;
+            p2.y = p5.mouseY+100;
         }
 
         function rainEffect(toggle) {
@@ -65,26 +66,14 @@ export default function RipplesDoodle ({
             }
         }
 
-        function drawCircle () {
-            /** Draw circle at mouse */
-            // p5.noFill();
-            p5.stroke(255);
-            // p5.curve(p1.x, p1.y-handle, p1.x, p1.y, p2.x, p2.y, p2.x, p2.y-handle);
-            p5.circle(p1.x, p1.y, 20);
-        }
-
         p5.mouseDragged = () => {
             let index = (p5.mouseX + p5.mouseY * cols) * 4;
             previous[index] = pressValue;
-
-            // updatePoints();
         }
         
         p5.mousePressed = () => {
             let index = (p5.mouseX + p5.mouseY * cols) * 4;
             previous[index] = pressValue;
-
-            // updatePoints();
         }
         
         p5.touchStarted = () => {
@@ -97,15 +86,6 @@ export default function RipplesDoodle ({
             previous[index] = pressValue;
         }
 
-        /** @TODO Get window resize to work */
-        // p5.windowResized = () => {
-        //     cols = windowSize.width;
-        //     rows = windowSize.height;
-        //     current = new Array(cols * rows * 4).fill(0);
-        //     previous = new Array(cols * rows * 4).fill(0);
-        //     p5.resizeCanvas(windowSize.width, windowSize.height);
-        // }
-
         p5.setup = () => {
             p5.pixelDensity(1);
             p5.createCanvas(600, 600);
@@ -113,11 +93,12 @@ export default function RipplesDoodle ({
             rows = p5.height;
 
             p5.background(0, 0, 0)
+
             p5.loadPixels();
             
             /** Black Background */
-            current = new Array(cols * rows * 4).fill(0);
-            previous = new Array(cols * rows * 4).fill(0);
+            current = p5.pixels
+            previous = p5.pixels
         }
 
         p5.draw = () => {
@@ -125,9 +106,9 @@ export default function RipplesDoodle ({
             // /** brightness/flashlight: https://p5js.org/examples/image-brightness.html **/ 
             
             // /** rain effect */
-            rainEffect(isMobile ? true : false)
+            // rainEffect(isMobile ? true : false)
             
-            p5.loadPixels()
+            p5.loadPixels();
             // /** ripples */
             for (let x = 1; x < cols - 1; x++) {
                 for (let y = 1; y < rows - 1; y++) {
@@ -183,13 +164,7 @@ export default function RipplesDoodle ({
 };
 
 const useStyles = makeStyles( theme => ({
-    container: {
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
+    container: {},
     img: {
         /* Set rules to fill background */
         minHeight: '100%',

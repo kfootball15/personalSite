@@ -29,3 +29,28 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.swiper-button-next {
+  bottom: 10px;
+  /* left: auto; */
+  margin: 0 auto;
+  width: 100%;
+  transform: rotate(90deg);
+  /* right: auto; */
+  /* top: auto; */
+  /* bottom: auto; */
+  /* position: absolute; */
+  top: unset;
+}
+
+.swiper-button-prev {
+  top: 10px;
+  /* left: auto; */
+  margin: 0 auto;
+  width: 100%;
+  transform: rotate(90deg);
+}
+
+.swiper-button-disabled {
+  display: none;
+}
