@@ -36,13 +36,44 @@ export default function BirdDoodle ({
             angle1      = 0.0,
             easing      = 0.05,
             segLength   = 50;
+        
+        let numBirds = 50;
+        let birds = new Array(numBirds).fill({}).map((val, i) => {
+            let birdObj = {}
+            birdObj.x = p5.random(10, 100);
+            birdObj.y = p5.random(10, 100);
+            birdObj.segLength = p5.random(10, 100);
+            birdObj.angle1 = p5.random(-3.14, 3.14);
+            return birdObj
+        }); //[bird1X, bird1Y, bird1segLength, bird1Angle, bird2X, bird2Y, bird2segLength, bird2Angle, ...]
 
-        function segment(x, y, a) {
+        console.log(birds)
+
+        function segment(bird) {
             p5.push(); // starts a new drawing state/settings 
-            p5.translate(x, y);
-            p5.rotate(a);
-            p5.line(0, 0, segLength, 0);
+            p5.translate(bird.x, bird.y);
+            p5.rotate(bird.angle1);
+            p5.line(0, 0, bird.segLength, 0);
             p5.pop(); // sets drawing state/settings back to setup() defaults (see setup function)
+        }
+
+        function updateBird(bird) {
+            console.log("bird", bird)
+
+            /**
+             * dx/dy  - Find center of ellipse
+             * angle1 - find angle of mouse to center of ellipse
+             * x/y    - Recalculate x/y based on angle1
+             */
+            let dx = p5.mouseX - bird.x; // this will find the ellipses's center x position
+            let dy = p5.mouseY - bird.y; // this will find the ellipses's center y position
+
+            bird.angle1 = p5.atan2(dy, dx); // the angle of the line between the mouse and the center of the ellipses. To understand atan2 better, see this sketch: https://editor.p5js.org/menshguy/sketches/8DEPJqpAk
+            bird.x = p5.mouseX - p5.cos(bird.angle1) * bird.segLength;
+            bird.y = p5.mouseY - p5.sin(bird.angle1) * bird.segLength;
+
+            segment(bird); // this will draw a segment from coordinate (x, y), at an angle of *angle1*, at a distance of *segLength*
+            p5.ellipse(bird.x, bird.y, 20, 20); // this will draw the ellipse at coordinate (x, y)
         }
        
         p5.setup = () => {
@@ -55,20 +86,9 @@ export default function BirdDoodle ({
         p5.draw = () => {
             p5.background(0);
 
-            /**
-             * dx/dy  - Find center of ellipse
-             * angle1 - find angle of mouse to center of ellipse
-             * x/y    - Recalculate x/y based on angle1
-             */
-            let dx = p5.mouseX - x; // this will find the ellipses's center x position
-            let dy = p5.mouseY - y; // this will find the ellipses's center y position
-            angle1 = p5.atan2(dy, dx); // the angle of the line between the mouse and the center of the ellipses. To understand atan2 better, see this sketch: https://editor.p5js.org/menshguy/sketches/8DEPJqpAk
-            x = p5.mouseX - p5.cos(angle1) * segLength; // 
-            y = p5.mouseY - p5.sin(angle1) * segLength;
-
-            /** Redraw segment and Ellipse */
-            segment(x, y, angle1); // this will draw a segment from coordinate (x, y), at and angle of *angle1*, at a distance of *segLength*
-            p5.ellipse(x, y, 20, 20); // this will draw the ellipse at coordinate (x, y)
+            for (let i = 0; i < birds.length; i++) {
+                updateBird(birds[i]);
+            }
         }
 
     }, [])
