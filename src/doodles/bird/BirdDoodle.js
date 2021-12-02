@@ -31,24 +31,10 @@ export default function BirdDoodle ({
      * https://www.youtube.com/watch?v=BZUdGqeOD0w&ab_channel=TheCodingTrain 
      */
     const Sketch = useCallback( p5 => {
-        let x           = 100,
-            y           = 100,
-            angle1      = 0.0,
-            easing      = 0.05,
-            segLength   = 50;
-        
+
         let numBirds = 50;
-        let birds = new Array(numBirds).fill({}).map((val, i) => {
-            let birdObj = {}
-            birdObj.x = p5.random(10, 100);
-            birdObj.y = p5.random(10, 100);
-            birdObj.segLength = p5.random(10, 100);
-            birdObj.angle1 = p5.random(-3.14, 3.14);
-            return birdObj
-        }); //[bird1X, bird1Y, bird1segLength, bird1Angle, bird2X, bird2Y, bird2segLength, bird2Angle, ...]
-
-        console.log(birds)
-
+        let birds = [];
+        
         function segment(bird) {
             p5.push(); // starts a new drawing state/settings 
             p5.translate(bird.x, bird.y);
@@ -57,37 +43,60 @@ export default function BirdDoodle ({
             p5.pop(); // sets drawing state/settings back to setup() defaults (see setup function)
         }
 
-        function updateBird(bird) {
-            console.log("bird", bird)
-
-            /**
-             * dx/dy  - Find center of ellipse
-             * angle1 - find angle of mouse to center of ellipse
-             * x/y    - Recalculate x/y based on angle1
-             */
-            let dx = p5.mouseX - bird.x; // this will find the ellipses's center x position
-            let dy = p5.mouseY - bird.y; // this will find the ellipses's center y position
-
-            bird.angle1 = p5.atan2(dy, dx); // the angle of the line between the mouse and the center of the ellipses. To understand atan2 better, see this sketch: https://editor.p5js.org/menshguy/sketches/8DEPJqpAk
-            bird.x = p5.mouseX - p5.cos(bird.angle1) * bird.segLength;
-            bird.y = p5.mouseY - p5.sin(bird.angle1) * bird.segLength;
-
-            segment(bird); // this will draw a segment from coordinate (x, y), at an angle of *angle1*, at a distance of *segLength*
-            p5.ellipse(bird.x, bird.y, 20, 20); // this will draw the ellipse at coordinate (x, y)
+        
+        class Bird {
+            constructor(x, y, segLength, angle1) {
+                this.x = x;
+                this.y = y;
+                this.segLength = segLength;
+                this.angle1 = angle1;
+            }
+        
+            // Custom method for updating the variables
+            update() {
+                /**
+                 * dx/dy  - Find center of ellipse
+                 * angle1 - find angle of mouse to center of ellipse
+                 * x/y    - Recalculate x/y based on angle1
+                 */
+                let dx = p5.mouseX - this.x; // this will find the birds (ellipse's) center x position
+                let dy = p5.mouseY - this.y; // this will find the birds (ellipse's) center y position
+                this.angle1 = p5.atan2(dy, dx); // the angle of the line between the mouse and the center of the birds (ellipse's). To understand atan2 better, see this sketch: https://editor.p5js.org/menshguy/sketches/8DEPJqpAk
+                this.x = p5.mouseX - p5.cos(this.angle1) * this.segLength;
+                this.y = p5.mouseY - p5.sin(this.angle1) * this.segLength;
+            }
+        
+            // Custom method for drawing the object
+            draw() {
+                segment(this); // this will draw a segment from coordinate (x, y), at an angle of *angle1*, at a distance of *segLength*
+                p5.ellipse(this.x, this.y, 20, 20); // this will draw the ellipse at coordinate (x, y)
+            }
         }
+        
+   
+        
        
         p5.setup = () => {
-            /** Create canvas and set the stroke properties */
             p5.createCanvas(710, 400);
             p5.strokeWeight(20.0);
             p5.stroke(255, 100, 100, 50); // rgba values
+
+            for (let i = 0; i < numBirds; i++) {
+                birds[i] = new Bird(
+                    p5.random(10, 100), //x
+                    p5.random(10, 100), //y
+                    p5.random(50, 100), //segLength
+                    p5.random(-3.14, 3.14) //angle1
+                )
+            }
+
         }
 
         p5.draw = () => {
             p5.background(0);
-
             for (let i = 0; i < birds.length; i++) {
-                updateBird(birds[i]);
+                birds[i].update();
+                birds[i].draw();
             }
         }
 
