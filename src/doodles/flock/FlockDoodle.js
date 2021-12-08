@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core';
 import p5 from 'p5';
+import { Vector as p5Vector } from 'p5';
 import BG_IMAGE from 'assets/test.jpeg';
 import {
     useWindowSize,
@@ -32,79 +33,162 @@ export default function FlockDoodle ({
      */
     const Sketch = useCallback( p5 => {
 
-        let x = 1;
-        let y = 1;
-        let easing = 0.01;
-        let flockDistance = 100;
-        let flockJitter = 5;
-        let numBirds = 10;
-        let birds = [];
+        let numBirds = 50;
+        let flock = []
+        
+        class Boid {
 
-        
-        function segment(bird) {
-            p5.push(); // starts a new drawing state/settings 
-            p5.translate(bird.x, bird.y);
-            p5.rotate(bird.angle1);
-            p5.line(0, 0, bird.segLength, 0);
-            p5.pop(); // sets drawing state/settings back to setup() defaults (see setup function)
-        }
-        
-        class Bird {
-            constructor(x, y, segLength, angle1) {
-                this.x = x;
-                this.y = y;
-                this.segLength = segLength;
-                // this.angle1 = angle1;
+            constructor () {
+                this.position = p5.createVector( p5.random(p5.width), p5.random(p5.height) );
+                this.velocity = p5Vector.random2D(); //randomizes the vector direction of each Boid
+                this.velocity.setMag(p5.random(2, 5)); //randomized the velocity
+                this.acceleration = p5.createVector();
+                this.maxForce = 0.2;
+                this.maxSpeed = 4;
             }
-        
-            // Custom method for updating the variables
-            update() {
 
-                let targetX = x;
-                let dx = targetX - this.x;
-                // if (Math.abs(dx) > this.segLength) this.x += dx * easing; //Math.abs will return the absolute value of a number, avoding negative values
-                this.x += dx * easing; //Math.abs will return the absolute value of a number, avoding negative values
-    
-                let targetY = y;
-                let dy = targetY - this.y;
-                // if ( Math.abs(dy) > this.segLength) this.y += dy * easing;
-                this.y += dy * easing;
-   
+            /**
+             * Edges:
+             * If a boid goes off the screen, it will reappear on the opposite side of the screen
+             */
+            edges () {
+                if (this.position.x > p5.width) {
+                    this.position.x = 0;
+                } else if (this.position.x < 0) {
+                    this.position.x = p5.width;
+                }
+                
+                if (this.position.y > p5.height) {
+                    this.position.y = 0;
+                } else if (this.position.y < 0) {
+                    this.position.y = p5.height;
+                }
             }
-        
-            // Custom method for drawing the object
-            draw() {
-                p5.ellipse(this.x, this.y, 50, 50);
+
+            /**
+             * Align:
+             * Finds the other boids in the flock that are within the neighborRadius 
+             * and returns a steeringVelocity vector that is the average force and direction of the flock
+             */
+            align (boids) {
+                let neighborRadius = 50;
+                let steeringVelocity = p5.createVector(); //The steering force is the force that pushes the vector of the current direction towards the average direction of the flock
+                let total = 0;
+
+                for (let other of boids) {
+                    let d = p5.dist(
+                        this.position.x,
+                        this.position.y,
+                        other.position.x,
+                        other.position.y
+                    )
+
+                    //If it finds other birds within the perception radius, it adds their direction to the steering force
+                    if (other != this && d < neighborRadius) {
+                        steeringVelocity.add(other.velocity);
+                        total++;
+                    }
+                }
+
+                /**
+                 * If more than one bird is found, we divide the steering force by the total number of birds found and 
+                 * subtract the current bird's velocity from the steeringVelocity to get the correct vector value
+                 * */ 
+                if (total > 0) {
+                    steeringVelocity.div(total); //divide by total to get average
+                    steeringVelocity.sub(this.velocity); //subtract current velocity to get desired velocity
+                    steeringVelocity.limit(this.maxForce); //limit the force to the max force - the velocity of each boid will be limited
+                    steeringVelocity.setMag(this.maxSpeed);
+                    // this.acceleration.add(steeringVelocity);
+                }
+                
+                // returns a vector with x/y values between 0 and the boids maxForce
+                return steeringVelocity;
+            }
+            
+            /**
+             * Cohesion:
+             * Finds the average position of local flockmates and steers the current boid towards that position
+             */
+            cohesion (boids) {
+                let neighborRadius = 1000;
+                let steeringDirection = p5.createVector(); //The steering force is the force that pushes the vector of the current direction towards the average direction of the flock
+                let total = 0;
+
+                for (let other of boids) {
+                    let d = p5.dist(
+                        this.position.x,
+                        this.position.y,
+                        other.position.x,
+                        other.position.y
+                    )
+
+                    //If it finds other birds within the perception radius, it adds their direction to the steering force
+                    if (other != this && d < neighborRadius) {
+                        steeringDirection.add(other.position);
+                        total++;
+                    }
+                }
+
+                /**
+                 * If more than one bird is found, we divide the steering force by the total number of birds found and 
+                 * subtract the current bird's velocity from the steeringDirection to get the correct vector value
+                 * */ 
+                if (total > 0) {
+                    steeringDirection.div(total); //divide by total to get average
+                    steeringDirection.sub(this.position); //subtract current position from average to get a vector that points the current bird toward the average of its flockmates
+                    steeringDirection.setMag(this.maxSpeed);
+                    steeringDirection.sub(this.velocity);
+                    steeringDirection.limit(this.maxForce); //limit the force to the max force - the velocity of each boid will be limited
+                }
+                
+                // returns a vector with x/y values between 0 and the boids maxForce
+                return steeringDirection;
+            }
+
+            /**
+             * Flock:
+             * this method takes the steeringVelocity vector returnned by this.align and
+             * ......
+             */
+            flock (boids) {
+                // let alignment = this.align(boids);
+                let cohesion = this.cohesion(boids);
+                
+                // let separation = this.separation(boids);
+                // alignment.mult(1);
+                // cohesion.mult(1);
+                // separation.mult(1);
+                // this.acceleration.add(alignment);
+                
+                // this.acceleration = alignment;
+                this.acceleration = cohesion;
+                
+                // this.acceleration.add(cohesion);
+                // this.acceleration.add(separation);
+            }
+
+            update () {
+                this.position.add(this.velocity);
+                this.velocity.add(this.acceleration);
+                this.velocity.limit(this.maxSpeed);
+            }
+
+            show () {
+                p5.strokeWeight(16)
+                p5.stroke(255)
+                p5.point(this.position.x, this.position.y)
             }
         }
 
-        p5.mousePressed = () => {
-            /** Create a new Bird */
-            // for (let i = 0; i < numBirds; i++) {
-            //     let bird = new Bird(p5.mouseX, p5.mouseY, p5.random(10, 20), p5.random(0, 2 * Math.PI));
-            //     birds.push(bird);
-            // }
-
-
-            x = p5.mouseX
-            y = p5.mouseY
-        }
        
         p5.setup = () => {
             p5.createCanvas(windowSize.width, windowSize.height);
-            p5.noStroke();
 
-            // create birds
+            //Boid video
             for (let i = 0; i < numBirds; i++) {
-                let newBird = new Bird(
-                    1,
-                    1,
-                    p5.random( flockDistance - (flockJitter / 2), flockDistance + (flockJitter * 2) ),
-                    // angle1
-                )
-                console.log(newBird)
-
-                birds[i] = newBird;
+                let newBoid = new Boid();
+                flock.push(newBoid);
             }
 
         }
@@ -112,11 +196,15 @@ export default function FlockDoodle ({
         p5.draw = () => {
             p5.background(237, 34, 93);
 
-            for (let i = 0; i < birds.length; i++) {
-                birds[i].update();
-                birds[i].draw();
+            for(let boid of flock) {
+                boid.edges();
+                boid.flock(flock)
+                boid.show();
+                boid.update();
             }
+
         }
+        
 
     }, [windowSize])
 
