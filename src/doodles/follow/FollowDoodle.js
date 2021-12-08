@@ -9,7 +9,7 @@ import {
 /** Using p5 with react: 
  * https://dev.to/christiankastner/integrating-p5-js-with-react-i0d
  * https://github.dev/christiankastner/React-P5-Template/blob/master/src/App.js */
-export default function BirdDoodle ({
+export default function FollowDoodle ({
     isTransitioning,
     isActive,
     isMobile
@@ -68,18 +68,15 @@ export default function BirdDoodle ({
         
             // Custom method for drawing the object
             draw() {
-                segment(this); // this will draw a segment from coordinate (x, y), at an angle of *angle1*, at a distance of *segLength*
+                // segment(this); // this will draw a segment from coordinate (x, y), at an angle of *angle1*, at a distance of *segLength*
                 p5.ellipse(this.x, this.y, 20, 20); // this will draw the ellipse at coordinate (x, y)
             }
         }
         
-   
-        
-       
         p5.setup = () => {
             p5.createCanvas(710, 400);
             p5.strokeWeight(20.0);
-            p5.stroke(255, 100, 100, 50); // rgba values
+            p5.stroke(255, 100); // rgba values
 
             for (let i = 0; i < numBirds; i++) {
                 birds[i] = new Bird(

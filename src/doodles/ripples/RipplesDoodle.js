@@ -39,6 +39,10 @@ export default function RipplesDoodle ({
         let dampening = 0.99;
         let pressValue = 2000;
         let rainInterval = 100; //ms
+        let p5Height = 600;
+        let p5Width = 600;
+        let heightDifference = (windowSize.height - p5Height) / 2;
+        let widthDifference = (windowSize.width - p5Width) / 2;
 
         let p1 = { x: 100, y: 100 };
         let p2 = { x: 200, y: 200 };
@@ -49,6 +53,10 @@ export default function RipplesDoodle ({
             
             p2.x = p5.mouseX;
             p2.y = p5.mouseY;
+        }
+
+        function randomIntFromInterval(min, max) { // min and max included 
+            return Math.floor(Math.random() * (max - min + 1) + min)
         }
 
         function rainEffect(toggle) {
@@ -65,23 +73,19 @@ export default function RipplesDoodle ({
             }
         }
 
-        function drawCircle () {
-            /** Draw circle at mouse */
-            // p5.noFill();
-            p5.stroke(255);
-            // p5.curve(p1.x, p1.y-handle, p1.x, p1.y, p2.x, p2.y, p2.x, p2.y-handle);
-            p5.circle(p1.x, p1.y, 20);
-        }
-
         p5.mouseDragged = () => {
-            let index = (p5.mouseX + p5.mouseY * cols) * 4;
+            let x = p5.mouseX - widthDifference;
+            let y = p5.mouseY - heightDifference;
+            let index = ( x + y * cols) * 4;
             previous[index] = pressValue;
 
             // updatePoints();
         }
         
         p5.mousePressed = () => {
-            let index = (p5.mouseX + p5.mouseY * cols) * 4;
+            let x = p5.mouseX - widthDifference;
+            let y = p5.mouseY - heightDifference;
+            let index = ( x + y * cols) * 4;
             previous[index] = pressValue;
 
             // updatePoints();
@@ -108,7 +112,7 @@ export default function RipplesDoodle ({
 
         p5.setup = () => {
             p5.pixelDensity(1);
-            p5.createCanvas(600, 600);
+            p5.createCanvas(p5Width, p5Height);
             cols = p5.width;
             rows = p5.height;
 
@@ -125,7 +129,7 @@ export default function RipplesDoodle ({
             // /** brightness/flashlight: https://p5js.org/examples/image-brightness.html **/ 
             
             // /** rain effect */
-            rainEffect(isMobile ? true : false)
+            rainEffect(isMobile ? true : true)
             
             p5.loadPixels()
             // /** ripples */
@@ -147,9 +151,15 @@ export default function RipplesDoodle ({
                     current[index] = current[index] * dampening;
                     
                     /** Sets the r,g,b,a values of the pixels array to the current index */
+                    // let redRandom   = randomIntFromInterval(1, 3);
+                    // let greenRandom = randomIntFromInterval(1, 3);
+                    // let blueRandom  = randomIntFromInterval(1, 3);
+                    // let bool  = randomIntFromInterval(0, 1);
+                    // let arr = [true, false]
+
                     p5.pixels[index + 0] = current[index];
                     p5.pixels[index + 1] = current[index];
-                    p5.pixels[index + 2] = current[index] * 2; //b - multipling by 3 makes the ripples bluer
+                    p5.pixels[index + 2] = current[index] * 3; //b - multipling by X makes the ripples bluer/greener/redder
                     // p5.pixels[index + 3] = current[index]; // aplha: set to current[index] to invert
                 }
             }
@@ -184,28 +194,28 @@ export default function RipplesDoodle ({
 
 const useStyles = makeStyles( theme => ({
     container: {
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
+        // width: '100%',
+        // height: '100%',
+        // display: 'flex',
+        // justifyContent: 'center',
+        // alignItems: 'center'
     },
     img: {
-        /* Set rules to fill background */
-        minHeight: '100%',
-        minWidth: 1024,
+        // /* Set rules to fill background */
+        // minHeight: '100%',
+        // minWidth: 1024,
             
-        /* Set up proportionate scaling */
-        width: '100%',
-        height: 'auto',
+        // /* Set up proportionate scaling */
+        // width: '100%',
+        // height: 'auto',
             
-        /* Set up positioning */
-        position: 'fixed',
-        top: 0,
-        left: 0,
+        // /* Set up positioning */
+        // position: 'fixed',
+        // top: 0,
+        // left: 0,
     },
     sketch: {
-        top: 0,
-        left: 0
+        // top: 0,
+        // left: 0
     }
 }));

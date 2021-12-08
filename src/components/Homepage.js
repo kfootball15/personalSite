@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { HomeDoodle, RipplesDoodle, RainDoodle } from 'doodles';
+import { HomeDoodle, RipplesDoodle, RainDoodle, FollowDoodle, FlockDoodle } from 'doodles';
 import { makeStyles } from '@material-ui/core';
 import { ASketch } from 'components';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -18,6 +18,7 @@ import {
 	useEventListener,
     useWindowSize
 } from 'helpers';
+import { BrightnessMedium } from '@material-ui/icons';
 
 
 export default function HomePage (props) {
@@ -59,7 +60,8 @@ export default function HomePage (props) {
 			onSlideChangeTransitionStart={handleSlideChangeTransitionStart}
 			onSlideChangeTransitionEnd={handleSlideChangeTransitionEnd}
         >
-            <SwiperSlide className={classes.homeSlide} >
+			{/* SKETCH: Home Page Doodle (desk animation project) */}
+            {/* <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<HomeDoodle
 						isTransitioning={isTransitioning}
@@ -67,7 +69,9 @@ export default function HomePage (props) {
 						isMobile={isMobile}
 					/>
 				)}
-			</SwiperSlide>
+			</SwiperSlide> */}
+
+			{/* SKETCH: Rain Drops (2D raindrops) */}
             {/* <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<RipplesDoodle
@@ -77,6 +81,8 @@ export default function HomePage (props) {
 					/>
 				)}
 			</SwiperSlide> */}
+
+			{/* SKETCH: Raindrops (3d Raindrops) */}
             {/* <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<RainDoodle
@@ -86,6 +92,28 @@ export default function HomePage (props) {
 					/>
 				)}
 			</SwiperSlide> */}
+			
+			{/* SKETCH: Duck Project? */}
+			{/* <SwiperSlide className={classes.homeSlide} >
+				{({ isActive }) => (
+					<FollowDoodle
+						isTransitioning={isTransitioning}
+						isActive={isActive}
+						isMobile={isMobile}
+					/>
+				)}
+			</SwiperSlide> */}
+			
+			{/* SKETCH: Flock Project */}
+			<SwiperSlide className={classes.homeSlide} >
+				{({ isActive }) => (
+					<FlockDoodle
+						isTransitioning={isTransitioning}
+						isActive={isActive}
+						isMobile={isMobile}
+					/>
+				)}
+			</SwiperSlide>
 			
 			{/* Static Images */}
 			{/* <SwiperSlide>
