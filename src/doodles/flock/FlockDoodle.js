@@ -41,9 +41,9 @@ export default function FlockDoodle ({
             constructor () {
                 this.position = p5.createVector( p5.random(p5.width), p5.random(p5.height) );
                 this.velocity = p5Vector.random2D(); //randomizes the vector direction of each Boid
-                this.velocity.setMag(p5.random(2, 5)); //randomized the velocity
+                this.velocity.setMag(p5.random(2, 4)); //randomized the velocity
                 this.acceleration = p5.createVector();
-                this.maxForce = 0.2;
+                this.maxForce = 1;
                 this.maxSpeed = 4;
             }
 
@@ -69,6 +69,9 @@ export default function FlockDoodle ({
              * Align:
              * Finds the other boids in the flock that are within the neighborRadius 
              * and returns a steeringVelocity vector that is the average force and direction of the flock
+             * 
+             * If more than one bird is found, we divide the steering force by the total number of birds found and 
+             * subtract the current bird's velocity from the steeringVelocity to get the correct vector value
              */
             align (boids) {
                 let neighborRadius = 50;
@@ -82,36 +85,58 @@ export default function FlockDoodle ({
                         other.position.x,
                         other.position.y
                     )
-
-                    //If it finds other birds within the perception radius, it adds their direction to the steering force
-                    if (other != this && d < neighborRadius) {
+                    if (other != this && d < neighborRadius) { //If it finds other birds within the perception radius, it adds their direction to the steering force
                         steeringVelocity.add(other.velocity);
                         total++;
                     }
                 }
 
-                /**
-                 * If more than one bird is found, we divide the steering force by the total number of birds found and 
-                 * subtract the current bird's velocity from the steeringVelocity to get the correct vector value
-                 * */ 
                 if (total > 0) {
                     steeringVelocity.div(total); //divide by total to get average
+                    steeringVelocity.setMag(this.maxSpeed);
                     steeringVelocity.sub(this.velocity); //subtract current velocity to get desired velocity
                     steeringVelocity.limit(this.maxForce); //limit the force to the max force - the velocity of each boid will be limited
-                    steeringVelocity.setMag(this.maxSpeed);
-                    // this.acceleration.add(steeringVelocity);
                 }
-                
-                // returns a vector with x/y values between 0 and the boids maxForce
-                return steeringVelocity;
+
+                return steeringVelocity; // returns a vector with x/y values between 0 and the boids maxForce
+            }
+
+            separation (boids) {
+                let perceptionRadius = 50;
+                let steering = p5.createVector();
+                let total = 0;
+                for (let other of boids) {
+                    let d = p5.dist(
+                        this.position.x,
+                        this.position.y,
+                        other.position.x,
+                        other.position.y
+                    );
+                    if (other != this && d < perceptionRadius) {
+                        let diff = p5Vector.sub(this.position, other.position);
+                        diff.div(d * d);
+                        steering.add(diff);
+                        total++;
+                    }
+                }
+                if (total > 0) {
+                    steering.div(total);
+                    steering.setMag(this.maxSpeed);
+                    steering.sub(this.velocity);
+                    steering.limit(this.maxForce);
+                }
+                return steering;
             }
             
             /**
              * Cohesion:
              * Finds the average position of local flockmates and steers the current boid towards that position
+             * 
+             * If more than one bird is found, we divide the steering force by the total number of birds found and 
+             * subtract the current bird's velocity from the steeringDirection to get the correct vector value
              */
             cohesion (boids) {
-                let neighborRadius = 1000;
+                let neighborRadius = 100;
                 let steeringDirection = p5.createVector(); //The steering force is the force that pushes the vector of the current direction towards the average direction of the flock
                 let total = 0;
 
@@ -122,18 +147,13 @@ export default function FlockDoodle ({
                         other.position.x,
                         other.position.y
                     )
-
-                    //If it finds other birds within the perception radius, it adds their direction to the steering force
-                    if (other != this && d < neighborRadius) {
+                    
+                    if (other != this && d < neighborRadius) { //If it finds other birds within the perception radius, it adds their direction to the steering force
                         steeringDirection.add(other.position);
                         total++;
                     }
                 }
 
-                /**
-                 * If more than one bird is found, we divide the steering force by the total number of birds found and 
-                 * subtract the current bird's velocity from the steeringDirection to get the correct vector value
-                 * */ 
                 if (total > 0) {
                     steeringDirection.div(total); //divide by total to get average
                     steeringDirection.sub(this.position); //subtract current position from average to get a vector that points the current bird toward the average of its flockmates
@@ -142,8 +162,7 @@ export default function FlockDoodle ({
                     steeringDirection.limit(this.maxForce); //limit the force to the max force - the velocity of each boid will be limited
                 }
                 
-                // returns a vector with x/y values between 0 and the boids maxForce
-                return steeringDirection;
+                return steeringDirection; // returns a vector with x/y values between 0 and the boids maxForce
             }
 
             /**
@@ -152,26 +171,30 @@ export default function FlockDoodle ({
              * ......
              */
             flock (boids) {
-                // let alignment = this.align(boids);
+                let alignment = this.align(boids);
                 let cohesion = this.cohesion(boids);
-                
+                // let separation = this.separation(boids);
+            
+                // alignment.mult(alignSlider.value());
+                // cohesion.mult(cohesionSlider.value());
+                // separation.mult(separationSlider.value());
+            
+                this.acceleration.add(alignment);
+                this.acceleration.add(cohesion);
+                // this.acceleration.add(separation);
+
                 // let separation = this.separation(boids);
                 // alignment.mult(1);
                 // cohesion.mult(1);
                 // separation.mult(1);
                 // this.acceleration.add(alignment);
-                
-                // this.acceleration = alignment;
-                this.acceleration = cohesion;
-                
-                // this.acceleration.add(cohesion);
-                // this.acceleration.add(separation);
             }
 
             update () {
                 this.position.add(this.velocity);
                 this.velocity.add(this.acceleration);
                 this.velocity.limit(this.maxSpeed);
+                this.acceleration.mult(0);
             }
 
             show () {

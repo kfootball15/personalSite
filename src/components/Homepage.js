@@ -61,7 +61,7 @@ export default function HomePage (props) {
 			onSlideChangeTransitionEnd={handleSlideChangeTransitionEnd}
         >
 			{/* SKETCH: Home Page Doodle (desk animation project) */}
-            {/* <SwiperSlide className={classes.homeSlide} >
+            <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<HomeDoodle
 						isTransitioning={isTransitioning}
@@ -69,7 +69,7 @@ export default function HomePage (props) {
 						isMobile={isMobile}
 					/>
 				)}
-			</SwiperSlide> */}
+			</SwiperSlide>
 
 			{/* SKETCH: Rain Drops (2D raindrops) */}
             {/* <SwiperSlide className={classes.homeSlide} >
@@ -105,7 +105,7 @@ export default function HomePage (props) {
 			</SwiperSlide> */}
 			
 			{/* SKETCH: Flock Project */}
-			<SwiperSlide className={classes.homeSlide} >
+			{/* <SwiperSlide className={classes.homeSlide} >
 				{({ isActive }) => (
 					<FlockDoodle
 						isTransitioning={isTransitioning}
@@ -113,7 +113,7 @@ export default function HomePage (props) {
 						isMobile={isMobile}
 					/>
 				)}
-			</SwiperSlide>
+			</SwiperSlide> */}
 			
 			{/* Static Images */}
 			{/* <SwiperSlide>

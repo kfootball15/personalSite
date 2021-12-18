@@ -393,8 +393,10 @@ const useStyles = makeStyles(theme => ({
                 top: '4%'
             },
             [theme.breakpoints.only('lg')]: {
-                top: '4%',
-                width: '100%',
+                 // bottom: '40%' 
+                 top: '15%',
+                 width: '28%',
+                 left: '5%'
             },
             [theme.breakpoints.up('xl')]: {
                 // bottom: '40%' 
@@ -525,7 +527,7 @@ const useStyles = makeStyles(theme => ({
         const widerImage = {
             width: '100%',
             position: 'absolute',
-            bottom: '-25%'
+            bottom: '-30%'
         };
 
         const tallerImage = {
@@ -538,7 +540,7 @@ const useStyles = makeStyles(theme => ({
             ? { ...widerImage }
             : { ...tallerImage }
     },
-    mobileVideo: ({ wideScreen }) => {
+    mobileVideo: ({ isMobile, wideScreen }) => {
 
         const widerImage = {
             width: '100%',
@@ -549,7 +551,7 @@ const useStyles = makeStyles(theme => ({
         const tallerImage = {
             height: '100%',
             position: 'absolute',
-            bottom: 0,
+            bottom: isMobile ? '-20%' : 0,
             right: '-35%'
         }
         
