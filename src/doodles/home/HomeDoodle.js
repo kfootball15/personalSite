@@ -249,7 +249,6 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransi
 
     /** Runs when segment changes - day,sunset,night,sunrise (in future, maybe change segment to keyframes so we can be more granular about when animations play) */
     useEffect(() => {
-        console.log("segment change: ", currentSegment);
         if (currentSegment === 'sunset') handleToggleFocus();
     }, [ currentSegment ])
 

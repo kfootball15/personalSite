@@ -31,24 +31,21 @@ code {
 }
 
 .swiper-button-next {
-  bottom: 10px;
-  /* left: auto; */
-  margin: 0 auto;
-  width: 100%;
   transform: rotate(90deg);
-  /* right: auto; */
-  /* top: auto; */
-  /* bottom: auto; */
-  /* position: absolute; */
+  bottom: 10px;
+  right: unset;
   top: unset;
+  left: 50%;
+  z-index: 1000;
 }
 
 .swiper-button-prev {
-  top: 10px;
-  /* left: auto; */
-  margin: 0 auto;
-  width: 100%;
   transform: rotate(90deg);
+  top: 15px;
+  right: unset;
+  bottom: unset;
+  left: 50%;
+  z-index: 1000;
 }
 
 .swiper-button-disabled {
