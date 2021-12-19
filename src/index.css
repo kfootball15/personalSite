@@ -51,3 +51,7 @@ code {
 .swiper-button-disabled {
   display: none;
 }
+
+.swiper-button-hidden {
+  display: none;
+}

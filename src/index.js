@@ -1,10 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 // Start import swiper styles
-import 'swiper/swiper.scss';
-import 'swiper/components/navigation/navigation.scss';
-import 'swiper/components/pagination/pagination.scss';
-import 'swiper/components/scrollbar/scrollbar.scss';
+import 'swiper/swiper-bundle.css';
 import './index.css';
 // End import swiper styles
 import App from './App.js';

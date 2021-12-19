@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { gcd_two_numbers } from 'helpers';
-import { SocialIcon } from 'react-social-icons';
 import clsx from 'clsx';
 import INTERIOR_LOTTIE from 'assets/home/full_interior_lottie.json';
 // import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
-import LOGO_TEXT_SVG from 'assets/home/logo_text.svg';
 import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
 import WINDOW_SVG_MOBILE from 'assets/home/window_bottom_mobile.svg';
 import WINDOW_SVG_DESKTOP from 'assets/home/window_bottom_desktop.svg';
@@ -70,27 +68,6 @@ const handleSetCurrentSegment = setCurrentSegment => e => {
     if ( curr > segments.sunset[0] && curr <= segments.sunset[1] ) setCurrentSegment('sunset');
     if ( curr > segments.night[0] && curr <= segments.night[1] ) setCurrentSegment('night');
 };
-
-function Logo ({ classes }) {
-    return (
-        <div className={ classes.logoContainer}>
-            <object
-                id="logo"
-                data={ LOGO_TEXT_SVG }
-                aria-label="logo"
-                aria-required="true"
-                type="image/svg+xml"
-            >
-                MENSH
-            </object>
-            <div className={ classes.socialContainer }>
-                <SocialIcon target="_blank" className={classes.social} url="https://twitter.com/menshguy" />
-                <SocialIcon target="_blank" className={classes.social} url="https://github.com/menshguy" />
-                <SocialIcon target="_blank" className={classes.social} url="mailto:fenster.js@gmail.com" />
-            </div>
-        </div>
-    )
-}
 
 function WindowTop () {
     return (
@@ -355,14 +332,7 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransi
                     />
                 
                 </div>
-
             </div>
-
-            {/* Logo */}
-            <div className={ classes.logoWrapper }>
-                <Logo classes={classes} />
-            </div>
-
         </div>
     </>)
 }
@@ -378,48 +348,6 @@ const useStyles = makeStyles(theme => ({
         left: 0,
         height: '100%',
         width: '100%',
-    },
-    logoWrapper: ({ isMobile }) => {
-        const base = {
-            position: 'absolute',
-            width: '100%',
-            [theme.breakpoints.down('sm')]: {
-                left: 0,
-                top: '5%',
-            },
-            [theme.breakpoints.only('md')]: {
-                left: 0,
-                top: '4%'
-            },
-            [theme.breakpoints.only('lg')]: {
-                 // bottom: '40%' 
-                 top: '15%',
-                 width: '28%',
-                 left: '5%'
-            },
-            [theme.breakpoints.up('xl')]: {
-                // bottom: '40%' 
-                top: '15%',
-                width: '28%',
-                left: '5%'
-            },
-        }
-
-        return { ...base }
-    },
-    logoContainer:{
-        display: 'flex',
-        flexDirection: 'column'
-    },
-    socialContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        zIndex: 100,
-        marginTop: 10
-    },
-    social: {
-        margin: '0 10px 0 10px'
     },
     button: {
         width: 50,
