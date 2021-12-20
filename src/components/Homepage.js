@@ -152,12 +152,12 @@ export default function HomePage (props) {
 	const windowSize = useWindowSize();
 	const [isMobile, setIsMobile] = useState(false);
 	const [isTransitioning, setTransitioning] = useState(false);
-	const [slideFocused, setSlizeFocused] = useState(isMobile ? true : true); // Allows/Prevents swiping on mobile
+	const [slideIsFocused, setSlideIsFocused] = useState(isMobile ? true : true); // After clicking a slide, we zoom in and allow interaction. Allows/Prevents swiping on mobile
 	const [showLogo, setShowLogo] = useState(true);
 	const [showPrompt1, setShowPrompt1] = useState(true);
 	const [showPrompt2, setShowPrompt2] = useState(false);
 	const [showNav, setShowNav] = useState(true); // Hides Swiper Nav buttons (arrow keys)
-	const classes = useStyles({ windowSize, isMobile, slideFocused });
+	const classes = useStyles({ windowSize, isMobile, slideIsFocused });
 
 	useEffect(() => {
 		setIsMobile(windowSize.width <= 480);
@@ -172,14 +172,14 @@ export default function HomePage (props) {
 	};
 
 	const toggleActivateSlide = useCallback(() => {
-		console.log("slideFocused", slideFocused)
+		console.log("slideIsFocused", slideIsFocused)
 		lottie.pause()
 		if (showPrompt1) setShowPrompt1(false); //
 		// if (showPrompt2) setShowPrompt2(false); //
-		setSlizeFocused(!slideFocused)
+		setSlideIsFocused(!slideIsFocused)
 		setShowLogo(!showLogo)
 		setShowNav(!showNav) 
-	}, [slideFocused, showLogo, showNav])
+	}, [slideIsFocused, showLogo, showNav])
 
 
 	return (
@@ -196,8 +196,8 @@ export default function HomePage (props) {
         <Swiper
             spaceBetween={0}
 			slidesPerView={1}
-			allowSlideNext={slideFocused}
-			allowSlidePrev={slideFocused}
+			allowSlideNext={slideIsFocused}
+			allowSlidePrev={slideIsFocused}
 			direction={'vertical'}
 			// navigation={{
 			// 	hideOnClick: true,
@@ -212,40 +212,40 @@ export default function HomePage (props) {
 			{/* SKETCH: Home Page Doodle (desk animation project) */}
             <SwiperSlide className={classes.slide} >
 				{({ isActive }) => (
-					<>
-					<Prompt
-						classes={classes}
-						showNav={showNav}
-						showPrompt={showPrompt1}
-						toggleActivateSlide={toggleActivateSlide}
-					/>
-					
-					<HomeDoodle
-						isTransitioning={isTransitioning}
-						isActive={isActive}
-						isFocused={slideFocused}
-						isMobile={isMobile}
-					/>
-					</>
+        			<div className={classes.slideContent} >
+						<Prompt
+							classes={classes}
+							showNav={showNav}
+							showPrompt={showPrompt1}
+							toggleActivateSlide={toggleActivateSlide}
+						/>
+						<HomeDoodle
+							isTransitioning={isTransitioning}
+							isActive={isActive}
+							isFocused={slideIsFocused}
+							isMobile={isMobile}
+						/>
+					</div>
+
 				)}
 			</SwiperSlide>
 
 			{/* SKETCH: Rain Drops (2D raindrops) */}
             <SwiperSlide className={classes.slide} >
 				{({ isActive }) => (
-					<>
-					<Prompt
-						classes={classes}
-						showNav={showNav}
-						showPrompt={showPrompt2}
-						toggleActivateSlide={toggleActivateSlide}
-					/>
-					<RipplesDoodle
-						isTransitioning={isTransitioning}
-						isActive={isActive}
-						isMobile={isMobile}
-					/>
-					</>
+					<div className={classes.slideContent} >
+						<Prompt
+							classes={classes}
+							showNav={showNav}
+							showPrompt={showPrompt2}
+							toggleActivateSlide={toggleActivateSlide}
+						/>
+						<RipplesDoodle
+							isTransitioning={isTransitioning}
+							isActive={isActive}
+							isMobile={isMobile}
+						/>
+					</div>
 				)}
 			</SwiperSlide>
 
@@ -292,24 +292,38 @@ export default function HomePage (props) {
 const margin = 40;
 
 const useStyles = makeStyles(theme => ({
-	slideWrapper: ({ slideFocused }) => {
+	slideWrapper: ({ slideIsFocused }) => {
 		return ({
 			boxSizing: 'border-box',	
-			margin: slideFocused ? margin : 0,
+			margin: slideIsFocused ? margin : 0,
 			height: '100%',
 			transition: 'margin 1s, height 1s',
 			transitionDelay: '0s',
 		})
 	},
-	slide: ({slideFocused}) => {
+	slide: ({slideIsFocused}) => {
 		// const height = '100%'
-		const height = slideFocused ? `calc(100% - ${margin*2}px)` : `calc(100%)`
+		const height = slideIsFocused ? `calc(100% - ${margin*2}px)` : `calc(100%)`
 		return ({
 			height,
 			overflow: 'hidden',
 			boxSizing: 'border-box',
 		})	
 	},
+	slideContent: ({ windowSize, slideIsFocused }) => {
+        return ({
+            backgroundColor: '#3b3b3b',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            overflow: 'hidden',
+            // height: '100%',
+            height: slideIsFocused ? windowSize.height - 80 : windowSize.height,
+            width: '100%',
+            transition: 'height 1s',
+			transitionDelay: '0s',
+        })
+    },
 	logoWrapper: ({ isMobile }) => {
         const base = {
             position: 'absolute',

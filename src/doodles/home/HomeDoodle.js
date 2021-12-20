@@ -266,7 +266,6 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
         </svg>
 
         {/* Main Content */}
-        <div className={classes.container} >
         
             {/* Sky */}
             <div
@@ -335,7 +334,6 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
                 
                 </div>
             </div>
-        </div>
     </>)
 }
 
@@ -343,20 +341,6 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
 const transitionSpeed = '2s';
 
 const useStyles = makeStyles(theme => ({
-    container: ({ windowSize, isFocusedSlide }) => {
-        return ({
-            backgroundColor: '#3b3b3b',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            overflow: 'hidden',
-            // height: '100%',
-            height: isFocusedSlide ? windowSize.height - 80 : windowSize.height,
-            width: '100%',
-            transition: 'height 1s',
-			transitionDelay: '0s',
-        })
-    },
     button: {
         width: 50,
         height: 50,
