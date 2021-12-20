@@ -127,13 +127,13 @@ function Desk () {
     )
 }
 
-export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransitioning:isTransitioningSlides }) {
+export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocusedSlide, isMobile, isTransitioning:isTransitioningSlides }) {
     const windowSize = useWindowSize();
     const [weather] = useState('clear'); 
     const [focus, setFocus] = useState('interior'); 
     const [currentSegment, setCurrentSegment] = useState(''); 
     const wideScreen = windowSize.width > windowSize.height;
-    const classes = useStyles({ weather, currentSegment, focus, isMobile, windowSize, wideScreen });
+    const classes = useStyles({ weather, currentSegment, focus, isFocusedSlide, isMobile, windowSize, wideScreen });
 
     /** SVG Refs */
     const skyRef = useRef(null);
@@ -155,13 +155,15 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransi
 
     const play = () => {
         console.log("play")
-        lottie.play();
+        lottie.play('sky');
+        lottie.play('interior');
         exteriorVideoRef.current.play();
     };
 
     const pause = () => {
         console.log("pause")
-        lottie.pause();
+        lottie.pause('sky');
+        lottie.pause('interior');
         exteriorVideoRef.current.pause();
     };
 
@@ -242,7 +244,7 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransi
 
     return (<>
         
-        {/* SVG Animation */}
+        {/* SVG Animations */}
         <svg style={{height: 0}}>
         <defs>
             <filter id="exterior_filter">
@@ -341,13 +343,19 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isMobile, isTransi
 const transitionSpeed = '2s';
 
 const useStyles = makeStyles(theme => ({
-    container: {
-        backgroundColor: '#3b3b3b',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        height: '100%',
-        width: '100%',
+    container: ({ windowSize, isFocusedSlide }) => {
+        return ({
+            backgroundColor: '#3b3b3b',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            overflow: 'hidden',
+            // height: '100%',
+            height: isFocusedSlide ? windowSize.height - 80 : windowSize.height,
+            width: '100%',
+            transition: 'height 1s',
+			transitionDelay: '0s',
+        })
     },
     button: {
         width: 50,

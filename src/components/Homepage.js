@@ -1,7 +1,8 @@
 import React, {useState, useEffect, useRef, useCallback} from 'react';
 import { HomeDoodle, RipplesDoodle, RainDoodle, FollowDoodle, FlockDoodle } from 'doodles';
 import SwiperCore, { Navigation, Pagination, Scrollbar, A11y, EffectFade } from 'swiper';
-import { makeStyles } from '@material-ui/core';
+import Slide from '@material-ui/core/Slide';
+import { makeStyles, } from '@material-ui/core';
 import { SocialIcon } from 'react-social-icons';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import lottie from 'lottie-web';
@@ -106,16 +107,57 @@ function ExitPrompt ({ classes, togglePrompt}) {
 	)
 }
 
+function Prompt ({ classes, promptType, showNav, showPrompt, toggleActivateSlide}) {
+
+	// renderSwitch(param) {
+	// 	switch(param) {
+	// 		case 'foo':
+	// 			return 'bar';
+	// 		default:
+	// 			return 'foo';
+	// 	}
+	// }
+
+	return (
+		<div className={classes.promptWrapper}>
+			{showNav
+				? showPrompt
+					? (
+						<SwipePrompt
+							classes={classes}
+							togglePrompt={e => toggleActivateSlide()}
+						/>
+					)
+					: (
+						<div
+							style={{ width: '100%', height: '100%'}}
+							onClick={e => toggleActivateSlide()}
+						>
+						</div>
+					)
+				: (
+					<ExitPrompt 
+						togglePrompt={e => toggleActivateSlide()}
+						classes={classes}
+					/>
+				)
+			}
+		</div>
+	)
+}
+
 
 
 export default function HomePage (props) {
 	const windowSize = useWindowSize();
 	const [isMobile, setIsMobile] = useState(false);
 	const [isTransitioning, setTransitioning] = useState(false);
-	const [allowSlide, setAllowSlide] = useState(isMobile ? true : true); // Allows/Prevents swiping on mobile
+	const [slideFocused, setSlizeFocused] = useState(isMobile ? true : true); // Allows/Prevents swiping on mobile
 	const [showLogo, setShowLogo] = useState(true);
+	const [showPrompt1, setShowPrompt1] = useState(true);
+	const [showPrompt2, setShowPrompt2] = useState(false);
 	const [showNav, setShowNav] = useState(true); // Hides Swiper Nav buttons (arrow keys)
-	const classes = useStyles({ windowSize, isMobile, allowSlide });
+	const classes = useStyles({ windowSize, isMobile, slideFocused });
 
 	useEffect(() => {
 		setIsMobile(windowSize.width <= 480);
@@ -130,29 +172,32 @@ export default function HomePage (props) {
 	};
 
 	const toggleActivateSlide = useCallback(() => {
-		console.log("allowSlide", allowSlide)
+		console.log("slideFocused", slideFocused)
 		lottie.pause()
-		setAllowSlide(!allowSlide)
+		if (showPrompt1) setShowPrompt1(false); //
+		// if (showPrompt2) setShowPrompt2(false); //
+		setSlizeFocused(!slideFocused)
 		setShowLogo(!showLogo)
 		setShowNav(!showNav) 
-	}, [allowSlide, showLogo, showNav])
+	}, [slideFocused, showLogo, showNav])
 
 
 	return (
 		<>
 		{/* Logo */}
-		{ showLogo && 
+		<Slide direction="down" in={showLogo}>
 			<div className={ classes.logoWrapper }>
 				<Logo classes={classes} />
 			</div>
-		}
+		</Slide>
 
+		{/* Swiper Slides */}
+		<div className={classes.slideWrapper} >
         <Swiper
-			className={classes.slideWrapper} 
             spaceBetween={0}
 			slidesPerView={1}
-			allowSlideNext={allowSlide}
-			allowSlidePrev={allowSlide}
+			allowSlideNext={slideFocused}
+			allowSlidePrev={slideFocused}
 			direction={'vertical'}
 			// navigation={{
 			// 	hideOnClick: true,
@@ -168,21 +213,17 @@ export default function HomePage (props) {
             <SwiperSlide className={classes.slide} >
 				{({ isActive }) => (
 					<>
-					<div className={classes.actionWrapper}>
-						{showNav
-							? (<SwipePrompt
-								classes={classes}
-								togglePrompt={e => toggleActivateSlide()}
-								/>)
-							: (<ExitPrompt 
-								togglePrompt={e => toggleActivateSlide()}
-								classes={classes}
-							/>)
-						}
-					</div>
+					<Prompt
+						classes={classes}
+						showNav={showNav}
+						showPrompt={showPrompt1}
+						toggleActivateSlide={toggleActivateSlide}
+					/>
+					
 					<HomeDoodle
 						isTransitioning={isTransitioning}
 						isActive={isActive}
+						isFocused={slideFocused}
 						isMobile={isMobile}
 					/>
 					</>
@@ -192,11 +233,19 @@ export default function HomePage (props) {
 			{/* SKETCH: Rain Drops (2D raindrops) */}
             <SwiperSlide className={classes.slide} >
 				{({ isActive }) => (
+					<>
+					<Prompt
+						classes={classes}
+						showNav={showNav}
+						showPrompt={showPrompt2}
+						toggleActivateSlide={toggleActivateSlide}
+					/>
 					<RipplesDoodle
 						isTransitioning={isTransitioning}
 						isActive={isActive}
 						isMobile={isMobile}
 					/>
+					</>
 				)}
 			</SwiperSlide>
 
@@ -234,26 +283,32 @@ export default function HomePage (props) {
 			</SwiperSlide> */}
 			
 		</Swiper>
+		</div>
 		</>
 	)
 }
 
+
+const margin = 40;
+
 const useStyles = makeStyles(theme => ({
-	slideWrapper: ({ allowSlide }) => {
-		const margin = 40
-		const height = allowSlide ? `calc(100% - ${margin * 2}px)` : `calc(100%)`
+	slideWrapper: ({ slideFocused }) => {
 		return ({
-			margin: allowSlide ? margin : 0,
-			width: 'auto',
-			height,
+			boxSizing: 'border-box',	
+			margin: slideFocused ? margin : 0,
+			height: '100%',
 			transition: 'margin 1s, height 1s',
 			transitionDelay: '0s',
-			backgroundColor: 'red',
 		})
 	},
-	slide: {
+	slide: ({slideFocused}) => {
+		// const height = '100%'
+		const height = slideFocused ? `calc(100% - ${margin*2}px)` : `calc(100%)`
+		return ({
+			height,
 			overflow: 'hidden',
-			height: '100% !important',
+			boxSizing: 'border-box',
+		})	
 	},
 	logoWrapper: ({ isMobile }) => {
         const base = {
@@ -269,13 +324,11 @@ const useStyles = makeStyles(theme => ({
                 top: '4%'
             },
             [theme.breakpoints.only('lg')]: {
-                 // bottom: '40%' 
                  top: '15%',
                  width: '27%',
                  left: '7%'
             },
             [theme.breakpoints.up('xl')]: {
-                // bottom: '40%' 
                 top: '15%',
                 width: '27%',
                 left: '7%'
@@ -298,7 +351,7 @@ const useStyles = makeStyles(theme => ({
     social: {
         margin: '0 10px 0 10px'
     },
-	actionWrapper: ({isActive}) => ({
+	promptWrapper: ({isActive}) => ({
 		position: 'absolute',
 		top: 0,
 		left: 0,
