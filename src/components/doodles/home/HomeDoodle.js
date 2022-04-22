@@ -45,7 +45,7 @@ const segments = {
     'night': [animationSegments.night, animationSegments.end]
 };
 
-const defaultAnimationObjectSettings = {
+const lottieConfig = {
     renderer: 'svg', // Required
     loop: true, // Optional
     autoplay: false, // Optional
@@ -181,13 +181,13 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
     // Configure and instantiate Lottie Animations
     useEffect(() => {
         skyAnimationObject = lottie.loadAnimation({
-            ...defaultAnimationObjectSettings,
+            ...lottieConfig,
             container: skyRef.current,
             name: "sky", // Name for future reference. Optional.
             animationData: SKY_LOTTIE
         });
         interiorAnimationObject = lottie.loadAnimation({
-            ...defaultAnimationObjectSettings,
+            ...lottieConfig,
             container: interiorRef.current,
             name: "interior", // Name for future reference. Optional.
             animationData: INTERIOR_LOTTIE
@@ -267,73 +267,73 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
 
         {/* Main Content */}
         
-            {/* Sky */}
-            <div
-                className={clsx( classes.svgObj, classes.sky )}
-                ref={skyRef}
-            ></div>
-            
-            {/* Extertior */}
-            <div className={ classes.exterior }>
+        {/* Sky */}
+        <div
+            className={clsx( classes.svgObj, classes.sky )}
+            ref={skyRef}
+        ></div>
+        
+        {/* Extertior */}
+        <div className={ classes.exterior }>
 
-                {/* Video */} 
-                {/* For Transparent Videos (https://www.rotato.app/read/transparent-videos-for-the-web)
-                        Safari supports HEVC with alpha (.mp4, .mov) (AE export: Quicktime - Apple ProRes4444 with Alpha) 
-                        Chrome supports VP9 (.webm) (AE export: WebM)
-                    Neither browsers supports the other type, so we need to export both WITH transparency
-                    from AE (make sur webM plugin is installed: https://www.fnordware.com/WebM/
-                */}
-                <video
-                    // autoPlay
-                    loop 
-                    muted
-                    playsInline
-                    className={ isMobile ? classes.mobileVideo : classes.desktopVideo }
-                    ref={ exteriorVideoRef }
-                >
+            {/* Video */} 
+            {/* For Transparent Videos (https://www.rotato.app/read/transparent-videos-for-the-web)
+                    Safari supports HEVC with alpha (.mp4, .mov) (AE export: Quicktime - Apple ProRes4444 with Alpha) 
+                    Chrome supports VP9 (.webm) (AE export: WebM)
+                Neither browsers supports the other type, so we need to export both WITH transparency
+                from AE (make sur webM plugin is installed: https://www.fnordware.com/WebM/
+            */}
+            <video
+                // autoPlay
+                loop 
+                muted
+                playsInline
+                className={ isMobile ? classes.mobileVideo : classes.desktopVideo }
+                ref={ exteriorVideoRef }
+            >
+            
+                {/* Chrome */}
+                <source
+                    src={ BG_VIDEO_CHROME }
+                    type="video/webm" 
+                />
                 
-                    {/* Chrome */}
-                    <source
-                        src={ BG_VIDEO_CHROME }
-                        type="video/webm" 
-                    />
-                   
-                    {/* Safari - BROKEN CURRENTLY, does not display */}
-                    <source
-                        src={ BG_VIDEO_SAFARI }
-                        type='video/mp4'
-                    />
+                {/* Safari - BROKEN CURRENTLY, does not display */}
+                <source
+                    src={ BG_VIDEO_SAFARI }
+                    type='video/mp4'
+                />
 
-                </video>
+            </video>
+        
+        </div>
+
+
+        {/* Interior */}
+        <div className={ classes.interior } >  
+
+            {/* Window / Wall Top */}
+            <WindowTop />
+
+            {/* Window / Wall Bottom */}
+            <WindowBottom isMobile={isMobile} wideScreen={wideScreen}/>
+
+    
             
-            </div>
-
-
             {/* Interior */}
-            <div className={ classes.interior } >  
-
-                {/* Window / Wall Top */}
-                <WindowTop />
-
-                {/* Window / Wall Bottom */}
-                <WindowBottom isMobile={isMobile} wideScreen={wideScreen}/>
-
-      
+            <div className={ classes.interior_room }>
                 
-                {/* Interior */}
-                <div className={ classes.interior_room }>
-                    
-                    {/* Desk */}
-                    <Desk />
+                {/* Desk */}
+                <Desk />
 
-                    {/* Chair / Character */}
-                    <div
-                        id="interior_chair"
-                        ref={ interiorRef }
-                    />
-                
-                </div>
+                {/* Chair / Character */}
+                <div
+                    id="interior_chair"
+                    ref={ interiorRef }
+                />
+            
             </div>
+        </div>
     </>)
 }
 
@@ -409,6 +409,7 @@ const useStyles = makeStyles(theme => ({
             height: '100%',
             filter: `blur(${ blur })`,
             transition: `filter ${ transitionSpeed } linear`,
+            zIndex: 1000000
         }
     },
     interior_room: ({ isMobile }) => ({
