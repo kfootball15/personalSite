@@ -66,12 +66,15 @@ const handleSetCurrentSegment = setCurrentSegment => e => {
 };
 
 function WindowTop () {
+
+    const style = {
+        position: 'absolute',
+        width: '100%'
+    }
+    
     return (
         <object
-            style={{ 
-                position: 'absolute',
-                width: '100%'
-            }}
+            style={style}
             id="window_top"
             data={ WINDOW_TOP_SVG }
             aria-label="window_top"
@@ -84,15 +87,18 @@ function WindowTop () {
 }
 
 function WindowBottom ({ isMobile, wideScreen }) {
+    
+    const style = {
+        width: '100%',
+        position: 'absolute',
+        bottom: 0,
+        borderTop: 'solid 1000px transparent',
+        overflow: 'hidden'
+    }
+
     return (
         <object
-            style={{
-                width: '100%',
-                position: 'absolute',
-                bottom: 0,
-                borderTop: 'solid 1000px transparent',
-                overflow: 'hidden'
-            }}
+            style={style}
             id="window_bottom"
             data={ isMobile ? WINDOW_SVG_MOBILE : WINDOW_SVG_DESKTOP }
             aria-label="window"
@@ -105,13 +111,16 @@ function WindowBottom ({ isMobile, wideScreen }) {
 }
 
 function Desk () {
+    
+    const style = {
+        width: '100%',
+        position: 'absolute',
+        bottom: 0
+    }
+
     return (
         <object
-            style={{
-              width: '100%',
-              position: 'absolute',
-              bottom: 0
-            }}
+            style={style}
             id="interior_desk"
             data={ DESK_SVG }
             aria-label="desk"
