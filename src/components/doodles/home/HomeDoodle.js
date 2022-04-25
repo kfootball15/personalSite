@@ -19,15 +19,11 @@ import {
 } from 'helpers';
 import lottie from 'lottie-web';
 
-// lottie.setQuality(2);
-
 // https://josephkhan.me/lottie-web/
 let skyAnimationObject = null;
 let interiorAnimationObject = null;
 
 /** config */
-const blur = "8";
-const transitionDuration = "1s";
 const fps = 30;
 const speed = 1;
 const animationSegments = {
@@ -129,29 +125,16 @@ function Desk () {
 
 export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocusedSlide, isMobile, isTransitioning:isTransitioningSlides }) {
     const windowSize = useWindowSize();
-    const [weather] = useState('clear'); 
-    const [focus, setFocus] = useState('interior'); 
     const [currentSegment, setCurrentSegment] = useState(''); 
     const wideScreen = windowSize.width > windowSize.height;
-    const classes = useStyles({ weather, currentSegment, focus, isFocusedSlide, isMobile, windowSize, wideScreen });
+    const classes = useStyles({ currentSegment, isFocusedSlide, isMobile, windowSize, wideScreen });
 
     /** SVG Refs */
     const skyRef = useRef(null);
     const interiorRef = useRef(null);
     
-    /** SVG Animation Refs */
-    const animBlurExterior1Ref = useRef(null);
-    const blurExterior1Ref = useRef(null);
-
     /** Video Ref **/
     const exteriorVideoRef = useRef(null)
-
-    const handleToggleFocus = useCallback(() => {
-        const newFocus = focus === 'interior'
-                ? 'exterior'
-                : 'interior';
-        setFocus(newFocus);
-    }, [focus]);
 
     const play = () => {
         console.log("play")
@@ -167,6 +150,7 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
         exteriorVideoRef.current.pause();
     };
 
+    /** Adds character gif to correct spot behind chair */
     const addCharacterGIF = () => {
         const elem = interiorRef.current.querySelector('[id^="chair_back"]');
         var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
@@ -226,56 +210,19 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
         if (isActiveSlide) play();
     });
 
-    /** Runs when segment changes - day,sunset,night,sunrise (in future, maybe change segment to keyframes so we can be more granular about when animations play) */
-    useEffect(() => {
-        if (currentSegment === 'sunset') handleToggleFocus();
-    }, [ currentSegment ])
 
-    /** Runs when Focus changes (interior/exterior) */
-    useEffect(() => {
-        // https://properdesign.co.uk/animating-svg-with-beginelement/
-        // https://stackoverflow.com/questions/8455773/svg-trigger-animation-with-event
-        const exteriorBlurVal = focus === 'interior' ? blur : "0";
-        animBlurExterior1Ref.current.beginElement();
-        animBlurExterior1Ref.current.onbegin = () => {
-            blurExterior1Ref.current.setStdDeviation(exteriorBlurVal, exteriorBlurVal); //https://developer.mozilla.org/en-US/docs/Web/API/SVGFEGaussianBlurElement
-        }
-    }, [focus])
-
-    return (<>
-        
-        {/* SVG Animations */}
-        <svg style={{height: 0}}>
-        <defs>
-            <filter id="exterior_filter">
-                <feGaussianBlur
-                    ref={blurExterior1Ref}
-                    id="blur_exterior_filter"
-                />
-                <animate
-                    ref={ animBlurExterior1Ref }
-                    xlinkHref="#blur_exterior_filter"
-                    id="anim_blur_exterior_filter" 
-                    attributeName="stdDeviation"
-                    values={focus === 'interior' ? `0;${blur}` : `${blur};0`}
-                    dur={ transitionDuration }
-                    begin='indefinite'
-                />
-            </filter>
-        </defs>
-        </svg>
+    return (
+        <div className={classes.homeDoodleContainer}>
 
         {/* Main Content */}
-        
         {/* Sky */}
         <div
-            className={clsx( classes.svgObj, classes.sky )}
+            className={classes.sky}
             ref={skyRef}
         ></div>
         
         {/* Extertior */}
-        <div className={ classes.exterior }>
-
+        <div className={ classes.exteriorContainer }>
             {/* Video */} 
             {/* For Transparent Videos (https://www.rotato.app/read/transparent-videos-for-the-web)
                     Safari supports HEVC with alpha (.mp4, .mov) (AE export: Quicktime - Apple ProRes4444 with Alpha) 
@@ -284,89 +231,52 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
                 from AE (make sur webM plugin is installed: https://www.fnordware.com/WebM/
             */}
             <video
-                // autoPlay
                 loop 
                 muted
                 playsInline
                 className={ isMobile ? classes.mobileVideo : classes.desktopVideo }
                 ref={ exteriorVideoRef }
             >
-            
                 {/* Chrome */}
                 <source
                     src={ BG_VIDEO_CHROME }
                     type="video/webm" 
                 />
-                
+
                 {/* Safari - BROKEN CURRENTLY, does not display */}
                 <source
                     src={ BG_VIDEO_SAFARI }
                     type='video/mp4'
                 />
-
             </video>
-        
         </div>
-
 
         {/* Interior */}
-        <div className={ classes.interior } >  
-
-            {/* Window / Wall Top */}
+        <div className={ classes.interiorContainer } >  
             <WindowTop />
-
-            {/* Window / Wall Bottom */}
             <WindowBottom isMobile={isMobile} wideScreen={wideScreen}/>
-
-    
-            
-            {/* Interior */}
-            <div className={ classes.interior_room }>
-                
-                {/* Desk */}
+            <div className={ classes.interior_desk_and_character }>
                 <Desk />
-
-                {/* Chair / Character */}
-                <div
-                    id="interior_chair"
-                    ref={ interiorRef }
-                />
-            
+                {/* Chair / Character is appended here by addCharacterGif() */}
+                <div id="interior_chair" ref={ interiorRef } />
             </div>
         </div>
-    </>)
+        </div>
+    )
 }
 
 // CSS configs
 const transitionSpeed = '2s';
-
 const useStyles = makeStyles(theme => ({
-    button: {
-        width: 50,
-        height: 50,
-        zIndex: 100,
-        position: 'absolute',
-        left: 0
-    },
-    show: {
-        opacity: 100,
-        filter: 'alpha(opacity=100)'
-    },
-    hide: {
-        opacity: 0,
-        filter: 'alpha(opacity=0)'
-    },
-    characterContainer: {
-        bottom: 0,
-        right: 0,
-    },
+    homeDoodleContainer:{},
+    exteriorContainer: {},
+    interiorContainer: {},
     sky: ({ windowSize }) => {
 
         // 4:3 --> 0.75 //ratio of the image
         // 100:200 --> 2 //example ratio of a mobile window (height > width)
         // In this case we need our height to be 2x its width 
         // So we get the new aspect ratio and devide(ratioW/ratioH)
-
 
         const gcf = gcd_two_numbers(windowSize.width, windowSize.height);
         const ratioW = windowSize.width / gcf;
@@ -382,75 +292,45 @@ const useStyles = makeStyles(theme => ({
         }
     
     },
-    exterior: ({ weather, currentSegment, focus }) => {
-
-        const exterior_filter = {
-            height: 0,
-            filter: 'url(#exterior_filter)' // refers to the ID of the svg <filter />
-        };
-        
-        if (weather === 'rain') {}
-        if (weather === 'snow') {}
-        if (weather === 'storm') {}
-
-        return {
-            '& .full_exterior_all' : exterior_filter,
-        } 
-    },
-    interior: ({ focus }) => {
-        const interior = focus === 'interior';
-        const blur = interior ? '0px' : '4px';
-
-        return {
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            filter: `blur(${ blur })`,
-            transition: `filter ${ transitionSpeed } linear`,
-            zIndex: 1000000
-        }
-    },
-    interior_room: ({ isMobile }) => ({
-        width: isMobile ? '126%' : '100%',
-        position: 'absolute',
-        bottom: 0,
-        right: isMobile ? '2%' : 0
-    }),
-    interior_window: {
-        bottom: 0,
-        '& object': {
-            bottom: 0
-        }
-    },
-    interior_window_top: {
-        top: 0,
-        '& object': {
-            top: 0
-        }
-    },
-    svgObj: ({ wideScreen }) => {
+    interior_desk_and_character: ({ isMobile }) => {
 
         const base = {
-            width: '100%',
             position: 'absolute',
-            bottom: 0
+            bottom: 0,
+        }
+
+        const mobile = {
+            ...base,
+            width: '126%',
+            right: '2%'
         };
-        
-        return wideScreen
-            ? { ...base }
-            : { ...base }
+
+        const desktop = {
+            ...base,
+            widht: '100%',
+            right: 0
+        };
+
+        return isMobile ? mobile : desktop;
     },
     desktopVideo: ({ wideScreen }) => {
 
+        const blur = '6px';
+
+        const base = {
+            '-o-filter': `blur(${blur})`,
+            'filter': `blur(${blur})`,
+        }
+
         const widerImage = {
+            ...base,
             width: '100%',
             position: 'absolute',
             bottom: '-30%'
         };
 
         const tallerImage = {
+            ...base,
             width: '100%',
             position: 'absolute',
             bottom: '-15%'
