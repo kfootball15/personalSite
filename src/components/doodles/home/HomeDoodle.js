@@ -65,18 +65,12 @@ const handleSetCurrentSegment = setCurrentSegment => e => {
     if ( curr > segments.night[0] && curr <= segments.night[1] ) setCurrentSegment('night');
 };
 
-function WindowTop () {
-
-    const style = {
-        position: 'absolute',
-        width: '100%'
-    }
-    
+function WindowTop ({ classes, svgData }) {
     return (
         <object
-            style={style}
+            className={classes.interior_windowTop}
             id="window_top"
-            data={ WINDOW_TOP_SVG }
+            data={ svgData }
             aria-label="window_top"
             aria-required="true"
             type="image/svg+xml"
@@ -86,21 +80,12 @@ function WindowTop () {
     )
 }
 
-function WindowBottom ({ isMobile, wideScreen }) {
-    
-    const style = {
-        width: '100%',
-        position: 'absolute',
-        bottom: 0,
-        borderTop: 'solid 1000px transparent',
-        overflow: 'hidden'
-    }
-
+function WindowBottom ({ classes, svgData }) {
     return (
         <object
-            style={style}
+            className={classes.interior_windowBottom}
             id="window_bottom"
-            data={ isMobile ? WINDOW_SVG_MOBILE : WINDOW_SVG_DESKTOP }
+            data={ svgData }
             aria-label="window"
             aria-required="true"
             type="image/svg+xml"
@@ -110,19 +95,12 @@ function WindowBottom ({ isMobile, wideScreen }) {
     )
 }
 
-function Desk () {
-    
-    const style = {
-        width: '100%',
-        position: 'absolute',
-        bottom: 0
-    }
-
+function Desk ({ classes, svgData }) {
     return (
         <object
-            style={style}
+            className={classes.interior_desk}
             id="interior_desk"
-            data={ DESK_SVG }
+            data={ svgData }
             aria-label="desk"
             aria-required="true"
             type="image/svg+xml"
@@ -132,11 +110,10 @@ function Desk () {
     )
 }
 
-export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocusedSlide, isMobile, isTransitioning:isTransitioningSlides }) {
+export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocusedSlide, isMobile, isWideScreen, isTransitioning:isTransitioningSlides }) {
     const windowSize = useWindowSize();
     const [currentSegment, setCurrentSegment] = useState(''); 
-    const wideScreen = windowSize.width > windowSize.height;
-    const classes = useStyles({ currentSegment, isFocusedSlide, isMobile, windowSize, wideScreen });
+    const classes = useStyles({ currentSegment, isFocusedSlide, isMobile, windowSize, isWideScreen });
 
     /** SVG Refs */
     const skyRef = useRef(null);
@@ -228,9 +205,10 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
         <div
             className={classes.sky}
             ref={skyRef}
-        ></div>
+        >
+        </div>
         
-        {/* Extertior */}
+        {/* Exterior */}
         <div className={ classes.exteriorContainer }>
             {/* Video */} 
             {/* For Transparent Videos (https://www.rotato.app/read/transparent-videos-for-the-web)
@@ -261,11 +239,22 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
         </div>
 
         {/* Interior */}
-        <div className={ classes.interiorContainer } >  
-            <WindowTop />
-            <WindowBottom isMobile={isMobile} wideScreen={wideScreen}/>
-            <div className={ classes.interior_desk_and_character }>
-                <Desk />
+        <div className={ classes.interiorContainer }>
+            <div className={classes.interior_windowContainer}>
+                <WindowTop
+                    classes={classes}
+                    svgData={WINDOW_TOP_SVG}
+                />
+                <WindowBottom
+                    classes={classes}
+                    svgData={isMobile ? WINDOW_SVG_MOBILE : WINDOW_SVG_DESKTOP}
+                />
+            </div>
+            <div className={ classes.interior_desk_and_character_container }>
+                <Desk
+                    classes={classes}
+                    svgData={DESK_SVG}
+                />
                 {/* Chair / Character is appended here by addCharacterGif() */}
                 <div id="interior_chair" ref={ interiorRef } />
             </div>
@@ -274,12 +263,13 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
     )
 }
 
-// CSS configs
-const transitionSpeed = '2s';
+
+const videoBlur = '6px';
 const useStyles = makeStyles(theme => ({
     homeDoodleContainer:{},
     exteriorContainer: {},
     interiorContainer: {},
+    interior_windowContainer: {},
     sky: ({ windowSize }) => {
 
         // 4:3 --> 0.75 //ratio of the image
@@ -301,9 +291,22 @@ const useStyles = makeStyles(theme => ({
         }
     
     },
-    interior_desk_and_character: ({ isMobile }) => {
+    interior_windowTop: ({ isWideScreen }) => ({
+        position: 'absolute',
+        width: '100%',
+        display: isWideScreen ? 'none' : 'block',
+    }),
+    interior_windowBottom: {
+        width: '100%',
+        position: 'absolute',
+        bottom: 0,
+        borderTop: 'solid 1000px transparent',
+        overflow: 'hidden'
+    },
+    interior_desk_and_character_container: ({ isMobile }) => {
 
         const base = {
+            transform: 'scaleX(-1)',
             position: 'absolute',
             bottom: 0,
         }
@@ -311,61 +314,71 @@ const useStyles = makeStyles(theme => ({
         const mobile = {
             ...base,
             width: '126%',
-            right: '2%'
+            left: 0
         };
 
         const desktop = {
             ...base,
-            widht: '100%',
-            right: 0
+            width: '86%',
+            left: 0
         };
 
         return isMobile ? mobile : desktop;
     },
-    desktopVideo: ({ wideScreen }) => {
-
-        const blur = '6px';
+    interior_desk: {
+        width: '100%',
+        position: 'absolute',
+        bottom: 0
+    },
+    desktopVideo: ({ isWideScreen }) => {
 
         const base = {
-            '-o-filter': `blur(${blur})`,
-            'filter': `blur(${blur})`,
+            '-o-filter': `blur(${videoBlur})`,
+            'filter': `blur(${videoBlur})`,
         }
 
-        const widerImage = {
+        const wideScreen = {
             ...base,
             width: '100%',
             position: 'absolute',
             bottom: '-30%'
         };
 
-        const tallerImage = {
+        const tallScreen = {
             ...base,
             width: '100%',
             position: 'absolute',
             bottom: '-15%'
         };
         
-        return wideScreen
-            ? { ...widerImage }
-            : { ...tallerImage }
+        return isWideScreen
+            ? wideScreen
+            : tallScreen
     },
-    mobileVideo: ({ isMobile, wideScreen }) => {
+    mobileVideo: ({ isMobile, isWideScreen }) => {
 
-        const widerImage = {
+        const base = {
+            '-o-filter': `blur(${videoBlur})`,
+            'filter': `blur(${videoBlur})`,
+        }
+
+        const wideScreen = {
+            ...base,
             width: '100%',
             position: 'absolute',
             bottom: 0
         };
 
-        const tallerImage = {
+        const tallScreen = {
+            ...base,
             height: '100%',
             position: 'absolute',
             bottom: isMobile ? '-20%' : 0,
             right: '-35%'
         }
         
-        return wideScreen
-            ? { ...widerImage }
-            : { ...tallerImage }
+        return isWideScreen
+            ? wideScreen
+            : tallScreen
     }
 }))

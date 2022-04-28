@@ -22,7 +22,7 @@ const email = "mailto:fenster.js@gmail.com";
 
 function Logo ({ classes }) {
     return (
-        <div className={ classes.logoContainer}>
+        <>
             <object
                 id="logo"
                 data={ LOGO_TEXT_SVG }
@@ -37,7 +37,7 @@ function Logo ({ classes }) {
                 <SocialIcon target="_blank" className={classes.socialItem} url={github} />
                 <SocialIcon target="_blank" className={classes.socialItem} url={email} />
             </div>
-        </div>
+        </>
     )
 }
 
@@ -46,17 +46,19 @@ function Logo ({ classes }) {
 export default function HomePage (props) {
 	const windowSize = useWindowSize();
 	const [isMobile, setIsMobile] = useState(false);
+	const [isWideScreen, setIsWideScreen] = useState(true);
 	const [isTransitioning, setTransitioning] = useState(false);
 	const [slideIsFocused, setSlideIsFocused] = useState(false); // After clicking a slide, we zoom in and allow interaction with the doodle. Allows/Prevents swiping on mobile
 	const [showLogo, setShowLogo] = useState(true);
 	const [showPrompt, setShowPrompt] = useState(true);
 	const [showNav, setShowNav] = useState(true); // Hides Swiper Nav buttons (arrow keys)
-	const classes = useStyles({ windowSize, isMobile, slideIsFocused });
-	const navigation = (slideIsFocused || isMobile) ? false : true
+	const classes = useStyles({ windowSize, isMobile, isWideScreen, slideIsFocused });
+	const navigation = (slideIsFocused || isMobile) ? false : true;
 
 	useEffect(() => {
 		setIsMobile(windowSize.width <= 480);
-	}, [windowSize]);
+		setIsWideScreen(windowSize.width > windowSize.height);
+	}, [windowSize.width, windowSize.height]);
 
 	const handleSlideChangeTransitionStart = () => {
 		setTransitioning(true);
@@ -78,7 +80,7 @@ export default function HomePage (props) {
 	return (<>
 		{/* Logo */}
 		<Slide direction="down" in={showLogo}>
-			<div className={ classes.logoWrapper }>
+			<div className={ classes.logoContainer }>
 				<Logo classes={classes} />
 			</div>
 		</Slide>
@@ -132,6 +134,7 @@ export default function HomePage (props) {
 							isActive={isActive}
 							isFocused={slideIsFocused}
 							isMobile={isMobile}
+							isWideScreen={isWideScreen}
 						/>
 					</div>
 				)}
@@ -190,9 +193,7 @@ export default function HomePage (props) {
 }
 
 
-const margin = 40;
 const zIndexHierarchy = [10000, 1000, 100, 10, 1, 0];
-
 const useStyles = makeStyles(theme => ({
 	/**
 	 * Addiontal Swiper CSS overrieds in index.css
@@ -205,7 +206,9 @@ const useStyles = makeStyles(theme => ({
 		})
 	},
 	slide: ({isMobile, slideIsFocused}) => {
-		const unfocusedBorderSize = isMobile ? '10px' : '50px';
+		const mobileBorderSize = '10px';
+		const desktopBorderSize = '5px';
+		const unfocusedBorderSize = isMobile ? mobileBorderSize : desktopBorderSize;
 		const focusedBorderSize = '0px';
 		return ({
 			border: `${slideIsFocused ? focusedBorderSize : unfocusedBorderSize} solid white`,
@@ -221,36 +224,40 @@ const useStyles = makeStyles(theme => ({
 			zIndex: slideIsFocused ? zIndexHierarchy[1] : zIndexHierarchy[zIndexHierarchy.length - 1] // content should either be all the way in the back if unfocused, or up front behind the prompts if focused
         })
     },
-	logoWrapper: ({ isMobile }) => {
+	logoContainer: ({ isMobile }) => {
+
         const base = {
             position: 'absolute',
-            width: '100%',
 			zIndex: zIndexHierarchy[0],
-            [theme.breakpoints.down('sm')]: {
-                left: 0,
+			display: 'flex',
+			flexDirection: 'column',
+			[theme.breakpoints.down('sm')]: {
+				left: 0,
                 top: '5%',
+				width: '100%',
+				padding: '0 10%',
+				boxSizing: 'border-box',
             },
             [theme.breakpoints.only('md')]: {
-                left: 0,
-                top: '4%'
+				right: 0,
+                top: '4%',
+				width: '100%',
+				padding: '0 10%',
+				boxSizing: 'border-box',
             },
             [theme.breakpoints.only('lg')]: {
-                 top: '15%',
-                 width: '27%',
-                 left: '7%'
+				top: '31%',
+				right: '11%',
+				width: '27%',
             },
             [theme.breakpoints.up('xl')]: {
-                top: '15%',
-                width: '27%',
-                left: '7%'
+				top: '31%',
+				right: '11%',
+				width: '27%',
             },
         }
 
-        return { ...base }
-    },
-    logoContainer:{
-        display: 'flex',
-        flexDirection: 'column'
+        return base
     },
     socialContainer: {
         display: 'flex',
@@ -262,10 +269,10 @@ const useStyles = makeStyles(theme => ({
     socialItem: {
         margin: '0 10px 0 10px'
     },
-	promptWrapper: ({isActive}) => ({
+	promptWrapper: {
 		position: 'absolute',
 		top: 0,
 		right: 0,
 		zIndex: zIndexHierarchy[1], //sure always be behind the logo and in front of the slide
-	})
+	}
 }));
