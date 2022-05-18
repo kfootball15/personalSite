@@ -9,8 +9,8 @@ import lottie from 'lottie-web';
 import {
     useWindowSize
 } from 'helpers';
-// import LOGO_TEXT_SVG from 'assets/home/logo_text.svg'; // Clean Text
-import LOGO_TEXT_SVG from 'assets/logo.svg'; // Marker Text
+import LOGO_TEXT_SVG from 'assets/home/logo_text.svg'; // Clean Text
+import MARKER_LOGO_TEXT_SVG from 'assets/logo.svg'; // Marker Text
 import TWITTER from 'assets/social/social_twitter.svg';
 import EMAIL from 'assets/social/social_email.svg';
 import LINKEDIN from 'assets/social/social_li.svg';
@@ -33,6 +33,8 @@ const github = "https://github.com/menshguy";
 const email = "mailto:fenster.js@gmail.com";
 const linkedIn = "https://www.linkedin.com/in/jeff-fenster";
 const map = "https://goo.gl/maps/SqMswZ82YL9TwoWYA";
+const reading = "";
+const music = "";
 
 function Logo ({ classes, isProfessionalSite }) {
 	let icons;
@@ -44,7 +46,8 @@ function Logo ({ classes, isProfessionalSite }) {
 	}
     return (
         <>
-            <object
+			{/* Clean Logo */}
+            {/* <object
 				className={ classes.logo }
                 id="logo"
                 data={ LOGO_TEXT_SVG }
@@ -53,19 +56,40 @@ function Logo ({ classes, isProfessionalSite }) {
                 type="image/svg+xml"
             >
                 MENSH
+            </object> */}
+
+			{/* Marker Logo */}
+            <object
+				className={ classes.logo }
+                id="logo"
+                data={ MARKER_LOGO_TEXT_SVG }
+                aria-label="logo"
+                aria-required="true"
+                type="image/svg+xml"
+            >
+                MENSH
             </object>
+
+			{/* Clean Icons */}
+            <div className={ classes.socialContainer }>
+				{/* <SocialIcon target="_blank" className={classes.socialItem} url={twitter} /> */}
+				{/* <SocialIcon target="_blank" className={classes.socialItem} url={github} /> */}
+				{/* <SocialIcon target="_blank" className={classes.socialItem} url={email} /> */}
+				{/* <SocialIcon target="_blank" className={classes.socialItem} url={linkedIn} /> */}
+				{/* <SocialIcon target="_blank" className={classes.socialItem} url={map} /> */}
+				{/* <SocialIcon target="_blank" className={classes.socialItem} url={reading} /> */}
+				{/* <SocialIcon target="_blank" className={classes.socialItem} url={music} /> */}
+            </div>
+
+			{/* Marker Icons */}
             <div className={ classes.socialContainer }>
 				{/* <MarkerSocialIcon src={TWITTER} url={twitter} target="_blank" classes={classes.markerSocialItem} /> */}
 				{/* <MarkerSocialIcon src={EMAIL} url={twitter} target="_blank" classes={classes.markerSocialItem} /> */}
 				{/* <MarkerSocialIcon src={LINKEDIN} url={linkedIn} target="_blank" classes={classes.markerSocialItem} /> */}
-				<MarkerSocialIcon src={READING} url={''} target="_blank" classes={classes.markerSocialItem} />
-				<MarkerSocialIcon src={MUSIC} url={''} target="_blank" classes={classes.markerSocialItem} /> 
+				<MarkerSocialIcon src={READING} url={reading} target="_blank" classes={classes.markerSocialItem} />
+				<MarkerSocialIcon src={MUSIC} url={music} target="_blank" classes={classes.markerSocialItem} /> 
 				<MarkerSocialIcon src={GITHUB} url={github} target="_blank" classes={classes.markerSocialItem} />
 				<MarkerSocialIcon src={MAP} url={map} target="_blank" classes={classes.markerSocialItem} />
-				
-				{/* <SocialIcon target="_blank" className={classes.socialItem} url={twitter} /> */}
-				{/* <SocialIcon target="_blank" className={classes.socialItem} url={github} /> */}
-				{/* <SocialIcon target="_blank" className={classes.socialItem} url={email} /> */}
             </div>
         </>
     )
