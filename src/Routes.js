@@ -8,7 +8,6 @@ import HomePage from './components/Homepage';
 export default function Routes ( props ) {
 	return (
         <Router>
-            {/* <Route component={ Navbar } /> */}
 			<Switch>
 				<Route
 					path="/"
