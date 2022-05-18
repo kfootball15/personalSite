@@ -9,21 +9,43 @@ import lottie from 'lottie-web';
 import {
     useWindowSize
 } from 'helpers';
-import LOGO_TEXT_SVG from 'assets/home/logo_text.svg';
+// import LOGO_TEXT_SVG from 'assets/home/logo_text.svg'; // Clean Text
+import LOGO_TEXT_SVG from 'assets/logo.svg'; // Marker Text
+import TWITTER from 'assets/social/social_twitter.svg';
+import EMAIL from 'assets/social/social_email.svg';
+import LINKEDIN from 'assets/social/social_li.svg';
+import READING from 'assets/social/social_reading.svg';
+import MUSIC from 'assets/social/social_music.svg';
+import GITHUB from 'assets/social/social_github.svg';
+import MAP from 'assets/social/social_map.svg';
 import EnterFocusPrompt from 'components/prompts/EnterFocusPrompt.js'
 import ExitFocusPrompt from 'components/prompts/ExitFocusPrompt.js'
 
 
 SwiperCore.use([Navigation, Pagination, Scrollbar, A11y, EffectFade]);
+console.log("process.env", process.env)
+
+/** @TODO - Replace with Environment Variable and deploy to sepearte domains  */
+const isProfessionalSite = true;
 
 const twitter = "https://twitter.com/menshguy";
 const github = "https://github.com/menshguy";
 const email = "mailto:fenster.js@gmail.com";
+const linkedIn = "https://www.linkedin.com/in/jeff-fenster";
+const map = "https://goo.gl/maps/SqMswZ82YL9TwoWYA";
 
-function Logo ({ classes }) {
+function Logo ({ classes, isProfessionalSite }) {
+	let icons;
+	if (isProfessionalSite) {
+		// will only appear on professional site
+		icons = []
+	} else {
+		// will only appear on personal site
+	}
     return (
         <>
             <object
+				className={ classes.logo }
                 id="logo"
                 data={ LOGO_TEXT_SVG }
                 aria-label="logo"
@@ -33,15 +55,29 @@ function Logo ({ classes }) {
                 MENSH
             </object>
             <div className={ classes.socialContainer }>
-                <SocialIcon target="_blank" className={classes.socialItem} url={twitter} />
-                <SocialIcon target="_blank" className={classes.socialItem} url={github} />
-                <SocialIcon target="_blank" className={classes.socialItem} url={email} />
+				{/* <MarkerSocialIcon src={TWITTER} url={twitter} target="_blank" classes={classes.markerSocialItem} /> */}
+				{/* <MarkerSocialIcon src={EMAIL} url={twitter} target="_blank" classes={classes.markerSocialItem} /> */}
+				{/* <MarkerSocialIcon src={LINKEDIN} url={linkedIn} target="_blank" classes={classes.markerSocialItem} /> */}
+				<MarkerSocialIcon src={READING} url={''} target="_blank" classes={classes.markerSocialItem} />
+				<MarkerSocialIcon src={MUSIC} url={''} target="_blank" classes={classes.markerSocialItem} /> 
+				<MarkerSocialIcon src={GITHUB} url={github} target="_blank" classes={classes.markerSocialItem} />
+				<MarkerSocialIcon src={MAP} url={map} target="_blank" classes={classes.markerSocialItem} />
+				
+				{/* <SocialIcon target="_blank" className={classes.socialItem} url={twitter} /> */}
+				{/* <SocialIcon target="_blank" className={classes.socialItem} url={github} /> */}
+				{/* <SocialIcon target="_blank" className={classes.socialItem} url={email} /> */}
             </div>
         </>
     )
 }
 
-
+function MarkerSocialIcon ({ classes, url, src, ...props }) {
+	return (
+		<a className={classes} href={url} {...props} >
+			<img src={src} />
+		</a>
+	)
+}
 
 export default function HomePage (props) {
 	const windowSize = useWindowSize();
@@ -81,7 +117,7 @@ export default function HomePage (props) {
 		{/* Logo */}
 		<Slide direction="down" in={showLogo}>
 			<div className={ classes.logoContainer }>
-				<Logo classes={classes} />
+				<Logo classes={classes} isProfessionalSite={isProfessionalSite} />
 			</div>
 		</Slide>
 
@@ -193,7 +229,13 @@ export default function HomePage (props) {
 }
 
 
+function randomInt(min, max) { // min and max included 
+	return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
 const zIndexHierarchy = [10000, 1000, 100, 10, 1, 0];
+const markerOpacity = 0.6;
+const margins = [0, 5, 10, 4];
 const useStyles = makeStyles(theme => ({
 	/**
 	 * Addiontal Swiper CSS overrieds in index.css
@@ -259,6 +301,9 @@ const useStyles = makeStyles(theme => ({
 
         return base
     },
+	logo: {
+		opacity: markerOpacity
+	},
     socialContainer: {
         display: 'flex',
         flexDirection: 'row',
@@ -266,8 +311,19 @@ const useStyles = makeStyles(theme => ({
         zIndex: 100,
         marginTop: 10
     },
+    markerSocialItem: ({randomMargin}) => ({
+		margin: `
+			${margins[ randomInt(1, 4) ]}px 
+			10px 
+			${margins[ randomInt(1, 4) ]}px 
+			10px
+		`,
+		opacity: markerOpacity,
+		width: 100,
+		height: 100
+    }),
     socialItem: {
-        margin: '0 10px 0 10px'
+        margin: '0 10px 0 10px',
     },
 	promptWrapper: {
 		position: 'absolute',
