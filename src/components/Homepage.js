@@ -102,7 +102,7 @@ export default function HomePage (props) {
 			// scrollbar={{ draggable: true }}
         >
 
-			{/* Focus Prompts - Focus on a slide or exit */}
+			{/* Focus Prompts (swipe, tap, etc) - Focuses screen in on a slide or exits */}
 			<div
 				onClick={e => toggleActivateSlide()}
 				className={classes.promptWrapper}
