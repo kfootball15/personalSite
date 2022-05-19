@@ -21,12 +21,11 @@ import MAP from 'assets/social/social_map.svg';
 import EnterFocusPrompt from 'components/prompts/EnterFocusPrompt.js'
 import ExitFocusPrompt from 'components/prompts/ExitFocusPrompt.js'
 
+/** Helpful logs */
+console.log("process.env", process.env)
+console.log("isProfessionalSite? ", process.env.REACT_APP_IS_PROFESSIONAL_SITE)
 
 SwiperCore.use([Navigation, Pagination, Scrollbar, A11y, EffectFade]);
-console.log("process.env", process.env)
-
-/** @TODO - Replace with Environment Variable and deploy to sepearte domains  */
-const isProfessionalSite = true;
 
 const twitter = "https://twitter.com/menshguy";
 const github = "https://github.com/menshguy";
@@ -141,7 +140,7 @@ export default function HomePage (props) {
 		{/* Logo */}
 		<Slide direction="down" in={showLogo}>
 			<div className={ classes.logoContainer }>
-				<Logo classes={classes} isProfessionalSite={isProfessionalSite} />
+				<Logo classes={classes} isProfessionalSite={process.env.REACT_APP_IS_PROFESSIONAL_SITE} />
 			</div>
 		</Slide>
 

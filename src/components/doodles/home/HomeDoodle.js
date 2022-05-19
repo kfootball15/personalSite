@@ -11,7 +11,8 @@ import WINDOW_TOP_SVG from 'assets/home/window_top.svg';
 import DESK_SVG from 'assets/home/desk.svg';
 import BG_VIDEO_CHROME from 'assets/home/full_exterior_all.webm';
 import BG_VIDEO_SAFARI from 'assets/home/full_mobile.mp4';
-import CHARACTER_GIF from 'assets/home/character.gif';
+import CHARACTER_PERSONAL_GIF from 'assets/home/character.gif';
+import CHARACTER_PROFESSIONAL_GIF from 'assets/home/character_work.gif';
 import {
 	useEventListener,
     useWindowSize,
@@ -114,6 +115,7 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
     const windowSize = useWindowSize();
     const [currentSegment, setCurrentSegment] = useState(''); 
     const classes = useStyles({ currentSegment, isFocusedSlide, isMobile, windowSize, isWideScreen });
+    const CHARACTER_GIF = process.env.REACT_APP_IS_PROFESSIONAL_SITE ? CHARACTER_PERSONAL_GIF : CHARACTER_PROFESSIONAL_GIF;
 
     /** SVG Refs */
     const skyRef = useRef(null);
