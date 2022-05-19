@@ -37,59 +37,57 @@ const music = "";
 
 function Logo ({ classes, isProfessionalSite }) {
 	let icons;
-	if (isProfessionalSite) {
-		// will only appear on professional site
-		icons = []
-	} else {
-		// will only appear on personal site
-	}
+	if (isProfessionalSite) return (
+		<>
+		{/* Clean Logo */}
+		<object
+			className={ classes.logo }
+			id="logo"
+			data={ LOGO_TEXT_SVG }
+			aria-label="logo"
+			aria-required="true"
+			type="image/svg+xml"
+		>
+			MENSH
+		</object> 
+
+		{/* Clean Icons */}
+		<div className={ classes.socialContainer }>
+			<SocialIcon target="_blank" className={classes.socialItem} url={twitter} />
+			<SocialIcon target="_blank" className={classes.socialItem} url={github} />
+			<SocialIcon target="_blank" className={classes.socialItem} url={email} />
+			<SocialIcon target="_blank" className={classes.socialItem} url={linkedIn} />
+			<SocialIcon target="_blank" className={classes.socialItem} url={map} />
+			<SocialIcon target="_blank" className={classes.socialItem} url={reading} />
+			<SocialIcon target="_blank" className={classes.socialItem} url={music} />
+		</div>
+		</>
+	)
+	
     return (
         <>
-			{/* Clean Logo */}
-            {/* <object
-				className={ classes.logo }
-                id="logo"
-                data={ LOGO_TEXT_SVG }
-                aria-label="logo"
-                aria-required="true"
-                type="image/svg+xml"
-            >
-                MENSH
-            </object> */}
+		{/* Marker Logo */}
+		<object
+			className={ classes.logo }
+			id="logo"
+			data={ MARKER_LOGO_TEXT_SVG }
+			aria-label="logo"
+			aria-required="true"
+			type="image/svg+xml"
+		>
+			MENSH
+		</object>
 
-			{/* Marker Logo */}
-            <object
-				className={ classes.logo }
-                id="logo"
-                data={ MARKER_LOGO_TEXT_SVG }
-                aria-label="logo"
-                aria-required="true"
-                type="image/svg+xml"
-            >
-                MENSH
-            </object>
-
-			{/* Clean Icons */}
-            <div className={ classes.socialContainer }>
-				{/* <SocialIcon target="_blank" className={classes.socialItem} url={twitter} /> */}
-				{/* <SocialIcon target="_blank" className={classes.socialItem} url={github} /> */}
-				{/* <SocialIcon target="_blank" className={classes.socialItem} url={email} /> */}
-				{/* <SocialIcon target="_blank" className={classes.socialItem} url={linkedIn} /> */}
-				{/* <SocialIcon target="_blank" className={classes.socialItem} url={map} /> */}
-				{/* <SocialIcon target="_blank" className={classes.socialItem} url={reading} /> */}
-				{/* <SocialIcon target="_blank" className={classes.socialItem} url={music} /> */}
-            </div>
-
-			{/* Marker Icons */}
-            <div className={ classes.socialContainer }>
-				{/* <MarkerSocialIcon src={TWITTER} url={twitter} target="_blank" classes={classes.markerSocialItem} /> */}
-				{/* <MarkerSocialIcon src={EMAIL} url={twitter} target="_blank" classes={classes.markerSocialItem} /> */}
-				{/* <MarkerSocialIcon src={LINKEDIN} url={linkedIn} target="_blank" classes={classes.markerSocialItem} /> */}
-				<MarkerSocialIcon src={READING} url={reading} target="_blank" classes={classes.markerSocialItem} />
-				<MarkerSocialIcon src={MUSIC} url={music} target="_blank" classes={classes.markerSocialItem} /> 
-				<MarkerSocialIcon src={GITHUB} url={github} target="_blank" classes={classes.markerSocialItem} />
-				<MarkerSocialIcon src={MAP} url={map} target="_blank" classes={classes.markerSocialItem} />
-            </div>
+		{/* Marker Icons */}
+		<div className={ classes.socialContainer }>
+			{/* <MarkerSocialIcon src={TWITTER} url={twitter} target="_blank" classes={classes.markerSocialItem} /> */}
+			{/* <MarkerSocialIcon src={EMAIL} url={twitter} target="_blank" classes={classes.markerSocialItem} /> */}
+			{/* <MarkerSocialIcon src={LINKEDIN} url={linkedIn} target="_blank" classes={classes.markerSocialItem} /> */}
+			<MarkerSocialIcon src={READING} url={reading} target="_blank" classes={classes.markerSocialItem} />
+			<MarkerSocialIcon src={MUSIC} url={music} target="_blank" classes={classes.markerSocialItem} /> 
+			<MarkerSocialIcon src={GITHUB} url={github} target="_blank" classes={classes.markerSocialItem} />
+			<MarkerSocialIcon src={MAP} url={map} target="_blank" classes={classes.markerSocialItem} />
+		</div>
         </>
     )
 }
@@ -140,7 +138,7 @@ export default function HomePage (props) {
 		{/* Logo */}
 		<Slide direction="down" in={showLogo}>
 			<div className={ classes.logoContainer }>
-				<Logo classes={classes} isProfessionalSite={process.env.REACT_APP_IS_PROFESSIONAL_SITE} />
+				<Logo classes={classes} isProfessionalSite={ process.env.REACT_APP_IS_PROFESSIONAL_SITE === "true" } />
 			</div>
 		</Slide>
 

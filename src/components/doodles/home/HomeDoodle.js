@@ -115,7 +115,7 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
     const windowSize = useWindowSize();
     const [currentSegment, setCurrentSegment] = useState(''); 
     const classes = useStyles({ currentSegment, isFocusedSlide, isMobile, windowSize, isWideScreen });
-    const CHARACTER_GIF = process.env.REACT_APP_IS_PROFESSIONAL_SITE ? CHARACTER_PERSONAL_GIF : CHARACTER_PROFESSIONAL_GIF;
+    const CHARACTER_GIF = process.env.REACT_APP_IS_PROFESSIONAL_SITE === "true" ? CHARACTER_PROFESSIONAL_GIF: CHARACTER_PERSONAL_GIF ;
 
     /** SVG Refs */
     const skyRef = useRef(null);
