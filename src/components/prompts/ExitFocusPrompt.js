@@ -1,16 +1,5 @@
-import React, {useState, useEffect, useRef, useCallback} from 'react';
-import { HomeDoodle, RipplesDoodle } from 'components/doodles';
-import SwiperCore, { Navigation, Pagination, Scrollbar, A11y, EffectFade } from 'swiper';
-import Slide from '@material-ui/core/Slide';
+import React from 'react';
 import { makeStyles} from '@material-ui/core';
-import { SocialIcon } from 'react-social-icons';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import lottie from 'lottie-web';
-import {
-    useWindowSize
-} from 'helpers';
-import LOGO_TEXT_SVG from 'assets/home/logo_text.svg';
-import EnterFocusPrompt from 'components/prompts/EnterFocusPrompt.js';
 
 export default function ExitFocusPrompt ({isMobile, togglePrompt}) {
     const classes = useStyles({ isMobile });

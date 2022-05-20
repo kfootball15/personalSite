@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core';
 import p5 from 'p5';
-import BG_IMAGE from 'assets/test.jpeg';
 import {
     useWindowSize,
 } from 'helpers';
@@ -15,12 +14,12 @@ export default function FollowDoodle ({
     isMobile
 }) {
     const classes = useStyles();
-    const windowSize = useWindowSize();
+    // const windowSize = useWindowSize();
 
     //p5 instance mode requires a reference on the DOM to mount the sketch
     //So we use react's createRef function to give p5 a reference
     const sketchRef = useRef(null);
-    const imageBGRef = useRef(null);
+    // const imageBGRef = useRef(null);
 
     // This uses p5's instance mode for sketch creation and namespacing
     /**

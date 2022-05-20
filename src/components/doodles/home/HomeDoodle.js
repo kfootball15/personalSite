@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core';
 import { gcd_two_numbers } from 'helpers';
-import clsx from 'clsx';
 import INTERIOR_LOTTIE from 'assets/home/full_interior_lottie.json';
 // import EXTERIOR_LOTTIE from 'assets/home/full_exterior_lottie.json';
 import SKY_LOTTIE from 'assets/home/full_sky_lottie.json';
@@ -11,8 +10,8 @@ import WINDOW_TOP_SVG from 'assets/home/window_top.svg';
 import DESK_SVG from 'assets/home/desk.svg';
 import BG_VIDEO_CHROME from 'assets/home/full_exterior_all.webm';
 import BG_VIDEO_SAFARI from 'assets/home/full_mobile.mp4';
-import CHARACTER_PERSONAL_GIF from 'assets/home/character.gif';
-import CHARACTER_PROFESSIONAL_GIF from 'assets/home/character_work.gif';
+import CHARACTER_GIF_PERSONAL from 'assets/home/character.gif';
+import CHARACTER_GIF_PROFESSIONAL from 'assets/home/character_work.gif';
 import {
 	useEventListener,
     useWindowSize,
@@ -111,11 +110,17 @@ function Desk ({ classes, svgData }) {
     )
 }
 
-export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocusedSlide, isMobile, isWideScreen, isTransitioning:isTransitioningSlides }) {
+export default function HomeDoodle ({
+    isActive:isActiveSlide,
+    isFocused:isFocusedSlide,
+    isMobile, isWideScreen, 
+    isTransitioning:isTransitioningSlides,
+    isProfessionalSite 
+}) {
     const windowSize = useWindowSize();
     const [currentSegment, setCurrentSegment] = useState(''); 
     const classes = useStyles({ currentSegment, isFocusedSlide, isMobile, windowSize, isWideScreen });
-    const CHARACTER_GIF = process.env.REACT_APP_IS_PROFESSIONAL_SITE === "true" ? CHARACTER_PROFESSIONAL_GIF: CHARACTER_PERSONAL_GIF ;
+    const CHARACTER_GIF = isProfessionalSite ? CHARACTER_GIF_PROFESSIONAL: CHARACTER_GIF_PERSONAL;
 
     /** SVG Refs */
     const skyRef = useRef(null);
@@ -139,7 +144,7 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
     };
 
     /** Adds character gif to correct spot behind chair */
-    const addCharacterGIF = () => {
+    const addCharacterGIF = useCallback(() => {
         const elem = interiorRef.current.querySelector('[id^="chair_back"]');
         var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
         svgimg.setAttribute('height','100%');
@@ -148,7 +153,7 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
         svgimg.setAttribute("href", CHARACTER_GIF);
         elem.appendChild(svgimg);
         hideElement('character_placeholder', document);
-    }
+    }, [CHARACTER_GIF])
 
     // Configure and instantiate Lottie Animations
     useEffect(() => {
@@ -176,7 +181,7 @@ export default function HomeDoodle ({ isActive:isActiveSlide, isFocused:isFocuse
 
         // This will set the current segment by checking every frame of an animation (can append this handler to any of the layers)
         interiorAnimationObject.onEnterFrame = handleSetCurrentSegment( setCurrentSegment );
-    }, [])
+    }, [addCharacterGIF])
 
     // Play/Pause when changing slides
     useEffect(() => {

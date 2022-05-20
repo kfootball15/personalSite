@@ -42,3 +42,11 @@ Checklist
         Remember to show prmpt to let user know to swipe left/right (HIGH)
     [x] Destory or just puase the svg when scrolling to new project (HIGH)
     [] Try reducing frame rate so it plays smoother
+
+.npmrc
+    To add the npm registry back for whatever reason, create this file:
+        sudo nano ~/.npmrc
+    And Paste this code:
+        registry=https://npm.untapt.com:4873/
+        strict-ssl=false
+        @untapt:registry=https://npm.untapt.com:4873/
