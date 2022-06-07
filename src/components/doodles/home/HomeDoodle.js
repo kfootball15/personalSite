@@ -120,7 +120,6 @@ export default function HomeDoodle ({
     const windowSize = useWindowSize();
     const [currentSegment, setCurrentSegment] = useState(''); 
     const classes = useStyles({ currentSegment, isFocusedSlide, isMobile, windowSize, isWideScreen });
-    const CHARACTER_GIF = isProfessionalSite ? CHARACTER_GIF_PROFESSIONAL: CHARACTER_GIF_PERSONAL;
 
     /** SVG Refs */
     const skyRef = useRef(null);
@@ -145,7 +144,14 @@ export default function HomeDoodle ({
 
     /** Adds character gif to correct spot behind chair */
     const addCharacterGIF = useCallback(() => {
+        const CHARACTER_GIF = isProfessionalSite ? CHARACTER_GIF_PROFESSIONAL: CHARACTER_GIF_PERSONAL;
         const elem = interiorRef.current.querySelector('[id^="chair_back"]');
+        
+        // if character already exists, remove him (should happen when we toggle professional/personal site)
+        const characterAlreadyExists = document.getElementById('character'); 
+        if (characterAlreadyExists) elem.removeChild(characterAlreadyExists);
+
+        // add character gif to chair
         var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
         svgimg.setAttribute('height','100%');
         svgimg.setAttribute('width','100%');
@@ -153,7 +159,7 @@ export default function HomeDoodle ({
         svgimg.setAttribute("href", CHARACTER_GIF);
         elem.appendChild(svgimg);
         hideElement('character_placeholder', document);
-    }, [CHARACTER_GIF])
+    }, [isProfessionalSite])
 
     // Configure and instantiate Lottie Animations
     useEffect(() => {
@@ -181,6 +187,11 @@ export default function HomeDoodle ({
 
         // This will set the current segment by checking every frame of an animation (can append this handler to any of the layers)
         interiorAnimationObject.onEnterFrame = handleSetCurrentSegment( setCurrentSegment );
+    }, [])
+
+    // Runs when we toggle isProfessionalSite
+    useEffect(() => {
+        addCharacterGIF();
     }, [addCharacterGIF])
 
     // Play/Pause when changing slides

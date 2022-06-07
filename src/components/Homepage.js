@@ -12,9 +12,6 @@ import Logo from 'components/Logo.js'
 import EnterFocusPrompt from 'components/prompts/EnterFocusPrompt.js'
 import ExitFocusPrompt from 'components/prompts/ExitFocusPrompt.js'
 
-const personalSite = 'https://www.menshguy.com'
-const professionalSite = 'https://www.fensterjs.com'
-
 SwiperCore.use([Navigation, Pagination, Scrollbar, A11y, EffectFade]);
 
 export default function HomePage (props) {
@@ -29,8 +26,8 @@ export default function HomePage (props) {
 	const [showNav, setShowNav] = useState(true); // Hides Swiper Nav buttons (arrow keys)
 	const classes = useStyles({ windowSize, isMobile, isWideScreen, slideIsFocused });
 	const navigation = (slideIsFocused || isMobile) ? false : true;
-
-	console.log("isProfessionalSite? ", isProfessionalSite)
+	const personalSite = 'https://www.menshguy.com';
+	const professionalSite = 'https://www.fensterjs.com';
 
 	useEffect(() => {
 		setIsMobile(windowSize.width <= 480);
@@ -52,17 +49,34 @@ export default function HomePage (props) {
 		setShowLogo(!showLogo)
 		if (showPrompt) setShowPrompt(false); // Only show prompt once
 		setShowNav(!showNav) // Toggle nav on/off depending on whether or not a slide is "active"
-	}, [slideIsFocused, showLogo, showNav])
+	}, [slideIsFocused, showLogo, showNav, showPrompt])
+
+	const linkDirect = useCallback(() => {
+		if (process.env.NODE_ENV === "development") {
+			// If dev, just toggle site between personal and professional
+			setIsProfessionalSite(!isProfessionalSite)
+		} else {
+			// redirect to opposite site
+			window.location.replace( isProfessionalSite ? personalSite : professionalSite );
+		}
+
+	}, [isProfessionalSite])
 
 	return (
 		<>
-		{/* Link to Personal/Professional site */}
-		<a className={classes.siteLink} href={isProfessionalSite ? professionalSite : personalSite}> Go to {isProfessionalSite ? 'Professional' : 'Personal'} Site </a>
 		
+		{/* Link to Personal/Professional site */}
+		{
+			!slideIsFocused && // Only show link on this page
+			<a className={ classes.siteLink } onClick={ linkDirect } >
+				Go to {isProfessionalSite ? 'Personal' : 'Professional'} Site 
+			</a>
+		}
+
 		{/* Logo */}
 		<Slide direction="down" in={showLogo}>
 			<div className={ classes.logoContainer }>
-				<Logo isProfessionalSite={ process.env.REACT_APP_IS_PROFESSIONAL_SITE === "true" } />
+				<Logo isProfessionalSite={ isProfessionalSite } />
 			</div>
 		</Slide>
 
@@ -182,8 +196,8 @@ function randomInt(min, max) { // min and max included
 const zIndexHierarchy = [10000, 1000, 100, 10, 1, 0];
 const markerOpacity = 0.6;
 const margins = [0, 5, 10, 4];
-const mobileBorderSize = '10px';
-const desktopBorderSize = '5px';
+const mobileBorderSize = 10;
+const desktopBorderSize = 5;
 const useStyles = makeStyles(theme => ({
 	/**
 	 * Addiontal Swiper CSS overrieds in index.css
@@ -200,7 +214,7 @@ const useStyles = makeStyles(theme => ({
 		const unfocusedBorderSize = isMobile ? mobileBorderSize : desktopBorderSize;
 		const focusedBorderSize = '0px';
 		return ({
-			border: `${slideIsFocused ? focusedBorderSize : unfocusedBorderSize} solid white`,
+			border: `${slideIsFocused ? focusedBorderSize : unfocusedBorderSize}px solid white`,
 			transition: 'border 1s, height 1s',
 			transitionDelay: '0s',
     		boxSizing: 'border-box',
@@ -217,10 +231,13 @@ const useStyles = makeStyles(theme => ({
 		const unfocusedBorderSize = isMobile ? mobileBorderSize : desktopBorderSize;
 		return ({
 			position: 'absolute',
-			bottom: unfocusedBorderSize, // move the link inside the border
-			left: unfocusedBorderSize,
+			bottom: unfocusedBorderSize + 10, // move the link inside the border
+			right: unfocusedBorderSize + 10,
 			zIndex: zIndexHierarchy[0],
-			fontSize: 16
+			fontSize: 16,
+			cursor: 'pointer',
+			textDecoration: 'underline',
+			color: 'blue'
 		});
 	},
 	logoContainer: ({ isMobile }) => {
