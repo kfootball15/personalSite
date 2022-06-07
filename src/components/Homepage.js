@@ -26,7 +26,7 @@ export default function HomePage (props) {
 	const [showNav, setShowNav] = useState(true); // Hides Swiper Nav buttons (arrow keys)
 	const classes = useStyles({ windowSize, isMobile, isWideScreen, slideIsFocused });
 	const navigation = (slideIsFocused || isMobile) ? false : true;
-	const personalSite = 'https://www.menshguy.com';
+	const personalSite = 'https://menshguy.com/';
 	const professionalSite = 'https://www.fensterjs.com';
 
 	useEffect(() => {
